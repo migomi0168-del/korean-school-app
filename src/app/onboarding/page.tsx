@@ -7,13 +7,8 @@ import { Card } from "@/components/common/Card";
 import { AVATAR_CHOICES } from "@/components/common/Avatar";
 import { updateStudent } from "@/lib/students";
 import { useStudentSession } from "@/hooks/useStudentSession";
+import { LANGUAGES } from "@/lib/languages";
 import type { NativeLanguage } from "@/types";
-
-const LANGUAGES: { code: NativeLanguage; label: string; emoji: string }[] = [
-  { code: "zh", label: "중국어 / 中文", emoji: "🇨🇳" },
-  { code: "en", label: "영어 / English", emoji: "🇺🇸" },
-  { code: "vi", label: "베트남어 / Tiếng Việt", emoji: "🇻🇳" },
-];
 
 export default function OnboardingPage() {
   const { student, refresh, loading } = useStudentSession();

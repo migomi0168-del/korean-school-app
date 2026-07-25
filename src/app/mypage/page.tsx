@@ -1,16 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/common/Card";
 import { Avatar } from "@/components/common/Avatar";
 import { sections } from "@/lib/content";
 import { useStudentSession } from "@/hooks/useStudentSession";
+import { updateStudent } from "@/lib/students";
 import { levelFromXp, todayStr } from "@/lib/xp";
+import { LANGUAGES } from "@/lib/languages";
+import type { NativeLanguage } from "@/types";
 
 export default function MyPage() {
   const { student, loading } = useStudentSession();
   const router = useRouter();
+  const [editingLang, setEditingLang] = useState(false);
 
   if (loading) return null;
   if (!student) {
@@ -20,6 +25,12 @@ export default function MyPage() {
 
   const level = levelFromXp(student.xp);
   const practiceDoneToday = student.practiceDate === todayStr();
+
+  function handleChangeLanguage(code: NativeLanguage) {
+    if (!student) return;
+    updateStudent(student.id, { nativeLanguage: code });
+    setEditingLang(false);
+  }
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -52,6 +63,39 @@ export default function MyPage() {
           <p className="font-display text-xl">{practiceDoneToday ? "완료" : "-"}</p>
           <p className="text-xs text-ink/50">오늘 실천</p>
         </div>
+      </Card>
+
+      <Card>
+        <div className="flex items-center justify-between">
+          <p className="font-display text-lg">🌐 모국어</p>
+          <button
+            onClick={() => setEditingLang((v) => !v)}
+            className="text-xs font-bold text-duo-blue-dark underline"
+          >
+            {editingLang ? "닫기" : "바꾸기"}
+          </button>
+        </div>
+        {!editingLang ? (
+          <p className="mt-2 text-lg">
+            {LANGUAGES.find((l) => l.code === student.nativeLanguage)?.emoji ?? "❓"}{" "}
+            {LANGUAGES.find((l) => l.code === student.nativeLanguage)?.label ?? "설정 안 됨"}
+          </p>
+        ) : (
+          <div className="mt-3 flex flex-col gap-2">
+            {LANGUAGES.map((l) => (
+              <button
+                key={l.code}
+                onClick={() => handleChangeLanguage(l.code)}
+                className={`flex items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left font-bold ${
+                  student.nativeLanguage === l.code ? "border-duo-green bg-duo-green/10" : "border-duo-gray bg-white"
+                }`}
+              >
+                <span className="text-xl">{l.emoji}</span>
+                {l.label}
+              </button>
+            ))}
+          </div>
+        )}
       </Card>
 
       <Card>
