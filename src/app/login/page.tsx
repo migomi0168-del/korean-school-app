@@ -29,14 +29,14 @@ export default function LoginPage() {
       return;
     }
     setStudentId(student.id);
-    router.push(student.avatar ? "/home" : "/onboarding");
+    router.push(student.nativeLanguage && student.avatar ? "/home" : "/onboarding");
   }
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6">
       <div className="text-center">
         <div className="text-6xl">🏫</div>
-        <h1 className="mt-2 font-display text-3xl text-duo-green-dark">학교말</h1>
+        <h1 className="mt-2 font-display text-2xl text-duo-green-dark">학교생활 언어 마스터</h1>
         <p className="mt-1 text-sm text-ink/60">선생님이 알려준 번호 6자리를 입력하세요</p>
       </div>
 

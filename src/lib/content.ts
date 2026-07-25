@@ -1,32 +1,30 @@
-import unitsData from "@/content/units.json";
+import sectionsData from "@/content/sections.json";
 import wordsData from "@/content/words.json";
-import sentencesData from "@/content/sentences.json";
-import type { Unit, Word, Sentence } from "@/types";
+import phrasesData from "@/content/phrases.json";
+import type { Section, Word, Phrase } from "@/types";
 
-export const units = unitsData as Unit[];
+export const sections = (sectionsData as Section[]).sort((a, b) => a.order - b.order);
 export const words = wordsData as Word[];
-export const sentences = sentencesData as Sentence[];
-
-export function getUnit(unitId: string) {
-  return units.find((u) => u.id === unitId) ?? null;
-}
+export const phrases = phrasesData as Phrase[];
 
 export function getWord(wordId: string) {
   return words.find((w) => w.id === wordId) ?? null;
 }
 
-export function getSentence(sentenceId: string) {
-  return sentences.find((s) => s.id === sentenceId) ?? null;
+export function getPhrase(phraseId: string) {
+  return phrases.find((p) => p.id === phraseId) ?? null;
 }
 
-export function getWordsForUnit(unitId: string) {
-  const unit = getUnit(unitId);
-  if (!unit) return [];
-  return unit.wordIds.map(getWord).filter((w): w is Word => w !== null);
+export function getSection(sectionId: string) {
+  return sections.find((s) => s.id === sectionId) ?? null;
 }
 
-export function getSentencesForUnit(unitId: string) {
-  const unit = getUnit(unitId);
-  if (!unit) return [];
-  return unit.sentenceIds.map(getSentence).filter((s): s is Sentence => s !== null);
+export function getPhrasesForSection(sectionId: string) {
+  return phrases.filter((p) => p.section === sectionId);
+}
+
+export function randomItem<T>(arr: T[], excludeIds: string[] = [], idOf: (item: T) => string = (i) => (i as { id: string }).id): T {
+  const pool = arr.filter((item) => !excludeIds.includes(idOf(item)));
+  const usable = pool.length > 0 ? pool : arr;
+  return usable[Math.floor(Math.random() * usable.length)];
 }

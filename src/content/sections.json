@@ -1,0 +1,7 @@
+[
+  { "id": "greeting", "name": "인사", "emoji": "👋", "order": 1, "background": "hallway" },
+  { "id": "class", "name": "수업시간", "emoji": "🏫", "order": 2, "background": "classroom" },
+  { "id": "break", "name": "쉬는시간", "emoji": "🏃", "order": 3, "background": "playground" },
+  { "id": "cafeteria", "name": "급식실", "emoji": "🍱", "order": 4, "background": "cafeteria" },
+  { "id": "nurse", "name": "보건실", "emoji": "🏥", "order": 5, "background": "nurse" }
+]

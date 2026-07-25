@@ -4,12 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { XPHeader } from "@/components/home/XPHeader";
-import { MapZoneIcon } from "@/components/home/MapZoneIcon";
-import { Card } from "@/components/common/Card";
-import { units } from "@/lib/content";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { XP_REWARD, todayStr, yesterdayStr } from "@/lib/xp";
+
+const MODES = [
+  { href: "/learn", emoji: "📖", label: "학습모드", desc: "단어 · 문장 배우기", color: "bg-duo-blue" },
+  { href: "/game", emoji: "🎮", label: "게임모드", desc: "방탈출 · 폭탄 게임", color: "bg-duo-pink" },
+  { href: "/review", emoji: "🔁", label: "복습모드", desc: "틀린 것만 다시", color: "bg-duo-yellow" },
+  { href: "/chat", emoji: "💬", label: "대화모드", desc: "AI 친구와 대화", color: "bg-duo-green" },
+  { href: "/practice", emoji: "🌟", label: "실천모드", desc: "오늘의 실천 미션", color: "bg-duo-pink" },
+];
 
 export default function HomePage() {
   const { student, loading, refresh, logout } = useStudentSession();
@@ -39,11 +44,6 @@ export default function HomePage() {
     return null;
   }
 
-  const anyWordsDone = units.some((u) => student.progress[u.id]?.wordsDone);
-  const anySentencesDone = units.some((u) => student.progress[u.id]?.sentencesDone);
-  const anyQuizDone = units.some((u) => student.progress[u.id]?.quizDone);
-  const firstUnit = units[0].id;
-
   return (
     <div className="flex flex-1 flex-col">
       <div className="flex items-center justify-between">
@@ -64,42 +64,28 @@ export default function HomePage() {
         </p>
       )}
 
-      <div className="px-4">
-        <Card>
-          <p className="mb-2 font-display text-lg">✅ 오늘의 미션</p>
-          <ul className="flex flex-col gap-2 text-sm">
-            <MissionItem done={anyWordsDone} label="단어 학습하기" href={`/learn/words/${firstUnit}`} />
-            <MissionItem done={anySentencesDone} label="문장 학습하기" href={`/learn/sentences/${firstUnit}`} />
-            <MissionItem done={anyQuizDone} label="퀴즈 풀기" href={`/quiz/${firstUnit}`} />
-          </ul>
-        </Card>
+      <div className="grid flex-1 grid-cols-2 gap-4 p-4">
+        {MODES.map((m) => (
+          <Link
+            key={m.href}
+            href={m.href}
+            className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-duo-gray bg-white p-5 text-center shadow-sm active:scale-95"
+          >
+            <div className={`flex h-16 w-16 items-center justify-center rounded-full text-3xl ${m.color}`}>
+              {m.emoji}
+            </div>
+            <p className="font-display text-lg">{m.label}</p>
+            <p className="text-xs text-ink/50">{m.desc}</p>
+          </Link>
+        ))}
+        <Link
+          href="/mypage"
+          className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
+        >
+          <div className="text-3xl">👤</div>
+          <p className="font-display text-lg">마이페이지</p>
+        </Link>
       </div>
-
-      <div className="mt-4 flex-1 px-4">
-        <p className="mb-3 font-display text-lg">🗺️ 학교 탐험</p>
-        <div className="grid grid-cols-2 gap-4">
-          {units.map((u) => (
-            <MapZoneIcon key={u.id} unit={u} progress={student.progress[u.id]} />
-          ))}
-        </div>
-      </div>
-
-      <Link href="/mypage" className="m-4 text-center text-sm text-ink/50 underline">
-        마이페이지 보기
-      </Link>
     </div>
-  );
-}
-
-function MissionItem({ done, label, href }: { done: boolean; label: string; href: string }) {
-  return (
-    <li>
-      <Link href={href} className="flex items-center gap-2">
-        <span className={`flex h-5 w-5 items-center justify-center rounded-full text-xs ${done ? "bg-duo-green text-white" : "border-2 border-duo-gray"}`}>
-          {done ? "✓" : ""}
-        </span>
-        <span className={done ? "text-ink/40 line-through" : ""}>{label}</span>
-      </Link>
-    </li>
   );
 }

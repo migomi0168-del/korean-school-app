@@ -22,7 +22,6 @@ export default function TeacherDashboardPage() {
 
   const [nickname, setNickname] = useState("");
   const [grade, setGrade] = useState(1);
-  const [nativeLanguage, setNativeLanguage] = useState<NativeLanguage>("en");
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export default function TeacherDashboardPage() {
     e.preventDefault();
     if (!classId || !nickname.trim()) return;
     setCreating(true);
-    const student = await createStudent({ classId, nickname: nickname.trim(), grade, nativeLanguage });
+    const student = await createStudent({ classId, nickname: nickname.trim(), grade });
     setStudents((prev) => [...prev, student]);
     setLastCreatedPin(student.pinCode);
     setNickname("");
@@ -70,6 +69,7 @@ export default function TeacherDashboardPage() {
 
       <Card>
         <p className="mb-3 font-display text-lg">학생 추가</p>
+        <p className="mb-2 text-xs text-ink/50">모국어는 학생이 처음 로그인할 때 직접 선택해요.</p>
         <form onSubmit={handleAddStudent} className="flex flex-col gap-3">
           <input
             placeholder="닉네임"
@@ -78,28 +78,17 @@ export default function TeacherDashboardPage() {
             required
             className="w-full rounded-xl border-2 border-duo-gray px-3 py-2 outline-none focus:border-duo-blue"
           />
-          <div className="flex gap-2">
-            <select
-              value={grade}
-              onChange={(e) => setGrade(Number(e.target.value))}
-              className="flex-1 rounded-xl border-2 border-duo-gray px-3 py-2"
-            >
-              {[1, 2, 3, 4, 5, 6].map((g) => (
-                <option key={g} value={g}>
-                  {g}학년
-                </option>
-              ))}
-            </select>
-            <select
-              value={nativeLanguage}
-              onChange={(e) => setNativeLanguage(e.target.value as NativeLanguage)}
-              className="flex-1 rounded-xl border-2 border-duo-gray px-3 py-2"
-            >
-              <option value="zh">중국어</option>
-              <option value="en">영어</option>
-              <option value="vi">베트남어</option>
-            </select>
-          </div>
+          <select
+            value={grade}
+            onChange={(e) => setGrade(Number(e.target.value))}
+            className="w-full rounded-xl border-2 border-duo-gray px-3 py-2"
+          >
+            {[1, 2, 3, 4, 5, 6].map((g) => (
+              <option key={g} value={g}>
+                {g}학년
+              </option>
+            ))}
+          </select>
           <Button type="submit" variant="green" disabled={creating}>
             {creating ? "추가 중..." : "+ 학생 추가"}
           </Button>
@@ -119,7 +108,7 @@ export default function TeacherDashboardPage() {
                 <div>
                   <p className="font-bold">{s.nickname}</p>
                   <p className="text-ink/50">
-                    {s.grade}학년 · {LANG_LABEL[s.nativeLanguage]} · PIN {s.pinCode}
+                    {s.grade}학년 · {s.nativeLanguage ? LANG_LABEL[s.nativeLanguage] : "미선택"} · PIN {s.pinCode}
                   </p>
                 </div>
                 <div className="text-right">

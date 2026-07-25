@@ -9,10 +9,12 @@ export function xpIntoLevel(xp: number) {
 }
 
 export const XP_REWARD = {
-  words: 10,
-  sentences: 10,
-  quiz: 20,
+  wordCorrect: 5,
+  phraseCorrect: 8,
   attendance: 5,
+  escapeSection: 15,
+  bombGame: 10,
+  practiceMode: 15,
 } as const;
 
 export function todayStr() {

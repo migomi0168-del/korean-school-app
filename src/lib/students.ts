@@ -10,7 +10,7 @@ import {
   limit,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import type { NativeLanguage, Student, UnitProgress } from "@/types";
+import type { NativeLanguage, Student } from "@/types";
 
 const studentsCol = collection(db, "students");
 
@@ -41,43 +41,40 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     pinCode: data.pinCode as string,
     nickname: data.nickname as string,
     avatar: (data.avatar as string) ?? null,
-    nativeLanguage: data.nativeLanguage as NativeLanguage,
+    nativeLanguage: (data.nativeLanguage as NativeLanguage) ?? null,
     grade: data.grade as number,
     xp: (data.xp as number) ?? 0,
     streakCount: (data.streakCount as number) ?? 0,
     lastAttendanceDate: (data.lastAttendanceDate as string) ?? null,
-    progress: (data.progress as Record<string, UnitProgress>) ?? {},
+    wrongWordIds: (data.wrongWordIds as string[]) ?? [],
+    wrongPhraseIds: (data.wrongPhraseIds as string[]) ?? [],
+    escapeCleared: (data.escapeCleared as string[]) ?? [],
+    practiceDate: (data.practiceDate as string) ?? null,
+    practiceChecked: (data.practiceChecked as string[]) ?? [],
     createdAt: (data.createdAt as number) ?? Date.now(),
   };
 }
 
-export async function createStudent(params: {
-  classId: string;
-  nickname: string;
-  grade: number;
-  nativeLanguage: NativeLanguage;
-}) {
+export async function createStudent(params: { classId: string; nickname: string; grade: number }) {
   const pinCode = await generateUniquePin();
   const docRef = await addDoc(studentsCol, {
     classId: params.classId,
     pinCode,
     nickname: params.nickname,
     grade: params.grade,
-    nativeLanguage: params.nativeLanguage,
+    nativeLanguage: null,
     avatar: null,
     xp: 0,
     streakCount: 0,
     lastAttendanceDate: null,
-    progress: {},
+    wrongWordIds: [],
+    wrongPhraseIds: [],
+    escapeCleared: [],
+    practiceDate: null,
+    practiceChecked: [],
     createdAt: Date.now(),
   });
-  return toStudent(docRef.id, {
-    classId: params.classId,
-    pinCode,
-    nickname: params.nickname,
-    grade: params.grade,
-    nativeLanguage: params.nativeLanguage,
-  });
+  return toStudent(docRef.id, { classId: params.classId, pinCode, nickname: params.nickname, grade: params.grade });
 }
 
 export async function loginWithPin(pin: string): Promise<Student | null> {

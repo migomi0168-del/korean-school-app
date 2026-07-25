@@ -57,3 +57,18 @@ body {
   opacity: 0.5;
   pointer-events: none;
 }
+
+@keyframes bomb-fall {
+  from {
+    top: -10%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+.bomb-fall {
+  animation-name: bomb-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}

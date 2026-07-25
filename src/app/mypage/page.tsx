@@ -4,10 +4,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/common/Card";
 import { Avatar } from "@/components/common/Avatar";
-import { ProgressBar } from "@/components/common/ProgressBar";
-import { units } from "@/lib/content";
+import { sections } from "@/lib/content";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { levelFromXp } from "@/lib/xp";
+import { levelFromXp, todayStr } from "@/lib/xp";
 
 export default function MyPage() {
   const { student, loading } = useStudentSession();
@@ -20,6 +19,7 @@ export default function MyPage() {
   }
 
   const level = levelFromXp(student.xp);
+  const practiceDoneToday = student.practiceDate === todayStr();
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -40,30 +40,40 @@ export default function MyPage() {
           <p className="text-xs text-ink/50">연속 출석</p>
         </div>
         <div>
-          <p className="text-2xl">📚</p>
-          <p className="font-display text-xl">
-            {units.filter((u) => student.progress[u.id]?.wordsDone && student.progress[u.id]?.sentencesDone && student.progress[u.id]?.quizDone).length}/{units.length}
-          </p>
-          <p className="text-xs text-ink/50">완료한 구역</p>
+          <p className="text-2xl">🚪</p>
+          <p className="font-display text-xl">{student.escapeCleared.length}/{sections.length}</p>
+          <p className="text-xs text-ink/50">방탈출 클리어</p>
+        </div>
+        <div>
+          <p className="text-2xl">🌟</p>
+          <p className="font-display text-xl">{practiceDoneToday ? "완료" : "-"}</p>
+          <p className="text-xs text-ink/50">오늘 실천</p>
         </div>
       </Card>
 
       <Card>
-        <p className="mb-3 font-display text-lg">구역별 진도</p>
-        <div className="flex flex-col gap-3">
-          {units.map((u) => {
-            const p = student.progress[u.id];
-            const done = [p?.wordsDone, p?.sentencesDone, p?.quizDone].filter(Boolean).length;
-            return (
-              <div key={u.id}>
-                <div className="mb-1 flex items-center justify-between text-sm">
-                  <span>{u.emoji} {u.name}</span>
-                  <span className="text-ink/50">{done}/3</span>
-                </div>
-                <ProgressBar value={(done / 3) * 100} />
-              </div>
-            );
-          })}
+        <p className="mb-3 font-display text-lg">오답노트</p>
+        <div className="flex justify-around text-center">
+          <div>
+            <p className="font-display text-2xl text-duo-red">{student.wrongWordIds.length}</p>
+            <p className="text-xs text-ink/50">틀린 단어</p>
+          </div>
+          <div>
+            <p className="font-display text-2xl text-duo-red">{student.wrongPhraseIds.length}</p>
+            <p className="text-xs text-ink/50">틀린 문장</p>
+          </div>
+        </div>
+      </Card>
+
+      <Card>
+        <p className="mb-3 font-display text-lg">방탈출 진행</p>
+        <div className="flex flex-col gap-2">
+          {sections.map((s) => (
+            <div key={s.id} className="flex items-center justify-between text-sm">
+              <span>{s.emoji} {s.name}</span>
+              <span>{student.escapeCleared.includes(s.id) ? "✅ 클리어" : "🔒 미완료"}</span>
+            </div>
+          ))}
         </div>
       </Card>
     </div>

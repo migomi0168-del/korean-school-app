@@ -11,7 +11,7 @@ export default function RootPage() {
   useEffect(() => {
     if (loading) return;
     if (student) {
-      router.replace(student.avatar ? "/home" : "/onboarding");
+      router.replace(student.nativeLanguage && student.avatar ? "/home" : "/onboarding");
     } else {
       router.replace("/login");
     }

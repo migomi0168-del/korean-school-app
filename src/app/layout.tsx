@@ -17,7 +17,7 @@ const notoSansKr = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "학교말 — 학교생활 한국어",
+  title: "학교생활 언어 마스터",
   description: "다문화 초등학생을 위한 학교생활 한국어 학습 앱",
 };
 

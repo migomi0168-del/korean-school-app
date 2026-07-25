@@ -1,24 +1,21 @@
 export type NativeLanguage = "zh" | "en" | "vi";
 
-export interface UnitProgress {
-  wordsDone: boolean;
-  sentencesDone: boolean;
-  quizDone: boolean;
-  quizScore: number;
-}
-
 export interface Student {
   id: string;
   classId: string;
   pinCode: string;
   nickname: string;
   avatar: string | null;
-  nativeLanguage: NativeLanguage;
+  nativeLanguage: NativeLanguage | null;
   grade: number;
   xp: number;
   streakCount: number;
   lastAttendanceDate: string | null;
-  progress: Record<string, UnitProgress>;
+  wrongWordIds: string[];
+  wrongPhraseIds: string[];
+  escapeCleared: string[];
+  practiceDate: string | null;
+  practiceChecked: string[];
   createdAt: number;
 }
 
@@ -35,27 +32,21 @@ export interface Word {
   reading: string;
   emoji: string;
   translations: Record<NativeLanguage, string>;
+  templateKo: string;
+  templateTranslations: Record<NativeLanguage, string>;
 }
 
-export interface Sentence {
+export interface Phrase {
   id: string;
+  section: string;
   ko: string;
   translations: Record<NativeLanguage, string>;
-  situation: string;
 }
 
-export interface QuizQuestion {
-  id: string;
-  type: "word" | "sentence";
-  refId: string;
-}
-
-export interface Unit {
+export interface Section {
   id: string;
   name: string;
   emoji: string;
-  color: string;
-  wordIds: string[];
-  sentenceIds: string[];
-  quiz: QuizQuestion[];
+  order: number;
+  background: string;
 }

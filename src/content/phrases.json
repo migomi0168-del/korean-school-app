@@ -1,0 +1,34 @@
+[
+  { "id": "greeting-1", "section": "greeting", "ko": "안녕하세요.", "translations": { "zh": "你好。", "en": "Hello.", "vi": "Xin chào." } },
+  { "id": "greeting-2", "section": "greeting", "ko": "반가워", "translations": { "zh": "很高兴认识你", "en": "Nice to meet you", "vi": "Rất vui được gặp bạn" } },
+  { "id": "greeting-3", "section": "greeting", "ko": "안녕히계세요", "translations": { "zh": "再见（对留下的人说）", "en": "Goodbye (to someone staying)", "vi": "Tạm biệt ạ (nói với người ở lại)" } },
+  { "id": "greeting-4", "section": "greeting", "ko": "감사합니다.", "translations": { "zh": "谢谢。", "en": "Thank you.", "vi": "Cảm ơn ạ." } },
+  { "id": "greeting-5", "section": "greeting", "ko": "죄송합니다.", "translations": { "zh": "对不起。", "en": "I'm sorry.", "vi": "Con xin lỗi ạ." } },
+  { "id": "greeting-6", "section": "greeting", "ko": "괜찮아", "translations": { "zh": "没关系", "en": "It's okay", "vi": "Không sao đâu" } },
+
+  { "id": "class-1", "section": "class", "ko": "다음 수업은 무슨 과목인가요?", "translations": { "zh": "下一节课是什么科目？", "en": "What's the next class subject?", "vi": "Tiết học tiếp theo là môn gì ạ?" } },
+  { "id": "class-2", "section": "class", "ko": "화장실 다녀와도 돼요?", "translations": { "zh": "我可以去一下洗手间吗？", "en": "May I go to the restroom?", "vi": "Con đi vệ sinh được không ạ?" } },
+  { "id": "class-3", "section": "class", "ko": "보건실 다녀와도 돼요?", "translations": { "zh": "我可以去一下保健室吗？", "en": "May I go to the nurse's office?", "vi": "Con đến phòng y tế được không ạ?" } },
+  { "id": "class-4", "section": "class", "ko": "준비물을 빌려주세요.", "translations": { "zh": "请借我学习用品。", "en": "Please lend me the supplies.", "vi": "Cho con mượn đồ dùng học tập với." } },
+  { "id": "class-5", "section": "class", "ko": "잘 모르겠어요.", "translations": { "zh": "我不太明白。", "en": "I don't quite understand.", "vi": "Con không hiểu rõ lắm ạ." } },
+  { "id": "class-6", "section": "class", "ko": "다시 말해주세요.", "translations": { "zh": "请再说一遍。", "en": "Please say it again.", "vi": "Thầy cô nói lại giúp con." } },
+
+  { "id": "break-1", "section": "break", "ko": "같이 놀래?", "translations": { "zh": "一起玩好吗？", "en": "Want to play together?", "vi": "Cùng chơi không?" } },
+  { "id": "break-2", "section": "break", "ko": "우리 보드게임 하자.", "translations": { "zh": "我们玩桌游吧。", "en": "Let's play a board game.", "vi": "Chúng ta chơi board game đi." } },
+  { "id": "break-3", "section": "break", "ko": "우리 달리기 하자.", "translations": { "zh": "我们来跑步吧。", "en": "Let's run together.", "vi": "Chúng ta chạy đua đi." } },
+  { "id": "break-4", "section": "break", "ko": "운동장에 나가서 놀래?", "translations": { "zh": "要不要去操场玩？", "en": "Want to go play on the playground?", "vi": "Ra sân chơi không?" } },
+  { "id": "break-5", "section": "break", "ko": "나도 같이 하고 싶어.", "translations": { "zh": "我也想一起玩。", "en": "I want to join too.", "vi": "Mình cũng muốn chơi cùng." } },
+  { "id": "break-6", "section": "break", "ko": "내 차례야", "translations": { "zh": "该我了", "en": "It's my turn", "vi": "Đến lượt mình" } },
+
+  { "id": "cafeteria-1", "section": "cafeteria", "ko": "더 주세요.", "translations": { "zh": "请再给我一点。", "en": "More, please.", "vi": "Cho con thêm với." } },
+  { "id": "cafeteria-2", "section": "cafeteria", "ko": "다 먹었어요.", "translations": { "zh": "我吃完了。", "en": "I'm finished eating.", "vi": "Con ăn xong rồi ạ." } },
+  { "id": "cafeteria-3", "section": "cafeteria", "ko": "맵지 않아요?", "translations": { "zh": "不辣吗？", "en": "Isn't it spicy?", "vi": "Món này có cay không ạ?" } },
+  { "id": "cafeteria-4", "section": "cafeteria", "ko": "제가 못 먹는 음식입니다.", "translations": { "zh": "这是我不能吃的食物。", "en": "This is food I can't eat.", "vi": "Đây là món con không ăn được." } },
+  { "id": "cafeteria-5", "section": "cafeteria", "ko": "잘 먹겠습니다.", "translations": { "zh": "我要开动了。", "en": "Thank you for the meal.", "vi": "Con xin phép ăn ạ." } },
+
+  { "id": "nurse-1", "section": "nurse", "ko": "배가 아파요.", "translations": { "zh": "我肚子疼。", "en": "My stomach hurts.", "vi": "Con bị đau bụng." } },
+  { "id": "nurse-2", "section": "nurse", "ko": "머리가 아파요.", "translations": { "zh": "我头疼。", "en": "My head hurts.", "vi": "Con bị đau đầu." } },
+  { "id": "nurse-3", "section": "nurse", "ko": "열이 있어요.", "translations": { "zh": "我发烧了。", "en": "I have a fever.", "vi": "Con bị sốt." } },
+  { "id": "nurse-4", "section": "nurse", "ko": "상처가 났어요.", "translations": { "zh": "我受伤了。", "en": "I got hurt.", "vi": "Con bị thương." } },
+  { "id": "nurse-5", "section": "nurse", "ko": "마스크 주세요.", "translations": { "zh": "请给我口罩。", "en": "Please give me a mask.", "vi": "Cho con xin khẩu trang." } }
+]
