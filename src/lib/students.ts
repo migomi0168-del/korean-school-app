@@ -1,7 +1,6 @@
 import {
   collection,
   doc,
-  getDoc,
   getDocs,
   query,
   where,
@@ -52,6 +51,7 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     escapeCleared: (data.escapeCleared as string[]) ?? [],
     practiceDate: (data.practiceDate as string) ?? null,
     practiceChecked: (data.practiceChecked as string[]) ?? [],
+    equippedAccessory: (data.equippedAccessory as string) ?? null,
     createdAt: (data.createdAt as number) ?? Date.now(),
   };
 }
@@ -73,6 +73,7 @@ export async function createStudent(params: { classId: string; nickname: string;
     escapeCleared: [],
     practiceDate: null,
     practiceChecked: [],
+    equippedAccessory: null,
     createdAt: Date.now(),
   });
   return toStudent(docRef.id, { classId: params.classId, pinCode, nickname: params.nickname, grade: params.grade });
@@ -84,12 +85,6 @@ export async function loginWithPin(pin: string): Promise<Student | null> {
   if (snap.empty) return null;
   const d = snap.docs[0];
   return toStudent(d.id, d.data());
-}
-
-export async function getStudent(studentId: string): Promise<Student | null> {
-  const snap = await getDoc(doc(db, "students", studentId));
-  if (!snap.exists()) return null;
-  return toStudent(snap.id, snap.data());
 }
 
 export async function updateStudent(studentId: string, data: Partial<Student>) {
@@ -106,5 +101,11 @@ export function subscribeToClassStudents(classId: string, onChange: (students: S
   const q = query(studentsCol, where("classId", "==", classId));
   return onSnapshot(q, (snap) => {
     onChange(snap.docs.map((d) => toStudent(d.id, d.data())));
+  });
+}
+
+export function subscribeToStudent(studentId: string, onChange: (student: Student | null) => void) {
+  return onSnapshot(doc(db, "students", studentId), (snap) => {
+    onChange(snap.exists() ? toStudent(snap.id, snap.data()) : null);
   });
 }

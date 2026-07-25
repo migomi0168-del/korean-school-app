@@ -73,7 +73,7 @@ export default function ReviewWordPage() {
     const remaining = student.wrongWordIds.filter((id) => !clearedIds.includes(id));
     await updateStudent(student.id, { xp: newXp, wrongWordIds: remaining });
     await refresh();
-    router.push(`/result?xp=${gainedXp}&next=${encodeURIComponent("/review")}&leveledUp=${newLevel > prevLevel ? 1 : 0}`);
+    router.push(`/result?xp=${gainedXp}&next=${encodeURIComponent("/review")}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);
   }
 
   return (

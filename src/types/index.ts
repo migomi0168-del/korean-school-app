@@ -16,6 +16,7 @@ export interface Student {
   escapeCleared: string[];
   practiceDate: string | null;
   practiceChecked: string[];
+  equippedAccessory: string | null;
   createdAt: number;
 }
 
@@ -50,4 +51,14 @@ export interface Section {
   emoji: string;
   order: number;
   background: string;
+}
+
+export type AccessoryPosition = "top" | "center" | "bottom" | "corner";
+
+export interface Accessory {
+  id: string;
+  emoji: string;
+  name: string;
+  requiredLevel: number;
+  position: AccessoryPosition;
 }

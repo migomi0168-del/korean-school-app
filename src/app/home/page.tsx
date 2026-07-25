@@ -50,6 +50,7 @@ export default function HomePage() {
         <XPHeader
           nickname={student.nickname}
           avatar={student.avatar}
+          accessoryId={student.equippedAccessory}
           xp={student.xp}
           streakCount={student.streakCount}
         />
@@ -84,6 +85,13 @@ export default function HomePage() {
         >
           <div className="text-3xl">👤</div>
           <p className="font-display text-lg">마이페이지</p>
+        </Link>
+        <Link
+          href="/closet"
+          className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
+        >
+          <div className="text-3xl">✨</div>
+          <p className="font-display text-lg">꾸미기</p>
         </Link>
       </div>
     </div>

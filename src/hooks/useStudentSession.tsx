@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import { getStudent } from "@/lib/students";
+import { subscribeToStudent } from "@/lib/students";
 import type { Student } from "@/types";
 
 const STORAGE_KEY = "hakgyomal_student_id";
@@ -24,42 +24,41 @@ interface StudentSessionValue {
 const StudentSessionContext = createContext<StudentSessionValue | null>(null);
 
 export function StudentSessionProvider({ children }: { children: React.ReactNode }) {
+  const [studentId, setStudentIdState] = useState<string | null>(null);
   const [student, setStudent] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const load = useCallback(async (id: string) => {
-    const s = await getStudent(id);
-    setStudent(s);
-    setLoading(false);
-    return s;
-  }, []);
-
   useEffect(() => {
     const id = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
-    if (id) {
-      load(id);
-    } else {
+    setStudentIdState(id);
+    if (!id) setLoading(false);
+  }, []);
+
+  // Live Firestore subscription: any write anywhere (this tab, another tab,
+  // another device) reflects here immediately without an explicit refresh().
+  useEffect(() => {
+    if (!studentId) return;
+    setLoading(true);
+    const unsubscribe = subscribeToStudent(studentId, (s) => {
+      setStudent(s);
       setLoading(false);
-    }
-  }, [load]);
+    });
+    return unsubscribe;
+  }, [studentId]);
 
-  const setStudentId = useCallback(
-    (id: string) => {
-      localStorage.setItem(STORAGE_KEY, id);
-      setLoading(true);
-      load(id);
-    },
-    [load]
-  );
+  const setStudentId = useCallback((id: string) => {
+    localStorage.setItem(STORAGE_KEY, id);
+    setStudentIdState(id);
+  }, []);
 
-  const refresh = useCallback(async () => {
-    const id = localStorage.getItem(STORAGE_KEY);
-    if (id) await load(id);
-  }, [load]);
+  // Kept for API compatibility with existing call sites; the live
+  // subscription above means an explicit refresh is no longer required.
+  const refresh = useCallback(async () => {}, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
+    setStudentIdState(null);
     setStudent(null);
     router.push("/login");
   }, [router]);

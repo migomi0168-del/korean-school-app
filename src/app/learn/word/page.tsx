@@ -88,7 +88,7 @@ export default function WordLearnPage() {
     const mergedWrong = Array.from(new Set([...student.wrongWordIds, ...wrongIds]));
     await updateStudent(student.id, { xp: newXp, wrongWordIds: mergedWrong });
     await refresh();
-    router.push(`/result?xp=${gainedXp}&next=${encodeURIComponent("/learn")}&leveledUp=${newLevel > prevLevel ? 1 : 0}`);
+    router.push(`/result?xp=${gainedXp}&next=${encodeURIComponent("/learn")}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);
   }
 
   const nativeLanguage = student.nativeLanguage;

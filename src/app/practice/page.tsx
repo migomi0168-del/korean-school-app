@@ -7,7 +7,8 @@ import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
-import { XP_REWARD, levelFromXp, todayStr } from "@/lib/xp";
+import { XP_PER_LEVEL, levelFromXp, todayStr } from "@/lib/xp";
+import { getNewlyUnlocked } from "@/lib/accessories";
 
 const MISSIONS = [
   { id: "greet", label: "친구 또는 선생님에게 인사하기" },
@@ -20,7 +21,7 @@ export default function PracticePage() {
   const router = useRouter();
   const [checked, setChecked] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
-  const [celebrate, setCelebrate] = useState<{ xp: number; leveledUp: boolean } | null>(null);
+  const [celebrate, setCelebrate] = useState<{ xp: number; leveledUp: boolean; prevLevel: number; newLevel: number } | null>(null);
 
   if (loading) return null;
   if (!student) {
@@ -42,24 +43,45 @@ export default function PracticePage() {
     setSaving(true);
     const qualifies = checked.length >= 2;
     const prevLevel = levelFromXp(student.xp);
-    const gainedXp = qualifies ? XP_REWARD.practiceMode : 0;
+    // Practice mode guarantees a level-up on success, unlike other modes'
+    // flat XP rewards: top the student up to the next level's threshold.
+    const nextLevelXp = prevLevel * XP_PER_LEVEL;
+    const gainedXp = qualifies ? nextLevelXp - student.xp : 0;
     const newXp = student.xp + gainedXp;
     const newLevel = levelFromXp(newXp);
     await updateStudent(student.id, { practiceDate: today, practiceChecked: checked, xp: newXp });
     await refresh();
     setSaving(false);
     if (qualifies) {
-      setCelebrate({ xp: gainedXp, leveledUp: newLevel > prevLevel });
+      setCelebrate({ xp: gainedXp, leveledUp: newLevel > prevLevel, prevLevel, newLevel });
     }
   }
 
   if (celebrate) {
+    const unlocked = celebrate.leveledUp ? getNewlyUnlocked(celebrate.prevLevel, celebrate.newLevel) : [];
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
-        <div className="text-8xl">👏</div>
+      <div className="screen-flash flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
+        <div className="relative">
+          <div className="explode-pop text-8xl">👏</div>
+          <div className="pointer-events-none absolute inset-0 flex items-start justify-center gap-4 text-4xl">
+            <span className="clap-float" style={{ animationDelay: "0ms" }}>👏</span>
+            <span className="clap-float" style={{ animationDelay: "120ms" }}>🎉</span>
+            <span className="clap-float" style={{ animationDelay: "240ms" }}>👏</span>
+          </div>
+        </div>
         <h1 className="font-display text-2xl text-duo-yellow-dark">오늘의 실천, 최고예요!</h1>
         {celebrate.leveledUp && <p className="font-display text-xl text-duo-green-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{celebrate.xp} XP</p>
+        {unlocked.length > 0 && (
+          <div className="rounded-2xl border-2 border-duo-yellow bg-duo-yellow/10 p-4">
+            <p className="font-display text-sm text-duo-yellow-dark">🎁 새 아이템 획득!</p>
+            <div className="mt-1 flex justify-center gap-3 text-3xl">
+              {unlocked.map((a) => (
+                <span key={a.id}>{a.emoji}</span>
+              ))}
+            </div>
+          </div>
+        )}
         <Button onClick={() => router.push("/home")}>돌아가기</Button>
       </div>
     );

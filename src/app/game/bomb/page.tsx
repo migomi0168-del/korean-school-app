@@ -9,10 +9,11 @@ import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
+import { getNewlyUnlocked } from "@/lib/accessories";
 import type { Word } from "@/types";
 
 const TOTAL_ROUNDS = 10;
-const SPEED_DURATION: Record<number, number> = { 1: 9000, 3: 6000, 5: 3500 };
+const SPEED_DURATION: Record<number, number> = { 1: 13000, 3: 9000, 5: 6000 };
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -40,6 +41,7 @@ export default function BombGamePage() {
   const [missedIds, setMissedIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [leveledUp, setLeveledUp] = useState(false);
+  const [levelRange, setLevelRange] = useState<{ prev: number; next: number }>({ prev: 0, next: 0 });
 
   if (loading) return null;
   if (!student) {
@@ -89,6 +91,7 @@ export default function BombGamePage() {
     await refresh();
     setSaving(false);
     setLeveledUp(newLevel > prevLevel);
+    setLevelRange({ prev: prevLevel, next: newLevel });
   }
 
   function handleInputChange(value: string) {
@@ -141,6 +144,7 @@ export default function BombGamePage() {
   }
 
   if (phase === "done") {
+    const unlocked = leveledUp ? getNewlyUnlocked(levelRange.prev, levelRange.next) : [];
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
         <div className="text-8xl">🎯</div>
@@ -148,6 +152,16 @@ export default function BombGamePage() {
         <p className="text-lg">{score} / {TOTAL_ROUNDS} 개 막았어요</p>
         {leveledUp && <p className="font-display text-xl text-duo-yellow-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{score * XP_REWARD.bombGame} XP</p>
+        {unlocked.length > 0 && (
+          <div className="rounded-2xl border-2 border-duo-yellow bg-duo-yellow/10 p-4">
+            <p className="font-display text-sm text-duo-yellow-dark">🎁 새 아이템 획득!</p>
+            <div className="mt-1 flex justify-center gap-3 text-3xl">
+              {unlocked.map((a) => (
+                <span key={a.id}>{a.emoji}</span>
+              ))}
+            </div>
+          </div>
+        )}
         <Button onClick={() => setPhase("select")} disabled={saving}>
           다시 하기
         </Button>
@@ -181,11 +195,22 @@ export default function BombGamePage() {
               {word.translations[nativeLanguage]}
             </div>
           </div>
+        ) : result === "cleared" ? (
+          <div className="absolute inset-0 flex items-center justify-center screen-flash">
+            <div className="relative text-center">
+              <div className="explode-pop text-8xl">💥</div>
+              <div className="pointer-events-none absolute inset-0 flex items-start justify-center gap-3 text-4xl">
+                <span className="clap-float" style={{ animationDelay: "0ms" }}>👏</span>
+                <span className="clap-float" style={{ animationDelay: "120ms" }}>🎉</span>
+                <span className="clap-float" style={{ animationDelay: "60ms" }}>👏</span>
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-6xl">{result === "cleared" ? "💥" : "😵"}</div>
-              {result === "missed" && <p className="mt-1 font-bold text-white">정답: {word.ko}</p>}
+            <div className="shake-miss text-center">
+              <div className="text-6xl">😵</div>
+              <p className="mt-1 font-bold text-white">정답: {word.ko}</p>
             </div>
           </div>
         )}

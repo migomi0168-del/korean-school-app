@@ -28,9 +28,12 @@ export default function MyPage() {
       </Link>
 
       <div className="flex flex-col items-center gap-2 py-2">
-        <Avatar emoji={student.avatar} size="lg" />
+        <Avatar emoji={student.avatar} accessoryId={student.equippedAccessory} size="lg" />
         <h1 className="font-display text-2xl">{student.nickname}</h1>
         <p className="text-sm text-ink/50">Lv.{level} · {student.xp} XP</p>
+        <Link href="/closet" className="text-xs font-bold text-duo-blue-dark underline">
+          ✨ 아이템 꾸미기
+        </Link>
       </div>
 
       <Card className="flex justify-around text-center">

@@ -13,6 +13,7 @@ import { isPhraseCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
+import { getNewlyUnlocked } from "@/lib/accessories";
 
 export default function EscapeSectionPage({ params }: { params: Promise<{ sectionId: string }> }) {
   const { sectionId } = use(params);
@@ -28,7 +29,7 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
   const [correct, setCorrect] = useState(false);
   const [wrongIds, setWrongIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
-  const [escaped, setEscaped] = useState<{ xp: number; leveledUp: boolean } | null>(null);
+  const [escaped, setEscaped] = useState<{ xp: number; leveledUp: boolean; prevLevel: number; newLevel: number } | null>(null);
 
   if (loading) return null;
   if (!student) {
@@ -75,16 +76,34 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
     await updateStudent(student.id, { xp: newXp, wrongPhraseIds: mergedWrong, escapeCleared: clearedSet });
     await refresh();
     setSaving(false);
-    setEscaped({ xp: gainedXp, leveledUp: newLevel > prevLevel });
+    setEscaped({ xp: gainedXp, leveledUp: newLevel > prevLevel, prevLevel, newLevel });
   }
 
   if (escaped) {
+    const unlocked = escaped.leveledUp ? getNewlyUnlocked(escaped.prevLevel, escaped.newLevel) : [];
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
-        <div className="text-8xl">🗝️</div>
+      <div className="screen-flash flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
+        <div className="relative">
+          <div className="explode-pop text-8xl">🗝️</div>
+          <div className="pointer-events-none absolute inset-0 flex items-start justify-center gap-4 text-4xl">
+            <span className="clap-float" style={{ animationDelay: "0ms" }}>🎉</span>
+            <span className="clap-float" style={{ animationDelay: "100ms" }}>👏</span>
+            <span className="clap-float" style={{ animationDelay: "200ms" }}>🎊</span>
+          </div>
+        </div>
         <h1 className="font-display text-2xl text-duo-green-dark">탈출 성공!</h1>
         {escaped.leveledUp && <p className="font-display text-xl text-duo-yellow-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{escaped.xp} XP</p>
+        {unlocked.length > 0 && (
+          <div className="rounded-2xl border-2 border-duo-yellow bg-duo-yellow/10 p-4">
+            <p className="font-display text-sm text-duo-yellow-dark">🎁 새 아이템 획득!</p>
+            <div className="mt-1 flex justify-center gap-3 text-3xl">
+              {unlocked.map((a) => (
+                <span key={a.id}>{a.emoji}</span>
+              ))}
+            </div>
+          </div>
+        )}
         <Button onClick={() => router.push("/game/escape")}>다른 장소로</Button>
       </div>
     );
@@ -123,7 +142,13 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
       </form>
 
       {submitted && (
-        <div className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center ${correct ? "border-duo-green bg-duo-green/10" : "border-duo-red bg-duo-red/10"}`}>
+        <div className={`relative flex flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center ${correct ? "border-duo-green bg-duo-green/10" : "border-duo-red bg-duo-red/10 shake-miss"}`}>
+          {correct && (
+            <div className="pointer-events-none absolute inset-x-0 -top-2 flex justify-center gap-3 text-2xl">
+              <span className="clap-float" style={{ animationDelay: "0ms" }}>👏</span>
+              <span className="clap-float" style={{ animationDelay: "100ms" }}>👏</span>
+            </div>
+          )}
           <p className={`font-display text-xl ${correct ? "text-duo-green-dark" : "text-duo-red"}`}>
             {correct ? "문이 열렸어요! 🔓" : "다시 도전해봐요"}
           </p>

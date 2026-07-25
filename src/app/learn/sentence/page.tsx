@@ -76,7 +76,7 @@ export default function SentenceLearnPage() {
     const mergedWrong = Array.from(new Set([...student.wrongPhraseIds, ...wrongIds]));
     await updateStudent(student.id, { xp: newXp, wrongPhraseIds: mergedWrong });
     await refresh();
-    router.push(`/result?xp=${gainedXp}&next=${encodeURIComponent("/learn")}&leveledUp=${newLevel > prevLevel ? 1 : 0}`);
+    router.push(`/result?xp=${gainedXp}&next=${encodeURIComponent("/learn")}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);
   }
 
   const nativeLanguage = student.nativeLanguage;
