@@ -40,6 +40,7 @@ export interface Phrase {
   id: string;
   section: string;
   ko: string;
+  alternates?: string[];
   translations: Record<NativeLanguage, string>;
 }
 

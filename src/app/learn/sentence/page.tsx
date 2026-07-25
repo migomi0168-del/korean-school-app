@@ -8,7 +8,7 @@ import { Card } from "@/components/common/Card";
 import { ProgressBar } from "@/components/common/ProgressBar";
 import { TTSButton } from "@/components/learn/TTSButton";
 import { phrases } from "@/lib/content";
-import { isSentenceCorrect } from "@/lib/grading";
+import { isPhraseCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
@@ -53,7 +53,7 @@ export default function SentenceLearnPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitted) return;
-    const ok = isSentenceCorrect(input, q.ko);
+    const ok = isPhraseCorrect(input, q);
     setCorrect(ok);
     setSubmitted(true);
     if (ok) setCorrectCount((c) => c + 1);

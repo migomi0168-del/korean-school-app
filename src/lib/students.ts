@@ -8,6 +8,7 @@ import {
   addDoc,
   updateDoc,
   limit,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import type { NativeLanguage, Student } from "@/types";
@@ -99,4 +100,11 @@ export async function listStudentsForClass(classId: string): Promise<Student[]> 
   const q = query(studentsCol, where("classId", "==", classId));
   const snap = await getDocs(q);
   return snap.docs.map((d) => toStudent(d.id, d.data()));
+}
+
+export function subscribeToClassStudents(classId: string, onChange: (students: Student[]) => void) {
+  const q = query(studentsCol, where("classId", "==", classId));
+  return onSnapshot(q, (snap) => {
+    onChange(snap.docs.map((d) => toStudent(d.id, d.data())));
+  });
 }

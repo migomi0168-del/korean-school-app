@@ -57,7 +57,7 @@ export default function OnboardingPage() {
           <h1 className="font-display text-2xl">
             반가워요, <span className="text-duo-green-dark">{student.nickname}</span>님!
           </h1>
-          <p className="mt-1 text-sm text-ink/60">사용하는 언어를 선택해주세요</p>
+          <p className="mt-1 text-sm text-ink/60">사용하기 편한 언어를 선택해주세요</p>
         </div>
 
         <Card className="w-full">

@@ -6,7 +6,7 @@ import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { useTeacherAuth } from "@/hooks/useTeacherAuth";
 import { ensureClassForTeacher } from "@/lib/classes";
-import { createStudent, listStudentsForClass } from "@/lib/students";
+import { createStudent, subscribeToClassStudents } from "@/lib/students";
 import { levelFromXp } from "@/lib/xp";
 import type { NativeLanguage, Student } from "@/types";
 
@@ -26,12 +26,15 @@ export default function TeacherDashboardPage() {
 
   useEffect(() => {
     if (loading || !user) return;
-    ensureClassForTeacher(user.uid).then(async (cls) => {
+    let unsubscribe: (() => void) | undefined;
+    ensureClassForTeacher(user.uid).then((cls) => {
       setClassId(cls.id);
-      const list = await listStudentsForClass(cls.id);
-      setStudents(list);
-      setLoadingStudents(false);
+      unsubscribe = subscribeToClassStudents(cls.id, (list) => {
+        setStudents(list);
+        setLoadingStudents(false);
+      });
     });
+    return () => unsubscribe?.();
   }, [loading, user]);
 
   if (loading) return null;
@@ -45,7 +48,6 @@ export default function TeacherDashboardPage() {
     if (!classId || !nickname.trim()) return;
     setCreating(true);
     const student = await createStudent({ classId, nickname: nickname.trim(), grade });
-    setStudents((prev) => [...prev, student]);
     setLastCreatedPin(student.pinCode);
     setNickname("");
     setCreating(false);
@@ -96,7 +98,9 @@ export default function TeacherDashboardPage() {
       </Card>
 
       <Card>
-        <p className="mb-3 font-display text-lg">우리 반 학생 ({students.length}명)</p>
+        <p className="mb-3 font-display text-lg">
+          우리 반 학생 ({students.length}명) <span className="text-xs font-normal text-duo-green-dark">● 실시간</span>
+        </p>
         {loadingStudents ? (
           <p className="text-sm text-ink/50">불러오는 중...</p>
         ) : students.length === 0 ? (

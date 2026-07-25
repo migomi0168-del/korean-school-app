@@ -1,3 +1,5 @@
+import type { Phrase } from "@/types";
+
 function normalize(str: string) {
   return str
     .trim()
@@ -27,10 +29,24 @@ export function similarity(a: string, b: string) {
   return 1 - dist / Math.max(na.length, nb.length);
 }
 
+// Treats trailing 해요체 "요" as optional so formal/casual register never
+// blocks a correct answer (e.g. "괜찮아" vs "괜찮아요").
+function bestSimilarity(input: string, answer: string) {
+  const direct = similarity(input, answer);
+  const stripYo = (s: string) => normalize(s).replace(/요$/, "");
+  const relaxed = similarity(stripYo(input), stripYo(answer));
+  return Math.max(direct, relaxed);
+}
+
 export function isWordCorrect(input: string, answer: string) {
   return normalize(input) === normalize(answer);
 }
 
 export function isSentenceCorrect(input: string, answer: string, threshold = 0.8) {
-  return similarity(input, answer) >= threshold;
+  return bestSimilarity(input, answer) >= threshold;
+}
+
+export function isPhraseCorrect(input: string, phrase: Phrase, threshold = 0.75) {
+  const candidates = [phrase.ko, ...(phrase.alternates ?? [])];
+  return candidates.some((c) => bestSimilarity(input, c) >= threshold);
 }

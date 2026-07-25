@@ -1,21 +1,17 @@
-import { collection, query, where, getDocs, addDoc, limit } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import type { ClassRoom } from "@/types";
 
-const classesCol = collection(db, "classes");
-
+// Class doc ID = teacherId (1 teacher : 1 class), so this is idempotent
+// under concurrent calls (e.g. React StrictMode double-invoking effects)
+// instead of racing a query-then-create against itself.
 export async function ensureClassForTeacher(teacherId: string): Promise<ClassRoom> {
-  const q = query(classesCol, where("teacherId", "==", teacherId), limit(1));
-  const snap = await getDocs(q);
-  if (!snap.empty) {
-    const d = snap.docs[0];
-    return { id: d.id, ...(d.data() as Omit<ClassRoom, "id">) };
+  const ref = doc(db, "classes", teacherId);
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    return { id: ref.id, ...(snap.data() as Omit<ClassRoom, "id">) };
   }
   const createdAt = Date.now();
-  const docRef = await addDoc(classesCol, {
-    teacherId,
-    className: "우리 반",
-    createdAt,
-  });
-  return { id: docRef.id, teacherId, className: "우리 반", createdAt };
+  await setDoc(ref, { teacherId, className: "우리 반", createdAt }, { merge: true });
+  return { id: ref.id, teacherId, className: "우리 반", createdAt };
 }
