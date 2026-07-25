@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #fffaf0;
+  --ink: #3c3c3c;
+  --duo-green: #58cc02;
+  --duo-green-dark: #4caf00;
+  --duo-blue: #1cb0f6;
+  --duo-blue-dark: #1899d6;
+  --duo-yellow: #ffc800;
+  --duo-yellow-dark: #e6b400;
+  --duo-red: #ff4b4b;
+  --duo-red-dark: #e63e3e;
+  --duo-pink: #ff86d0;
+  --duo-pink-dark: #e86bb8;
+  --duo-gray: #e5e5e5;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-duo-green: var(--duo-green);
+  --color-duo-green-dark: var(--duo-green-dark);
+  --color-duo-blue: var(--duo-blue);
+  --color-duo-blue-dark: var(--duo-blue-dark);
+  --color-duo-yellow: var(--duo-yellow);
+  --color-duo-yellow-dark: var(--duo-yellow-dark);
+  --color-duo-red: var(--duo-red);
+  --color-duo-red-dark: var(--duo-red-dark);
+  --color-duo-pink: var(--duo-pink);
+  --color-duo-pink-dark: var(--duo-pink-dark);
+  --color-duo-gray: var(--duo-gray);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Duolingo-style "pressable" 3D button: solid bottom border acts as depth,
+   shrinks + border collapses on press to fake a physical click. */
+.duo-btn {
+  border-bottom-width: 4px;
+  transition: transform 0.05s ease, border-bottom-width 0.05s ease;
+}
+.duo-btn:active {
+  transform: translateY(3px);
+  border-bottom-width: 0;
+}
+.duo-btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

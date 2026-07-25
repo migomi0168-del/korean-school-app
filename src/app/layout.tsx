@@ -1,0 +1,40 @@
+import type { Metadata } from "next";
+import { Jua, Noto_Sans_KR } from "next/font/google";
+import "./globals.css";
+import { StudentSessionProvider } from "@/hooks/useStudentSession";
+import { TeacherAuthProvider } from "@/hooks/useTeacherAuth";
+
+const jua = Jua({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const notoSansKr = Noto_Sans_KR({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "700", "900"],
+});
+
+export const metadata: Metadata = {
+  title: "학교말 — 학교생활 한국어",
+  description: "다문화 초등학생을 위한 학교생활 한국어 학습 앱",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ko" className={`${jua.variable} ${notoSansKr.variable} h-full`}>
+      <body className="min-h-full flex flex-col bg-cream text-ink font-body">
+        <TeacherAuthProvider>
+          <StudentSessionProvider>
+            <div className="mx-auto w-full max-w-md flex-1 flex flex-col">{children}</div>
+          </StudentSessionProvider>
+        </TeacherAuthProvider>
+      </body>
+    </html>
+  );
+}

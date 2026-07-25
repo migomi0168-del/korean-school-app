@@ -1,0 +1,47 @@
+[
+  {
+    "id": "classroom",
+    "name": "교실",
+    "emoji": "🏫",
+    "color": "blue",
+    "wordIds": ["w-teacher", "w-desk", "w-board", "w-pencilcase", "w-homework"],
+    "sentenceIds": ["s-restroom", "s-explain-again", "s-lend-pencil", "s-cant-see", "s-switch-seat"],
+    "quiz": [
+      { "id": "q-c1", "type": "word", "refId": "w-teacher" },
+      { "id": "q-c2", "type": "word", "refId": "w-board" },
+      { "id": "q-c3", "type": "sentence", "refId": "s-restroom" },
+      { "id": "q-c4", "type": "sentence", "refId": "s-lend-pencil" },
+      { "id": "q-c5", "type": "word", "refId": "w-homework" }
+    ]
+  },
+  {
+    "id": "cafeteria",
+    "name": "급식실",
+    "emoji": "🍱",
+    "color": "yellow",
+    "wordIds": ["w-meal", "w-sidedish", "w-tray", "w-chopsticks", "w-water"],
+    "sentenceIds": ["s-a-little", "s-more", "s-cannot-eat", "s-finished", "s-water-please"],
+    "quiz": [
+      { "id": "q-f1", "type": "word", "refId": "w-sidedish" },
+      { "id": "q-f2", "type": "word", "refId": "w-chopsticks" },
+      { "id": "q-f3", "type": "sentence", "refId": "s-more" },
+      { "id": "q-f4", "type": "sentence", "refId": "s-cannot-eat" },
+      { "id": "q-f5", "type": "sentence", "refId": "s-water-please" }
+    ]
+  },
+  {
+    "id": "nurse",
+    "name": "보건실",
+    "emoji": "🏥",
+    "color": "pink",
+    "wordIds": ["w-nurseroom", "w-stomach", "w-head", "w-hurt", "w-medicine"],
+    "sentenceIds": ["s-stomach-hurts", "s-head-hurts", "s-got-hurt", "s-go-to-nurse", "s-take-medicine"],
+    "quiz": [
+      { "id": "q-n1", "type": "word", "refId": "w-stomach" },
+      { "id": "q-n2", "type": "word", "refId": "w-medicine" },
+      { "id": "q-n3", "type": "sentence", "refId": "s-stomach-hurts" },
+      { "id": "q-n4", "type": "sentence", "refId": "s-go-to-nurse" },
+      { "id": "q-n5", "type": "sentence", "refId": "s-got-hurt" }
+    ]
+  }
+]
