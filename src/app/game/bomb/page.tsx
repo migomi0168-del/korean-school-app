@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
+import { UnlockNotice } from "@/components/common/UnlockNotice";
 import { words } from "@/lib/content";
 import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { updateStudent } from "@/lib/students";
+import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { getNewlyUnlocked } from "@/lib/accessories";
 import type { Word } from "@/types";
@@ -27,7 +28,7 @@ function shuffle<T>(arr: T[]): T[] {
 type Phase = "select" | "playing" | "done";
 
 export default function BombGamePage() {
-  const { student, loading, refresh } = useStudentSession();
+  const { student, loading } = useStudentSession();
   const router = useRouter();
 
   const [phase, setPhase] = useState<Phase>("select");
@@ -38,10 +39,12 @@ export default function BombGamePage() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState<"falling" | "cleared" | "missed">("falling");
   const [score, setScore] = useState(0);
-  const [missedIds, setMissedIds] = useState<string[]>([]);
+  const [sessionXp, setSessionXp] = useState(0);
   const [saving, setSaving] = useState(false);
   const [leveledUp, setLeveledUp] = useState(false);
   const [levelRange, setLevelRange] = useState<{ prev: number; next: number }>({ prev: 0, next: 0 });
+  const startXpRef = useRef<number | null>(null);
+  const pendingWriteRef = useRef<Promise<unknown>>(Promise.resolve());
 
   if (loading) return null;
   if (!student) {
@@ -55,10 +58,12 @@ export default function BombGamePage() {
   const nativeLanguage = student.nativeLanguage;
 
   function startGame() {
+    if (!student) return;
+    startXpRef.current = student.xp;
     setRoundWords(shuffle(words).slice(0, TOTAL_ROUNDS));
     setRound(0);
     setScore(0);
-    setMissedIds([]);
+    setSessionXp(0);
     setBombKey((k) => k + 1);
     setInput("");
     setResult("falling");
@@ -80,15 +85,10 @@ export default function BombGamePage() {
 
   async function finishGame() {
     setPhase("done");
-    if (!student) return;
     setSaving(true);
-    const prevLevel = levelFromXp(student.xp);
-    const gainedXp = score * XP_REWARD.bombGame;
-    const newXp = student.xp + gainedXp;
-    const newLevel = levelFromXp(newXp);
-    const mergedWrong = Array.from(new Set([...student.wrongWordIds, ...missedIds]));
-    await updateStudent(student.id, { xp: newXp, wrongWordIds: mergedWrong });
-    await refresh();
+    await pendingWriteRef.current;
+    const prevLevel = levelFromXp(startXpRef.current ?? 0);
+    const newLevel = levelFromXp((startXpRef.current ?? 0) + sessionXp);
     setSaving(false);
     setLeveledUp(newLevel > prevLevel);
     setLevelRange({ prev: prevLevel, next: newLevel });
@@ -96,20 +96,22 @@ export default function BombGamePage() {
 
   function handleInputChange(value: string) {
     setInput(value);
-    if (result !== "falling") return;
+    if (result !== "falling" || !student) return;
     const word = roundWords[round];
     if (isWordCorrect(value, word.ko)) {
       setResult("cleared");
       setScore((s) => s + 1);
+      setSessionXp((x) => x + XP_REWARD.bombGame);
+      pendingWriteRef.current = addXp(student.id, XP_REWARD.bombGame);
       nextRound(round);
     }
   }
 
   function handleMiss() {
-    if (result !== "falling") return;
+    if (result !== "falling" || !student) return;
     const word = roundWords[round];
     setResult("missed");
-    setMissedIds((prev) => [...prev, word.id]);
+    pendingWriteRef.current = recordWrongWord(student.id, word.id);
     nextRound(round);
   }
 
@@ -152,16 +154,7 @@ export default function BombGamePage() {
         <p className="text-lg">{score} / {TOTAL_ROUNDS} 개 막았어요</p>
         {leveledUp && <p className="font-display text-xl text-duo-yellow-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{score * XP_REWARD.bombGame} XP</p>
-        {unlocked.length > 0 && (
-          <div className="rounded-2xl border-2 border-duo-yellow bg-duo-yellow/10 p-4">
-            <p className="font-display text-sm text-duo-yellow-dark">🎁 새 아이템 획득!</p>
-            <div className="mt-1 flex justify-center gap-3 text-3xl">
-              {unlocked.map((a) => (
-                <span key={a.id}>{a.emoji}</span>
-              ))}
-            </div>
-          </div>
-        )}
+        <UnlockNotice accessories={unlocked} studentId={student.id} />
         <Button onClick={() => setPhase("select")} disabled={saving}>
           다시 하기
         </Button>

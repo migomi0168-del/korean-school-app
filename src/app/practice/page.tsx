@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
+import { UnlockNotice } from "@/components/common/UnlockNotice";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { XP_PER_LEVEL, levelFromXp, todayStr } from "@/lib/xp";
@@ -72,16 +73,7 @@ export default function PracticePage() {
         <h1 className="font-display text-2xl text-duo-yellow-dark">오늘의 실천, 최고예요!</h1>
         {celebrate.leveledUp && <p className="font-display text-xl text-duo-green-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{celebrate.xp} XP</p>
-        {unlocked.length > 0 && (
-          <div className="rounded-2xl border-2 border-duo-yellow bg-duo-yellow/10 p-4">
-            <p className="font-display text-sm text-duo-yellow-dark">🎁 새 아이템 획득!</p>
-            <div className="mt-1 flex justify-center gap-3 text-3xl">
-              {unlocked.map((a) => (
-                <span key={a.id}>{a.emoji}</span>
-              ))}
-            </div>
-          </div>
-        )}
+        <UnlockNotice accessories={unlocked} studentId={student.id} />
         <Button onClick={() => router.push("/home")}>돌아가기</Button>
       </div>
     );

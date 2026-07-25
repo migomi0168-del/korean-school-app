@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
@@ -10,12 +10,12 @@ import { TTSButton } from "@/components/learn/TTSButton";
 import { getWord } from "@/lib/content";
 import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { updateStudent } from "@/lib/students";
+import { addXp, clearWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import type { Word } from "@/types";
 
 export default function ReviewWordPage() {
-  const { student, loading, refresh } = useStudentSession();
+  const { student, loading } = useStudentSession();
   const router = useRouter();
 
   const questions = useMemo(() => {
@@ -27,9 +27,12 @@ export default function ReviewWordPage() {
   const [input, setInput] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [correct, setCorrect] = useState(false);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [clearedIds, setClearedIds] = useState<string[]>([]);
+  const [sessionXp, setSessionXp] = useState(0);
   const [saving, setSaving] = useState(false);
+  const startXpRef = useRef<number | null>(null);
+  const pendingWriteRef = useRef<Promise<unknown>>(Promise.resolve());
+
+  if (student && startXpRef.current === null) startXpRef.current = student.xp;
 
   if (loading) return null;
   if (!student) {
@@ -47,13 +50,16 @@ export default function ReviewWordPage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (submitted) return;
+    if (submitted || !student) return;
     const ok = isWordCorrect(input, q.ko);
     setCorrect(ok);
     setSubmitted(true);
     if (ok) {
-      setCorrectCount((c) => c + 1);
-      setClearedIds((prev) => [...prev, q.id]);
+      setSessionXp((x) => x + XP_REWARD.wordCorrect);
+      pendingWriteRef.current = Promise.all([
+        addXp(student.id, XP_REWARD.wordCorrect),
+        clearWrongWord(student.id, q.id),
+      ]);
     }
   }
 
@@ -64,16 +70,11 @@ export default function ReviewWordPage() {
       setSubmitted(false);
       return;
     }
-    if (!student) return;
     setSaving(true);
-    const prevLevel = levelFromXp(student.xp);
-    const gainedXp = correctCount * XP_REWARD.wordCorrect;
-    const newXp = student.xp + gainedXp;
-    const newLevel = levelFromXp(newXp);
-    const remaining = student.wrongWordIds.filter((id) => !clearedIds.includes(id));
-    await updateStudent(student.id, { xp: newXp, wrongWordIds: remaining });
-    await refresh();
-    router.push(`/result?xp=${gainedXp}&next=${encodeURIComponent("/review")}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);
+    await pendingWriteRef.current;
+    const prevLevel = levelFromXp(startXpRef.current ?? 0);
+    const newLevel = levelFromXp((startXpRef.current ?? 0) + sessionXp);
+    router.push(`/result?xp=${sessionXp}&next=${encodeURIComponent("/review")}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);
   }
 
   return (

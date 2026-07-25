@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
@@ -8,14 +8,14 @@ import { Card } from "@/components/common/Card";
 import { ProgressBar } from "@/components/common/ProgressBar";
 import { TTSButton } from "@/components/learn/TTSButton";
 import { getPhrase } from "@/lib/content";
-import { isPhraseCorrect } from "@/lib/grading";
+import { isPhraseCorrectSmart } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { updateStudent } from "@/lib/students";
+import { addXp, clearWrongPhrase } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import type { Phrase } from "@/types";
 
 export default function ReviewSentencePage() {
-  const { student, loading, refresh } = useStudentSession();
+  const { student, loading } = useStudentSession();
   const router = useRouter();
 
   const questions = useMemo(() => {
@@ -25,11 +25,15 @@ export default function ReviewSentencePage() {
 
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");
+  const [grading, setGrading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [correct, setCorrect] = useState(false);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [clearedIds, setClearedIds] = useState<string[]>([]);
+  const [sessionXp, setSessionXp] = useState(0);
   const [saving, setSaving] = useState(false);
+  const startXpRef = useRef<number | null>(null);
+  const pendingWriteRef = useRef<Promise<unknown>>(Promise.resolve());
+
+  if (student && startXpRef.current === null) startXpRef.current = student.xp;
 
   if (loading) return null;
   if (!student) {
@@ -45,15 +49,20 @@ export default function ReviewSentencePage() {
   const isLast = index === questions.length - 1;
   const nativeLanguage = student.nativeLanguage!;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (submitted) return;
-    const ok = isPhraseCorrect(input, q);
+    if (submitted || grading || !student) return;
+    setGrading(true);
+    const ok = await isPhraseCorrectSmart(input, q);
+    setGrading(false);
     setCorrect(ok);
     setSubmitted(true);
     if (ok) {
-      setCorrectCount((c) => c + 1);
-      setClearedIds((prev) => [...prev, q.id]);
+      setSessionXp((x) => x + XP_REWARD.phraseCorrect);
+      pendingWriteRef.current = Promise.all([
+        addXp(student.id, XP_REWARD.phraseCorrect),
+        clearWrongPhrase(student.id, q.id),
+      ]);
     }
   }
 
@@ -64,16 +73,11 @@ export default function ReviewSentencePage() {
       setSubmitted(false);
       return;
     }
-    if (!student) return;
     setSaving(true);
-    const prevLevel = levelFromXp(student.xp);
-    const gainedXp = correctCount * XP_REWARD.phraseCorrect;
-    const newXp = student.xp + gainedXp;
-    const newLevel = levelFromXp(newXp);
-    const remaining = student.wrongPhraseIds.filter((id) => !clearedIds.includes(id));
-    await updateStudent(student.id, { xp: newXp, wrongPhraseIds: remaining });
-    await refresh();
-    router.push(`/result?xp=${gainedXp}&next=${encodeURIComponent("/review")}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);
+    await pendingWriteRef.current;
+    const prevLevel = levelFromXp(startXpRef.current ?? 0);
+    const newLevel = levelFromXp((startXpRef.current ?? 0) + sessionXp);
+    router.push(`/result?xp=${sessionXp}&next=${encodeURIComponent("/review")}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);
   }
 
   return (
@@ -92,14 +96,14 @@ export default function ReviewSentencePage() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          disabled={submitted}
+          disabled={submitted || grading}
           autoFocus
           placeholder="한국어 문장으로 입력..."
           className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-yellow disabled:opacity-60"
         />
         {!submitted && (
-          <Button type="submit" variant="yellow" disabled={!input.trim()}>
-            확인
+          <Button type="submit" variant="yellow" disabled={!input.trim() || grading}>
+            {grading ? "채점 중..." : "확인"}
           </Button>
         )}
       </form>

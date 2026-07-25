@@ -1,23 +1,24 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
+import { UnlockNotice } from "@/components/common/UnlockNotice";
 import { ProgressBar } from "@/components/common/ProgressBar";
 import { TTSButton } from "@/components/learn/TTSButton";
 import { SectionScene } from "@/components/game/SectionScene";
 import { getSection, getPhrasesForSection } from "@/lib/content";
-import { isPhraseCorrect } from "@/lib/grading";
+import { isPhraseCorrectSmart } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { updateStudent } from "@/lib/students";
+import { updateStudent, recordWrongPhrase } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { getNewlyUnlocked } from "@/lib/accessories";
 
 export default function EscapeSectionPage({ params }: { params: Promise<{ sectionId: string }> }) {
   const { sectionId } = use(params);
-  const { student, loading, refresh } = useStudentSession();
+  const { student, loading } = useStudentSession();
   const router = useRouter();
 
   const section = getSection(sectionId);
@@ -25,11 +26,12 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
 
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");
+  const [grading, setGrading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [correct, setCorrect] = useState(false);
-  const [wrongIds, setWrongIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [escaped, setEscaped] = useState<{ xp: number; leveledUp: boolean; prevLevel: number; newLevel: number } | null>(null);
+  const pendingWriteRef = useRef<Promise<unknown>>(Promise.resolve());
 
   if (loading) return null;
   if (!student) {
@@ -49,13 +51,17 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
   const isLast = index === doors.length - 1;
   const nativeLanguage = student.nativeLanguage;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (submitted) return;
-    const ok = isPhraseCorrect(input, door);
+    if (submitted || grading || !student) return;
+    setGrading(true);
+    const ok = await isPhraseCorrectSmart(input, door);
+    setGrading(false);
     setCorrect(ok);
     setSubmitted(true);
-    if (!ok) setWrongIds((prev) => [...prev, door.id]);
+    // Recorded immediately (not batched until the room is fully cleared) so
+    // quitting partway through still keeps whatever was already missed.
+    if (!ok) pendingWriteRef.current = recordWrongPhrase(student.id, door.id);
   }
 
   async function handleNext() {
@@ -67,14 +73,13 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
     }
     if (!student) return;
     setSaving(true);
+    await pendingWriteRef.current;
     const prevLevel = levelFromXp(student.xp);
     const gainedXp = XP_REWARD.escapeSection;
     const newXp = student.xp + gainedXp;
     const newLevel = levelFromXp(newXp);
-    const mergedWrong = Array.from(new Set([...student.wrongPhraseIds, ...wrongIds]));
     const clearedSet = Array.from(new Set([...student.escapeCleared, sectionId]));
-    await updateStudent(student.id, { xp: newXp, wrongPhraseIds: mergedWrong, escapeCleared: clearedSet });
-    await refresh();
+    await updateStudent(student.id, { xp: newXp, escapeCleared: clearedSet });
     setSaving(false);
     setEscaped({ xp: gainedXp, leveledUp: newLevel > prevLevel, prevLevel, newLevel });
   }
@@ -94,16 +99,7 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
         <h1 className="font-display text-2xl text-duo-green-dark">탈출 성공!</h1>
         {escaped.leveledUp && <p className="font-display text-xl text-duo-yellow-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{escaped.xp} XP</p>
-        {unlocked.length > 0 && (
-          <div className="rounded-2xl border-2 border-duo-yellow bg-duo-yellow/10 p-4">
-            <p className="font-display text-sm text-duo-yellow-dark">🎁 새 아이템 획득!</p>
-            <div className="mt-1 flex justify-center gap-3 text-3xl">
-              {unlocked.map((a) => (
-                <span key={a.id}>{a.emoji}</span>
-              ))}
-            </div>
-          </div>
-        )}
+        <UnlockNotice accessories={unlocked} studentId={student.id} />
         <Button onClick={() => router.push("/game/escape")}>다른 장소로</Button>
       </div>
     );
@@ -129,14 +125,14 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          disabled={submitted}
+          disabled={submitted || grading}
           autoFocus
           placeholder="한국어로 입력..."
           className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-pink disabled:opacity-60"
         />
         {!submitted && (
-          <Button type="submit" variant="pink" disabled={!input.trim()}>
-            문 열기
+          <Button type="submit" variant="pink" disabled={!input.trim() || grading}>
+            {grading ? "채점 중..." : "문 열기"}
           </Button>
         )}
       </form>

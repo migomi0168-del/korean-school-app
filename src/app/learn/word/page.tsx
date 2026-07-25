@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
@@ -10,7 +10,7 @@ import { TTSButton } from "@/components/learn/TTSButton";
 import { words } from "@/lib/content";
 import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { updateStudent } from "@/lib/students";
+import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import type { Word } from "@/types";
 
@@ -33,16 +33,19 @@ function buildQuestions(): Question[] {
 }
 
 export default function WordLearnPage() {
-  const { student, loading, refresh } = useStudentSession();
+  const { student, loading } = useStudentSession();
   const router = useRouter();
   const [questions] = useState<Question[]>(buildQuestions);
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [correct, setCorrect] = useState(false);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [wrongIds, setWrongIds] = useState<string[]>([]);
+  const [sessionXp, setSessionXp] = useState(0);
   const [saving, setSaving] = useState(false);
+  const startXpRef = useRef<number | null>(null);
+  const pendingWriteRef = useRef<Promise<unknown>>(Promise.resolve());
+
+  if (student && startXpRef.current === null) startXpRef.current = student.xp;
 
   const q = questions[index];
   const isLast = index === questions.length - 1;
@@ -64,12 +67,18 @@ export default function WordLearnPage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (submitted) return;
+    if (submitted || !student) return;
     const ok = isWordCorrect(input, q.word.ko);
     setCorrect(ok);
     setSubmitted(true);
-    if (ok) setCorrectCount((c) => c + 1);
-    else setWrongIds((prev) => [...prev, q.word.id]);
+    // Write immediately (not batched at session end) so nothing is lost if
+    // the student quits partway through instead of finishing all questions.
+    if (ok) {
+      setSessionXp((x) => x + XP_REWARD.wordCorrect);
+      pendingWriteRef.current = addXp(student.id, XP_REWARD.wordCorrect);
+    } else {
+      pendingWriteRef.current = recordWrongWord(student.id, q.word.id);
+    }
   }
 
   async function handleNext() {
@@ -79,16 +88,11 @@ export default function WordLearnPage() {
       setSubmitted(false);
       return;
     }
-    if (!student) return;
     setSaving(true);
-    const prevLevel = levelFromXp(student.xp);
-    const gainedXp = correctCount * XP_REWARD.wordCorrect;
-    const newXp = student.xp + gainedXp;
-    const newLevel = levelFromXp(newXp);
-    const mergedWrong = Array.from(new Set([...student.wrongWordIds, ...wrongIds]));
-    await updateStudent(student.id, { xp: newXp, wrongWordIds: mergedWrong });
-    await refresh();
-    router.push(`/result?xp=${gainedXp}&next=${encodeURIComponent("/learn")}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);
+    await pendingWriteRef.current;
+    const prevLevel = levelFromXp(startXpRef.current ?? 0);
+    const newLevel = levelFromXp((startXpRef.current ?? 0) + sessionXp);
+    router.push(`/result?xp=${sessionXp}&next=${encodeURIComponent("/learn")}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);
   }
 
   const nativeLanguage = student.nativeLanguage;

@@ -8,6 +8,9 @@ import {
   updateDoc,
   limit,
   onSnapshot,
+  arrayUnion,
+  arrayRemove,
+  increment,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import type { NativeLanguage, Student } from "@/types";
@@ -89,6 +92,30 @@ export async function loginWithPin(pin: string): Promise<Student | null> {
 
 export async function updateStudent(studentId: string, data: Partial<Student>) {
   await updateDoc(doc(db, "students", studentId), data);
+}
+
+// Atomic, immediate per-answer writes (arrayUnion/increment) instead of
+// batching everything until a session's last question. A student quitting
+// partway through used to silently lose every wrong answer before that
+// point since the old flow only wrote once at the end.
+export async function addXp(studentId: string, amount: number) {
+  await updateDoc(doc(db, "students", studentId), { xp: increment(amount) });
+}
+
+export async function recordWrongWord(studentId: string, wordId: string) {
+  await updateDoc(doc(db, "students", studentId), { wrongWordIds: arrayUnion(wordId) });
+}
+
+export async function clearWrongWord(studentId: string, wordId: string) {
+  await updateDoc(doc(db, "students", studentId), { wrongWordIds: arrayRemove(wordId) });
+}
+
+export async function recordWrongPhrase(studentId: string, phraseId: string) {
+  await updateDoc(doc(db, "students", studentId), { wrongPhraseIds: arrayUnion(phraseId) });
+}
+
+export async function clearWrongPhrase(studentId: string, phraseId: string) {
+  await updateDoc(doc(db, "students", studentId), { wrongPhraseIds: arrayRemove(phraseId) });
 }
 
 export async function listStudentsForClass(classId: string): Promise<Student[]> {

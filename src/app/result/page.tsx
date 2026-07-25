@@ -3,11 +3,14 @@
 import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/common/Button";
+import { UnlockNotice } from "@/components/common/UnlockNotice";
 import { getNewlyUnlocked } from "@/lib/accessories";
+import { useStudentSession } from "@/hooks/useStudentSession";
 
 function ResultContent() {
   const params = useSearchParams();
   const router = useRouter();
+  const { student } = useStudentSession();
   const xp = params.get("xp") ?? "0";
   const leveledUp = params.get("leveledUp") === "1";
   const score = params.get("score");
@@ -32,17 +35,7 @@ function ResultContent() {
       <h2 className="font-display text-2xl">잘했어요!</h2>
       <p className="text-xl font-bold text-duo-green-dark">+{xp} XP</p>
       {score !== null && <p className="text-lg text-ink/60">점수: {score}점</p>}
-      {unlocked.length > 0 && (
-        <div className="rounded-2xl border-2 border-duo-yellow bg-duo-yellow/10 p-4">
-          <p className="font-display text-sm text-duo-yellow-dark">🎁 새 아이템 획득!</p>
-          <div className="mt-1 flex justify-center gap-3 text-3xl">
-            {unlocked.map((a) => (
-              <span key={a.id}>{a.emoji}</span>
-            ))}
-          </div>
-          <p className="mt-1 text-xs text-ink/50">꾸미기에서 착용해보세요</p>
-        </div>
-      )}
+      {student && <UnlockNotice accessories={unlocked} studentId={student.id} />}
       <Button onClick={() => router.push(next)}>계속하기</Button>
     </div>
   );

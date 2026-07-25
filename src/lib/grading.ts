@@ -50,3 +50,24 @@ export function isPhraseCorrect(input: string, phrase: Phrase, threshold = 0.75)
   const candidates = [phrase.ko, ...(phrase.alternates ?? [])];
   return candidates.some((c) => bestSimilarity(input, c) >= threshold);
 }
+
+// Fast local check first; only falls back to an AI judgment call when that
+// fails, so things like conjugation variants ("반갑다" vs "반가워") that no
+// hand-written alternates list or string-similarity threshold can fully
+// anticipate still get graded correctly, without adding latency to the
+// common case where the local check already matches.
+export async function isPhraseCorrectSmart(input: string, phrase: Phrase): Promise<boolean> {
+  if (isPhraseCorrect(input, phrase)) return true;
+  try {
+    const res = await fetch("/api/grade", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input, answer: phrase.ko, alternates: phrase.alternates ?? [] }),
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    return Boolean(data.correct);
+  } catch {
+    return false;
+  }
+}
