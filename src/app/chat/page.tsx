@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
@@ -9,7 +9,6 @@ import { MicButton } from "@/components/learn/MicButton";
 import { TTSButton } from "@/components/learn/TTSButton";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
-import { registerHomeGuard } from "@/lib/navGuard";
 import { t } from "@/lib/i18n";
 import { getLanguage, STT_LANG } from "@/lib/languages";
 
@@ -44,18 +43,6 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [voiceLang, setVoiceLang] = useState<"ko" | "native">("ko");
-  const [showExitModal, setShowExitModal] = useState(false);
-
-  const hasConversation = started && messages.length > 1;
-
-  useEffect(() => {
-    if (!hasConversation) {
-      registerHomeGuard(null);
-      return;
-    }
-    registerHomeGuard(() => setShowExitModal(true));
-    return () => registerHomeGuard(null);
-  }, [hasConversation]);
 
   if (loading) return null;
   if (!student) {
@@ -73,18 +60,19 @@ export default function ChatPage() {
     setStarted(true);
   }
 
-  async function handleSaveAndExit() {
-    if (student) {
-      await updateStudent(student.id, {
-        lastChatLog: {
-          partner: partnerLabel,
-          location: locationLabel,
-          messages: messages.map((m) => ({ role: m.role, text: m.text })),
-          savedAt: Date.now(),
-        },
-      });
-    }
-    router.push("/home");
+  // Saved after every turn (not just on exit) so a conversation survives the
+  // student closing the tab, hitting browser back, or tapping "다시 설정하기"
+  // instead of the home button — none of those go through a single exit point.
+  function saveChatLog(finalMessages: Message[]) {
+    if (!student) return;
+    updateStudent(student.id, {
+      lastChatLog: {
+        partner: partnerLabel,
+        location: locationLabel,
+        messages: finalMessages.map((m) => ({ role: m.role, text: m.text })),
+        savedAt: Date.now(),
+      },
+    });
   }
 
   async function handleSend(e: React.FormEvent) {
@@ -106,13 +94,15 @@ export default function ChatPage() {
         }),
       });
       const data = await res.json();
-      if (data.error) {
-        setMessages((prev) => [...prev, { role: "ai", text: "미안, 지금은 대답하기 어려워. 다시 말해줄래?" }]);
-      } else {
-        setMessages((prev) => [...prev, { role: "ai", text: data.reply, correction: data.correction, translated: data.translated }]);
-      }
+      const finalMessages: Message[] = data.error
+        ? [...nextMessages, { role: "ai", text: "미안, 지금은 대답하기 어려워. 다시 말해줄래?" }]
+        : [...nextMessages, { role: "ai", text: data.reply, correction: data.correction, translated: data.translated }];
+      setMessages(finalMessages);
+      saveChatLog(finalMessages);
     } catch {
-      setMessages((prev) => [...prev, { role: "ai", text: "연결에 문제가 생겼어. 잠시 후 다시 시도해줘." }]);
+      const finalMessages: Message[] = [...nextMessages, { role: "ai", text: "연결에 문제가 생겼어. 잠시 후 다시 시도해줘." }];
+      setMessages(finalMessages);
+      saveChatLog(finalMessages);
     } finally {
       setSending(false);
     }
@@ -257,23 +247,6 @@ export default function ChatPage() {
           전송
         </Button>
       </form>
-
-      {showExitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6">
-          <div className="flex w-full max-w-xs flex-col gap-3 rounded-3xl bg-white p-5 text-center shadow-lg">
-            <p className="font-display text-lg">지금까지의 대화를 저장할까요?</p>
-            <Button variant="green" onClick={handleSaveAndExit}>
-              대화 저장하고 나가기
-            </Button>
-            <Button variant="gray" onClick={() => router.push("/home")}>
-              저장 안 하고 나가기
-            </Button>
-            <button onClick={() => setShowExitModal(false)} className="text-sm text-ink/40 underline">
-              취소
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

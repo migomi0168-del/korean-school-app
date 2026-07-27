@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
+import { ProgressBar } from "@/components/common/ProgressBar";
 import { MicButton } from "@/components/learn/MicButton";
 import { words } from "@/lib/content";
 import { isWordCorrect } from "@/lib/grading";
@@ -16,7 +17,7 @@ import { t } from "@/lib/i18n";
 import type { Word } from "@/types";
 
 const TOTAL_ROUNDS = 10;
-const SPEED_DURATION: Record<number, number> = { 1: 13000, 3: 9000, 5: 6000 };
+const SPEED_DURATION: Record<number, number> = { 1: 18000, 3: 9000, 5: 6000 };
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -178,6 +179,7 @@ export default function BombGamePage() {
         <span>라운드 {round + 1}/{TOTAL_ROUNDS}</span>
         <span>점수 {score}</span>
       </div>
+      <ProgressBar value={(round / TOTAL_ROUNDS) * 100} colorClass="bg-duo-pink" />
 
       <div className="relative h-80 overflow-hidden rounded-3xl border-2 border-duo-gray bg-gradient-to-b from-indigo-200 to-indigo-400">
         {result === "falling" ? (

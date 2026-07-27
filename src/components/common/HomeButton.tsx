@@ -2,7 +2,6 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { requestGoHome } from "@/lib/navGuard";
 
 const HIDDEN_PREFIXES = ["/login", "/onboarding", "/home", "/teacher"];
 
@@ -16,7 +15,7 @@ export function HomeButton() {
 
   return (
     <button
-      onClick={() => requestGoHome(router)}
+      onClick={() => router.push("/home")}
       aria-label="홈으로"
       className="fixed right-3 top-3 z-40 flex h-10 w-10 items-center justify-center rounded-full border-2 border-duo-gray bg-white text-xl shadow-md active:scale-95"
     >
