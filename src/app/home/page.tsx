@@ -14,7 +14,7 @@ import { getAssignmentHref } from "@/lib/assignments";
 
 const MODES = [
   { href: "/learn", emoji: "📖", label: "학습모드", desc: "단어 · 문장 · 맞춤학습", color: "bg-duo-blue" },
-  { href: "/game", emoji: "🎮", label: "게임모드", desc: "방탈출 · 폭탄 · 빠른선택 · 조각맞추기", color: "bg-duo-pink" },
+  { href: "/game", emoji: "🎮", label: "게임모드", desc: "방탈출 · 폭탄 · 빠른선택 · 조각맞추기 · 짝맞추기", color: "bg-duo-pink" },
   { href: "/review", emoji: "🔁", label: "복습모드", desc: "틀린 것만 다시", color: "bg-duo-yellow" },
   { href: "/chat", emoji: "💬", label: "대화모드", desc: "AI 친구와 대화", color: "bg-duo-green" },
   { href: "/practice", emoji: "🌟", label: "실천모드", desc: "오늘의 실천 미션", color: "bg-duo-pink" },

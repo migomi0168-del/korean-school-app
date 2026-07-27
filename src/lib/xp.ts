@@ -16,6 +16,7 @@ export const XP_REWARD = {
   bombGame: 10,
   quickPick: 6,
   sentenceOrder: 8,
+  matchGame: 7,
   practiceMode: 15,
 } as const;
 

@@ -50,6 +50,16 @@ export default function GameHubPage() {
           </div>
         </Card>
       </Link>
+
+      <Link href="/game/match">
+        <Card className="flex items-center gap-4">
+          <div className="text-4xl">🎴</div>
+          <div>
+            <p className="font-display text-lg">짝맞추기 카드게임</p>
+            <p className="text-xs text-ink/50">단어와 뜻이 적힌 카드 짝 찾기</p>
+          </div>
+        </Card>
+      </Link>
     </div>
   );
 }
