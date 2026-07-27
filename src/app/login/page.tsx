@@ -12,12 +12,17 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { setStudentId } = useStudentSession();
+  const { setStudentId, startDemo } = useStudentSession();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (pin.length !== 6) {
       setError("6자리 번호를 입력해주세요");
+      return;
+    }
+    if (pin === "111111") {
+      startDemo();
+      router.push("/onboarding");
       return;
     }
     setLoading(true);
@@ -56,6 +61,12 @@ export default function LoginPage() {
           </Button>
         </form>
       </Card>
+
+      <p className="text-center text-xs text-ink/40">
+        그냥 테스트해보고 싶으신가요? 핀번호 <span className="font-bold text-ink/60">111111</span>을 입력해보세요!
+        <br />
+        (테스트 계정은 내 기기에서만 보이고, 저장되지 않아요)
+      </p>
 
       <a href="/teacher/login" className="text-sm text-ink/40 underline">
         선생님이신가요?

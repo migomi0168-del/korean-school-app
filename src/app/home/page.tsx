@@ -18,7 +18,7 @@ const MODES = [
 ];
 
 export default function HomePage() {
-  const { student, loading, refresh, logout } = useStudentSession();
+  const { student, loading, refresh, logout, isDemo } = useStudentSession();
   const router = useRouter();
   const checkedIn = useRef(false);
   const [justCheckedIn, setJustCheckedIn] = useState(false);
@@ -60,6 +60,12 @@ export default function HomePage() {
           나가기
         </button>
       </div>
+
+      {isDemo && (
+        <p className="mx-4 mb-2 rounded-xl bg-ink/5 p-2 text-center text-xs font-bold text-ink/50">
+          🧪 테스트 모드예요. 이 기기에서만 보이고, 나가면 저장되지 않아요.
+        </p>
+      )}
 
       <div className="mx-4 mb-2 flex items-center justify-between gap-2 rounded-2xl bg-gradient-to-r from-duo-green/20 to-duo-blue/20 p-3">
         <p className="text-sm font-bold text-ink/70">{getEncouragementMessage(`${student.id}-${todayStr()}`)}</p>
