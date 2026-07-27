@@ -30,6 +30,16 @@ export default function GameHubPage() {
           </div>
         </Card>
       </Link>
+
+      <Link href="/game/quickpick">
+        <Card className="flex items-center gap-4">
+          <div className="text-4xl">⚡</div>
+          <div>
+            <p className="font-display text-lg">빠르게 골라요</p>
+            <p className="text-xs text-ink/50">그림을 보고 맞는 단어 탭하기</p>
+          </div>
+        </Card>
+      </Link>
     </div>
   );
 }
