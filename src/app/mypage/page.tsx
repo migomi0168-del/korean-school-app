@@ -67,9 +67,15 @@ export default function MyPage() {
         <Avatar emoji={student.avatar} accessoryId={student.equippedAccessory} size="lg" />
         <h1 className="font-display text-2xl">{student.nickname}</h1>
         <p className="text-sm text-ink/50">Lv.{level} · {student.xp} XP</p>
-        <Link href="/closet" className="text-xs font-bold text-duo-blue-dark underline">
-          ✨ 아이템 꾸미기
-        </Link>
+        <p className="font-display text-lg text-duo-yellow-dark">💰 {student.points} 포인트</p>
+        <div className="flex gap-4">
+          <Link href="/closet" className="text-xs font-bold text-duo-blue-dark underline">
+            ✨ 내 방 꾸미기
+          </Link>
+          <Link href="/shop" className="text-xs font-bold text-duo-pink-dark underline">
+            🛍️ 상점 가기
+          </Link>
+        </div>
       </div>
 
       <Card className="flex justify-around text-center">

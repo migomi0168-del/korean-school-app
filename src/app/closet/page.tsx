@@ -7,6 +7,8 @@ import { Avatar } from "@/components/common/Avatar";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { accessories } from "@/lib/accessories";
+import { getOwnedFurniture } from "@/lib/furniture";
+import { getRoomColor } from "@/lib/roomColors";
 import { levelFromXp } from "@/lib/xp";
 
 export default function ClosetPage() {
@@ -20,6 +22,8 @@ export default function ClosetPage() {
   }
 
   const level = levelFromXp(student.xp);
+  const room = getRoomColor(student.roomColor);
+  const ownedFurniture = getOwnedFurniture(student.ownedFurniture);
 
   function handleEquip(id: string | null) {
     if (!student) return;
@@ -31,11 +35,22 @@ export default function ClosetPage() {
       <Link href="/mypage" className="text-sm text-ink/40">
         ← 돌아가기
       </Link>
-      <h1 className="text-center font-display text-2xl">✨ 꾸미기</h1>
+      <h1 className="text-center font-display text-2xl">🏠 내 방</h1>
 
-      <div className="flex flex-col items-center gap-2 py-2">
+      <div className={`relative flex min-h-56 flex-col items-center justify-between overflow-hidden rounded-3xl border-2 border-duo-gray bg-gradient-to-br ${room.gradient} p-4`}>
+        <p className="self-end text-xs font-bold text-ink/50">Lv.{level} {student.nickname}</p>
         <Avatar emoji={student.avatar} accessoryId={student.equippedAccessory} size="lg" />
-        <p className="text-sm text-ink/50">Lv.{level} {student.nickname}</p>
+        <div className="flex w-full flex-wrap items-end justify-center gap-3 pb-1 text-3xl">
+          {ownedFurniture.length === 0 ? (
+            <p className="text-xs text-ink/40">상점에서 가구를 사면 방에 놓여요!</p>
+          ) : (
+            ownedFurniture.map((f) => (
+              <span key={f.id} title={f.name}>
+                {f.emoji}
+              </span>
+            ))
+          )}
+        </div>
       </div>
 
       <Card>
@@ -51,28 +66,35 @@ export default function ClosetPage() {
             <span className="text-[10px] font-bold text-ink/50">없음</span>
           </button>
           {accessories.map((a) => {
-            const unlocked = level >= a.requiredLevel;
+            const owned = student.ownedAccessories.includes(a.id);
             const equipped = student.equippedAccessory === a.id;
             return (
               <button
                 key={a.id}
-                onClick={() => unlocked && handleEquip(a.id)}
-                disabled={!unlocked}
+                onClick={() => owned && handleEquip(a.id)}
+                disabled={!owned}
                 className={`flex h-16 flex-col items-center justify-center gap-1 rounded-2xl border-2 text-xl ${
                   equipped
                     ? "border-duo-green bg-duo-green/10"
-                    : unlocked
+                    : owned
                       ? "border-duo-gray bg-white"
                       : "border-duo-gray bg-duo-gray/20 opacity-50"
                 }`}
               >
-                {unlocked ? a.emoji : "🔒"}
-                <span className="text-[10px] font-bold text-ink/50">{unlocked ? a.name : `Lv.${a.requiredLevel}`}</span>
+                {owned ? a.emoji : "🔒"}
+                <span className="text-[10px] font-bold text-ink/50">{owned ? a.name : `${a.price}P`}</span>
               </button>
             );
           })}
         </div>
       </Card>
+
+      <Link
+        href="/shop"
+        className="rounded-2xl border-2 border-duo-yellow bg-duo-yellow/10 p-3 text-center font-bold text-duo-yellow-dark"
+      >
+        🛍️ 상점에서 아이템 사러가기 (내 포인트: {student.points})
+      </Link>
     </div>
   );
 }

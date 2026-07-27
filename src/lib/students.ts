@@ -47,6 +47,7 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     nativeLanguage: (data.nativeLanguage as NativeLanguage) ?? null,
     grade: data.grade as number,
     xp: (data.xp as number) ?? 0,
+    points: (data.points as number) ?? 0,
     streakCount: (data.streakCount as number) ?? 0,
     lastAttendanceDate: (data.lastAttendanceDate as string) ?? null,
     wrongWordIds: (data.wrongWordIds as string[]) ?? [],
@@ -54,7 +55,14 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     escapeCleared: (data.escapeCleared as string[]) ?? [],
     practiceDate: (data.practiceDate as string) ?? null,
     practiceChecked: (data.practiceChecked as string[]) ?? [],
+    practiceOptionIds: (data.practiceOptionIds as string[]) ?? [],
+    practiceSuccessCount: (data.practiceSuccessCount as number) ?? 0,
     equippedAccessory: (data.equippedAccessory as string) ?? null,
+    ownedAccessories: (data.ownedAccessories as string[]) ?? [],
+    ownedFurniture: (data.ownedFurniture as string[]) ?? [],
+    ownedRoomColors: (data.ownedRoomColors as string[]) ?? [],
+    roomColor: (data.roomColor as string) ?? null,
+    teacherMessage: (data.teacherMessage as Student["teacherMessage"]) ?? null,
     createdAt: (data.createdAt as number) ?? Date.now(),
   };
 }
@@ -69,6 +77,7 @@ export async function createStudent(params: { classId: string; nickname: string;
     nativeLanguage: null,
     avatar: null,
     xp: 0,
+    points: 0,
     streakCount: 0,
     lastAttendanceDate: null,
     wrongWordIds: [],
@@ -76,7 +85,14 @@ export async function createStudent(params: { classId: string; nickname: string;
     escapeCleared: [],
     practiceDate: null,
     practiceChecked: [],
+    practiceOptionIds: [],
+    practiceSuccessCount: 0,
     equippedAccessory: null,
+    ownedAccessories: [],
+    ownedFurniture: [],
+    ownedRoomColors: [],
+    roomColor: null,
+    teacherMessage: null,
     createdAt: Date.now(),
   });
   return toStudent(docRef.id, { classId: params.classId, pinCode, nickname: params.nickname, grade: params.grade });
@@ -98,8 +114,71 @@ export async function updateStudent(studentId: string, data: Partial<Student>) {
 // batching everything until a session's last question. A student quitting
 // partway through used to silently lose every wrong answer before that
 // point since the old flow only wrote once at the end.
+// Points are granted 1:1 alongside XP for every learning activity; XP still
+// drives levels, points are the separate spendable balance for the shop.
 export async function addXp(studentId: string, amount: number) {
-  await updateDoc(doc(db, "students", studentId), { xp: increment(amount) });
+  await updateDoc(doc(db, "students", studentId), { xp: increment(amount), points: increment(amount) });
+}
+
+export async function spendPoints(studentId: string, amount: number) {
+  await updateDoc(doc(db, "students", studentId), { points: increment(-amount) });
+}
+
+export async function buyAccessory(studentId: string, accessoryId: string, price: number) {
+  await updateDoc(doc(db, "students", studentId), {
+    points: increment(-price),
+    ownedAccessories: arrayUnion(accessoryId),
+  });
+}
+
+export async function buyFurniture(studentId: string, furnitureId: string, price: number) {
+  await updateDoc(doc(db, "students", studentId), {
+    points: increment(-price),
+    ownedFurniture: arrayUnion(furnitureId),
+  });
+}
+
+export async function buyRoomColor(studentId: string, colorId: string, price: number) {
+  await updateDoc(doc(db, "students", studentId), {
+    points: increment(-price),
+    ownedRoomColors: arrayUnion(colorId),
+    roomColor: colorId,
+  });
+}
+
+export async function selectRoomColor(studentId: string, colorId: string) {
+  await updateDoc(doc(db, "students", studentId), { roomColor: colorId });
+}
+
+export async function setDailyMissions(studentId: string, dateStr: string, optionIds: string[]) {
+  await updateDoc(doc(db, "students", studentId), {
+    practiceDate: dateStr,
+    practiceOptionIds: optionIds,
+    practiceChecked: [],
+  });
+}
+
+export async function completeMission(studentId: string, missionId: string, reward: number) {
+  await updateDoc(doc(db, "students", studentId), {
+    practiceChecked: arrayUnion(missionId),
+    practiceSuccessCount: increment(1),
+    xp: increment(reward),
+    points: increment(reward),
+  });
+}
+
+export async function sendTeacherMessage(studentId: string, text: string, bonusPoints: number) {
+  const updates: Record<string, unknown> = {
+    teacherMessage: { text, points: bonusPoints, sentAt: Date.now(), read: false },
+  };
+  if (bonusPoints > 0) {
+    updates.points = increment(bonusPoints);
+  }
+  await updateDoc(doc(db, "students", studentId), updates);
+}
+
+export async function acknowledgeTeacherMessage(studentId: string) {
+  await updateDoc(doc(db, "students", studentId), { "teacherMessage.read": true });
 }
 
 export async function recordWrongWord(studentId: string, wordId: string) {

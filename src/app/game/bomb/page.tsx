@@ -4,14 +4,12 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
-import { UnlockNotice } from "@/components/common/UnlockNotice";
 import { MicButton } from "@/components/learn/MicButton";
 import { words } from "@/lib/content";
 import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
-import { getNewlyUnlocked } from "@/lib/accessories";
 import { t } from "@/lib/i18n";
 import type { Word } from "@/types";
 
@@ -148,7 +146,6 @@ export default function BombGamePage() {
   }
 
   if (phase === "done") {
-    const unlocked = leveledUp ? getNewlyUnlocked(levelRange.prev, levelRange.next) : [];
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
         <div className="text-8xl">🎯</div>
@@ -156,7 +153,7 @@ export default function BombGamePage() {
         <p className="text-lg">{score} / {TOTAL_ROUNDS} 개 막았어요</p>
         {leveledUp && <p className="font-display text-xl text-duo-yellow-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{score * XP_REWARD.bombGame} XP</p>
-        <UnlockNotice accessories={unlocked} studentId={student.id} />
+        <p className="text-lg font-bold text-duo-yellow-dark">+{score * XP_REWARD.bombGame} 포인트 💰</p>
         <Button onClick={() => setPhase("select")} disabled={saving}>
           다시 하기
         </Button>

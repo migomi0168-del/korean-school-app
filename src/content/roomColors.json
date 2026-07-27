@@ -1,0 +1,8 @@
+[
+  { "id": "sky", "name": "하늘색", "gradient": "from-sky-100 to-blue-200", "price": 0 },
+  { "id": "peach", "name": "복숭아색", "gradient": "from-orange-100 to-pink-200", "price": 20 },
+  { "id": "mint", "name": "민트색", "gradient": "from-emerald-100 to-teal-200", "price": 20 },
+  { "id": "lavender", "name": "라벤더색", "gradient": "from-purple-100 to-indigo-200", "price": 30 },
+  { "id": "lemon", "name": "레몬색", "gradient": "from-yellow-100 to-lime-200", "price": 30 },
+  { "id": "sunset", "name": "노을색", "gradient": "from-rose-200 to-orange-300", "price": 50 }
+]

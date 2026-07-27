@@ -1,0 +1,10 @@
+[
+  { "id": "bed", "emoji": "🛏️", "name": "침대", "price": 60 },
+  { "id": "desk", "emoji": "🪑", "name": "책상", "price": 50 },
+  { "id": "bookshelf", "emoji": "📚", "name": "책장", "price": 70 },
+  { "id": "plant", "emoji": "🪴", "name": "화분", "price": 30 },
+  { "id": "lamp", "emoji": "💡", "name": "스탠드", "price": 40 },
+  { "id": "rug", "emoji": "🟪", "name": "카펫", "price": 35 },
+  { "id": "clock", "emoji": "🕰️", "name": "벽시계", "price": 45 },
+  { "id": "trophy", "emoji": "🏆", "name": "트로피", "price": 100 }
+]

@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MODEL = "gemini-flash-latest";
 
-const SYSTEM_INSTRUCTION = `너는 초등학생의 한국어 회화 연습을 도와주는 다정한 AI 친구야.
-학교생활(교실, 쉬는시간, 급식실, 보건실 등)과 관련된 주제로 자연스럽게 대화를 이어가.
+const BASE_SYSTEM_INSTRUCTION = `너는 초등학생의 한국어 회화 연습을 도와주는 AI야.
 답변은 항상 한국어로, 초등학생이 이해하기 쉬운 짧고 쉬운 문장 1~2개로 해.
 사용자의 마지막 메시지에 어색한 표현, 문법 오류, 혹은 더 자연스럽게 말할 수 있는 부분이 있으면
 correction 필드에 자연스러운 한국어 표현으로 고쳐서 알려주고, 문제가 없으면 correction은 null로 해.
@@ -14,6 +13,15 @@ interface ChatMessage {
   text: string;
 }
 
+function buildSystemInstruction(partner?: string, location?: string) {
+  if (!partner || !location) return BASE_SYSTEM_INSTRUCTION;
+  const formal = partner.includes("선생님");
+  return `${BASE_SYSTEM_INSTRUCTION}
+지금부터 너는 "${partner}" 역할이야. 대화 장소는 "${location}"이고, 그 역할과 장소에 어울리는 상황으로 자연스럽게 대화를 이어가.
+${formal ? "선생님답게 다정한 존댓말을 사용해." : "또래 친구처럼 편안한 반말을 사용해."}
+역할과 장소 설정에서 벗어나지 말고 계속 그 캐릭터를 유지해.`;
+}
+
 export async function POST(req: NextRequest) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -22,6 +30,8 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
   const messages: ChatMessage[] = body.messages ?? [];
+  const partner: string | undefined = body.partner;
+  const location: string | undefined = body.location;
 
   const contents = messages.map((m) => ({
     role: m.role === "ai" ? "model" : "user",
@@ -36,7 +46,7 @@ export async function POST(req: NextRequest) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents,
-          systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+          systemInstruction: { parts: [{ text: buildSystemInstruction(partner, location) }] },
           generationConfig: {
             responseMimeType: "application/json",
             responseSchema: {

@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { XPHeader } from "@/components/home/XPHeader";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { updateStudent } from "@/lib/students";
+import { updateStudent, acknowledgeTeacherMessage } from "@/lib/students";
 import { XP_REWARD, todayStr, yesterdayStr } from "@/lib/xp";
+import { getEncouragementMessage } from "@/lib/encouragement";
 
 const MODES = [
   { href: "/learn", emoji: "📖", label: "학습모드", desc: "단어 · 문장 배우기", color: "bg-duo-blue" },
@@ -32,6 +33,7 @@ export default function HomePage() {
       lastAttendanceDate: today,
       streakCount: newStreak,
       xp: student.xp + XP_REWARD.attendance,
+      points: student.points + XP_REWARD.attendance,
     }).then(() => {
       setJustCheckedIn(true);
       refresh();
@@ -59,10 +61,33 @@ export default function HomePage() {
         </button>
       </div>
 
+      <div className="mx-4 mb-2 flex items-center justify-between gap-2 rounded-2xl bg-gradient-to-r from-duo-green/20 to-duo-blue/20 p-3">
+        <p className="text-sm font-bold text-ink/70">{getEncouragementMessage(`${student.id}-${todayStr()}`)}</p>
+        <span className="shrink-0 rounded-full bg-duo-yellow px-3 py-1 font-display text-sm text-ink">
+          🔥 연속 학습 {student.streakCount}일째!
+        </span>
+      </div>
+
       {justCheckedIn && (
         <p className="mx-4 mb-2 rounded-xl bg-duo-yellow/20 p-2 text-center text-sm font-bold text-duo-yellow-dark">
           출석 완료! +{XP_REWARD.attendance} XP 🎉
         </p>
+      )}
+
+      {student.teacherMessage && !student.teacherMessage.read && (
+        <div className="mx-4 mb-2 flex flex-col gap-2 rounded-2xl border-2 border-duo-pink bg-duo-pink/10 p-3">
+          <p className="font-display text-sm text-duo-pink-dark">💌 선생님의 메세지 도착!</p>
+          <p className="text-sm text-ink">{student.teacherMessage.text}</p>
+          {student.teacherMessage.points > 0 && (
+            <p className="font-display text-sm text-duo-yellow-dark">🎁 보너스 포인트 +{student.teacherMessage.points}P 받았어요!</p>
+          )}
+          <button
+            onClick={() => acknowledgeTeacherMessage(student.id)}
+            className="self-end rounded-xl bg-duo-pink px-3 py-1 text-xs font-bold text-white"
+          >
+            확인했어요
+          </button>
+        </div>
       )}
 
       <div className="grid flex-1 grid-cols-2 gap-4 p-4">

@@ -27,29 +27,14 @@ const DICT = {
     vi: "Nhìn nghĩa đang rơi xuống và gõ từ tiếng Hàn vào tên lửa nhé!",
   },
   practiceIntro: {
-    zh: "勾选2个以上就会有掌声，还能升级哦！",
-    en: "Check off 2 or more and you'll get applause and level up!",
-    vi: "Đánh dấu từ 2 mục trở lên sẽ có tiếng vỗ tay và lên cấp đó!",
+    zh: "在学校里实际说说看这些话吧！完成任务就能获得积分和经验值。",
+    en: "Try actually saying these at school! Completing a mission earns you points and XP.",
+    vi: "Hãy thử nói những câu này ở trường nhé! Hoàn thành nhiệm vụ sẽ được điểm và kinh nghiệm.",
   },
-  practiceDoneToday: {
-    zh: "今天的实践已经完成啦，明天见！",
-    en: "You already did today's practice. See you tomorrow!",
-    vi: "Hôm nay con đã hoàn thành phần thực hành rồi. Hẹn gặp lại vào ngày mai!",
-  },
-  missionGreet: {
-    zh: "跟朋友或老师打招呼",
-    en: "Say hello to a friend or teacher",
-    vi: "Chào một người bạn hoặc thầy cô",
-  },
-  missionThanks: {
-    zh: "向朋友或老师表达感谢",
-    en: "Say thank you to a friend or teacher",
-    vi: "Nói lời cảm ơn với bạn hoặc thầy cô",
-  },
-  missionInvite: {
-    zh: "邀请朋友一起玩",
-    en: "Ask a friend to play together",
-    vi: "Rủ bạn cùng chơi",
+  practiceExampleLabel: {
+    zh: "例句",
+    en: "Example phrases",
+    vi: "Câu ví dụ",
   },
   correctionLabel: {
     zh: "更自然的说法是：",

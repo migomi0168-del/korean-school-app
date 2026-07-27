@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
+import { Card } from "@/components/common/Card";
 import { MicButton } from "@/components/learn/MicButton";
+import { TTSButton } from "@/components/learn/TTSButton";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { t } from "@/lib/i18n";
 
@@ -14,12 +16,27 @@ interface Message {
   correction?: string | null;
 }
 
-const INITIAL_MESSAGE: Message = { role: "ai", text: "안녕! 오늘 학교에서 뭐 했어? 나랑 이야기해볼래?" };
+const PARTNERS = ["친구", "선생님", "기타"] as const;
+const LOCATIONS = ["교실", "복도 또는 운동장", "보건실", "급식실", "도서관", "기타"] as const;
+
+function buildOpener(partner: string, location: string) {
+  if (partner.includes("선생님")) {
+    return `안녕하세요! 저는 지금 ${location}에 있어요. 오늘 저랑 이야기 나눠볼까요?`;
+  }
+  return `안녕! 나 지금 ${location}에 있어! 오늘 나랑 무슨 얘기할까?`;
+}
 
 export default function ChatPage() {
   const { student, loading } = useStudentSession();
   const router = useRouter();
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
+
+  const [partner, setPartner] = useState<(typeof PARTNERS)[number] | null>(null);
+  const [customPartner, setCustomPartner] = useState("");
+  const [location, setLocation] = useState<(typeof LOCATIONS)[number] | null>(null);
+  const [customLocation, setCustomLocation] = useState("");
+  const [started, setStarted] = useState(false);
+
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
 
@@ -27,6 +44,16 @@ export default function ChatPage() {
   if (!student) {
     router.push("/login");
     return null;
+  }
+
+  const partnerLabel = partner === "기타" ? customPartner.trim() : partner ?? "";
+  const locationLabel = location === "기타" ? customLocation.trim() : location ?? "";
+  const canStart = !!partnerLabel && !!locationLabel;
+
+  function handleStart() {
+    if (!canStart) return;
+    setMessages([{ role: "ai", text: buildOpener(partnerLabel, locationLabel) }]);
+    setStarted(true);
   }
 
   async function handleSend(e: React.FormEvent) {
@@ -41,7 +68,11 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages.map((m) => ({ role: m.role, text: m.text })) }),
+        body: JSON.stringify({
+          messages: nextMessages.map((m) => ({ role: m.role, text: m.text })),
+          partner: partnerLabel,
+          location: locationLabel,
+        }),
       });
       const data = await res.json();
       if (data.error) {
@@ -56,26 +87,94 @@ export default function ChatPage() {
     }
   }
 
-  return (
-    <div className="flex flex-1 flex-col gap-3 p-4">
-      <div className="flex items-center justify-between">
+  if (!started) {
+    return (
+      <div className="flex flex-1 flex-col gap-4 p-4">
         <Link href="/home" className="text-sm text-ink/40">
           ← 돌아가기
         </Link>
-        <p className="font-display text-lg">💬 대화모드</p>
+        <h1 className="text-center font-display text-2xl">💬 대화모드</h1>
+
+        <Card>
+          <p className="mb-3 font-display text-lg">누구와 대화할까요?</p>
+          <div className="flex flex-col gap-2">
+            {PARTNERS.map((p) => (
+              <button
+                key={p}
+                onClick={() => setPartner(p)}
+                className={`rounded-2xl border-2 px-4 py-3 text-left font-bold ${
+                  partner === p ? "border-duo-green bg-duo-green/10" : "border-duo-gray bg-white"
+                }`}
+              >
+                {p === "친구" ? "🧒 친구" : p === "선생님" ? "🧑‍🏫 선생님" : "✏️ 기타 (직접 입력)"}
+              </button>
+            ))}
+            {partner === "기타" && (
+              <input
+                value={customPartner}
+                onChange={(e) => setCustomPartner(e.target.value)}
+                placeholder="예: 급식실 조리사님"
+                className="rounded-2xl border-2 border-duo-gray px-4 py-3 outline-none focus:border-duo-green"
+              />
+            )}
+          </div>
+        </Card>
+
+        <Card>
+          <p className="mb-3 font-display text-lg">어디에서 대화할까요?</p>
+          <div className="grid grid-cols-2 gap-2">
+            {LOCATIONS.map((l) => (
+              <button
+                key={l}
+                onClick={() => setLocation(l)}
+                className={`rounded-2xl border-2 px-3 py-3 text-sm font-bold ${
+                  location === l ? "border-duo-green bg-duo-green/10" : "border-duo-gray bg-white"
+                }`}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+          {location === "기타" && (
+            <input
+              value={customLocation}
+              onChange={(e) => setCustomLocation(e.target.value)}
+              placeholder="예: 음악실"
+              className="mt-2 w-full rounded-2xl border-2 border-duo-gray px-4 py-3 outline-none focus:border-duo-green"
+            />
+          )}
+        </Card>
+
+        <Button onClick={handleStart} disabled={!canStart} variant="pink">
+          대화 시작하기
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-1 flex-col gap-3 p-4">
+      <div className="flex items-center justify-between">
+        <button onClick={() => setStarted(false)} className="text-sm text-ink/40">
+          ← 다시 설정하기
+        </button>
+        <p className="font-display text-sm text-ink/60">{partnerLabel} · {locationLabel}</p>
         <span className="w-10" />
       </div>
 
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto rounded-3xl border-2 border-duo-gray bg-white p-4">
         {messages.map((m, i) => (
           <div key={i} className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                m.role === "user" ? "bg-duo-blue text-white" : "bg-duo-gray/60 text-ink"
-              }`}
-            >
-              {m.role === "ai" && <span className="mr-1">🤖</span>}
-              {m.text}
+            <div className={`flex max-w-[80%] items-end gap-2 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+              <div
+                className={`rounded-2xl px-4 py-2 ${
+                  m.role === "user" ? "bg-duo-blue text-white" : "bg-duo-gray/60 text-ink"
+                }`}
+              >
+                {m.role === "ai" && <span className="mr-1">🤖</span>}
+                {m.text}
+              </div>
+              {m.role === "ai" && <TTSButton text={m.text} size="sm" />}
             </div>
             {m.correction && (
               <div className="mt-1 max-w-[80%] rounded-xl bg-duo-yellow/20 px-3 py-1 text-xs text-duo-yellow-dark">
@@ -84,7 +183,7 @@ export default function ChatPage() {
             )}
           </div>
         ))}
-        {sending && <p className="text-sm text-ink/40">AI 친구가 답장 쓰는 중...</p>}
+        {sending && <p className="text-sm text-ink/40">AI가 답장 쓰는 중...</p>}
       </div>
 
       <form onSubmit={handleSend} className="flex gap-2">

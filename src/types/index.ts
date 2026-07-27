@@ -1,5 +1,12 @@
 export type NativeLanguage = "zh" | "en" | "vi";
 
+export interface TeacherMessage {
+  text: string;
+  points: number;
+  sentAt: number;
+  read: boolean;
+}
+
 export interface Student {
   id: string;
   classId: string;
@@ -9,6 +16,7 @@ export interface Student {
   nativeLanguage: NativeLanguage | null;
   grade: number;
   xp: number;
+  points: number;
   streakCount: number;
   lastAttendanceDate: string | null;
   wrongWordIds: string[];
@@ -16,7 +24,14 @@ export interface Student {
   escapeCleared: string[];
   practiceDate: string | null;
   practiceChecked: string[];
+  practiceOptionIds: string[];
+  practiceSuccessCount: number;
   equippedAccessory: string | null;
+  ownedAccessories: string[];
+  ownedFurniture: string[];
+  ownedRoomColors: string[];
+  roomColor: string | null;
+  teacherMessage: TeacherMessage | null;
   createdAt: number;
 }
 
@@ -61,6 +76,27 @@ export interface Accessory {
   id: string;
   emoji: string;
   name: string;
-  requiredLevel: number;
+  price: number;
   position: AccessoryPosition;
+}
+
+export interface Furniture {
+  id: string;
+  emoji: string;
+  name: string;
+  price: number;
+}
+
+export interface RoomColor {
+  id: string;
+  name: string;
+  gradient: string;
+  price: number;
+}
+
+export interface Mission {
+  id: string;
+  category: string;
+  translations: Record<NativeLanguage, string>;
+  exampleIds: string[];
 }

@@ -1,9 +1,9 @@
 [
-  { "id": "hat", "emoji": "🎩", "name": "모자", "requiredLevel": 2, "position": "top" },
-  { "id": "sunglasses", "emoji": "🕶️", "name": "선글라스", "requiredLevel": 3, "position": "center" },
-  { "id": "bow", "emoji": "🎀", "name": "리본", "requiredLevel": 4, "position": "bottom" },
-  { "id": "crown", "emoji": "👑", "name": "왕관", "requiredLevel": 5, "position": "top" },
-  { "id": "scarf", "emoji": "🧣", "name": "목도리", "requiredLevel": 6, "position": "bottom" },
-  { "id": "gem", "emoji": "💎", "name": "보석", "requiredLevel": 7, "position": "corner" },
-  { "id": "star", "emoji": "⭐", "name": "별 배지", "requiredLevel": 8, "position": "corner" }
+  { "id": "hat", "emoji": "🎩", "name": "모자", "price": 50, "position": "top" },
+  { "id": "sunglasses", "emoji": "🕶️", "name": "선글라스", "price": 60, "position": "center" },
+  { "id": "bow", "emoji": "🎀", "name": "리본", "price": 50, "position": "bottom" },
+  { "id": "scarf", "emoji": "🧣", "name": "목도리", "price": 70, "position": "bottom" },
+  { "id": "gem", "emoji": "💎", "name": "보석", "price": 90, "position": "corner" },
+  { "id": "star", "emoji": "⭐", "name": "별 배지", "price": 80, "position": "corner" },
+  { "id": "crown", "emoji": "👑", "name": "왕관", "price": 150, "position": "top" }
 ]

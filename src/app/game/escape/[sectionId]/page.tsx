@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
-import { UnlockNotice } from "@/components/common/UnlockNotice";
 import { MicButton } from "@/components/learn/MicButton";
 import { ProgressBar } from "@/components/common/ProgressBar";
 import { TTSButton } from "@/components/learn/TTSButton";
@@ -15,7 +14,6 @@ import { isPhraseCorrectSmart } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent, recordWrongPhrase } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
-import { getNewlyUnlocked } from "@/lib/accessories";
 import { t } from "@/lib/i18n";
 
 export default function EscapeSectionPage({ params }: { params: Promise<{ sectionId: string }> }) {
@@ -81,13 +79,12 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
     const newXp = student.xp + gainedXp;
     const newLevel = levelFromXp(newXp);
     const clearedSet = Array.from(new Set([...student.escapeCleared, sectionId]));
-    await updateStudent(student.id, { xp: newXp, escapeCleared: clearedSet });
+    await updateStudent(student.id, { xp: newXp, points: student.points + gainedXp, escapeCleared: clearedSet });
     setSaving(false);
     setEscaped({ xp: gainedXp, leveledUp: newLevel > prevLevel, prevLevel, newLevel });
   }
 
   if (escaped) {
-    const unlocked = escaped.leveledUp ? getNewlyUnlocked(escaped.prevLevel, escaped.newLevel) : [];
     return (
       <div className="screen-flash flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
         <div className="relative">
@@ -101,7 +98,7 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
         <h1 className="font-display text-2xl text-duo-green-dark">탈출 성공!</h1>
         {escaped.leveledUp && <p className="font-display text-xl text-duo-yellow-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{escaped.xp} XP</p>
-        <UnlockNotice accessories={unlocked} studentId={student.id} />
+        <p className="text-lg font-bold text-duo-yellow-dark">+{escaped.xp} 포인트 💰</p>
         <Button onClick={() => router.push("/game/escape")}>다른 장소로</Button>
       </div>
     );

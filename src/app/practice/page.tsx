@@ -1,29 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
-import { UnlockNotice } from "@/components/common/UnlockNotice";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { updateStudent } from "@/lib/students";
-import { XP_PER_LEVEL, levelFromXp, todayStr } from "@/lib/xp";
-import { getNewlyUnlocked } from "@/lib/accessories";
+import { setDailyMissions, completeMission } from "@/lib/students";
+import { levelFromXp, todayStr } from "@/lib/xp";
+import { getMission, getMissionExamples, pickDailyMissionIds } from "@/lib/missions";
 import { t } from "@/lib/i18n";
 
-const MISSIONS = [
-  { id: "greet", key: "missionGreet" as const },
-  { id: "thanks", key: "missionThanks" as const },
-  { id: "invite", key: "missionInvite" as const },
-];
+const PRACTICE_REWARD = 20; // 5 completions ≈ 100 xp ≈ 1 level
 
 export default function PracticePage() {
   const { student, loading, refresh } = useStudentSession();
   const router = useRouter();
-  const [checked, setChecked] = useState<string[]>([]);
-  const [saving, setSaving] = useState(false);
-  const [celebrate, setCelebrate] = useState<{ xp: number; leveledUp: boolean; prevLevel: number; newLevel: number } | null>(null);
+  const [openExampleId, setOpenExampleId] = useState<string | null>(null);
+  const [completingId, setCompletingId] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const [rolling, setRolling] = useState(false);
+
+  const today = todayStr();
+
+  useEffect(() => {
+    if (!student || rolling) return;
+    if (student.practiceDate === today && student.practiceOptionIds.length > 0) return;
+    setRolling(true);
+    setDailyMissions(student.id, today, pickDailyMissionIds(today)).then(refresh).finally(() => setRolling(false));
+  }, [student, today, rolling, refresh]);
 
   if (loading) return null;
   if (!student) {
@@ -31,53 +35,20 @@ export default function PracticePage() {
     return null;
   }
 
-  const today = todayStr();
-  const alreadyDoneToday = student.practiceDate === today;
-  const effectiveChecked = alreadyDoneToday ? student.practiceChecked : checked;
+  const optionIds = student.practiceDate === today ? student.practiceOptionIds : [];
+  const checkedToday = student.practiceDate === today ? student.practiceChecked : [];
+  const todaysMissions = optionIds.map((id) => getMission(id)).filter((m): m is NonNullable<typeof m> => m !== null);
 
-  function toggle(id: string) {
-    if (alreadyDoneToday) return;
-    setChecked((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
-  }
-
-  async function handleSubmit() {
-    if (!student || alreadyDoneToday) return;
-    setSaving(true);
-    const qualifies = checked.length >= 2;
+  async function handleComplete(missionId: string) {
+    if (!student || checkedToday.includes(missionId)) return;
+    setCompletingId(missionId);
     const prevLevel = levelFromXp(student.xp);
-    // Practice mode guarantees a level-up on success, unlike other modes'
-    // flat XP rewards: top the student up to the next level's threshold.
-    const nextLevelXp = prevLevel * XP_PER_LEVEL;
-    const gainedXp = qualifies ? nextLevelXp - student.xp : 0;
-    const newXp = student.xp + gainedXp;
-    const newLevel = levelFromXp(newXp);
-    await updateStudent(student.id, { practiceDate: today, practiceChecked: checked, xp: newXp });
+    await completeMission(student.id, missionId, PRACTICE_REWARD);
     await refresh();
-    setSaving(false);
-    if (qualifies) {
-      setCelebrate({ xp: gainedXp, leveledUp: newLevel > prevLevel, prevLevel, newLevel });
-    }
-  }
-
-  if (celebrate) {
-    const unlocked = celebrate.leveledUp ? getNewlyUnlocked(celebrate.prevLevel, celebrate.newLevel) : [];
-    return (
-      <div className="screen-flash flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
-        <div className="relative">
-          <div className="explode-pop text-8xl">👏</div>
-          <div className="pointer-events-none absolute inset-0 flex items-start justify-center gap-4 text-4xl">
-            <span className="clap-float" style={{ animationDelay: "0ms" }}>👏</span>
-            <span className="clap-float" style={{ animationDelay: "120ms" }}>🎉</span>
-            <span className="clap-float" style={{ animationDelay: "240ms" }}>👏</span>
-          </div>
-        </div>
-        <h1 className="font-display text-2xl text-duo-yellow-dark">오늘의 실천, 최고예요!</h1>
-        {celebrate.leveledUp && <p className="font-display text-xl text-duo-green-dark">레벨 업! 🏆</p>}
-        <p className="text-lg font-bold text-duo-green-dark">+{celebrate.xp} XP</p>
-        <UnlockNotice accessories={unlocked} studentId={student.id} />
-        <Button onClick={() => router.push("/home")}>돌아가기</Button>
-      </div>
-    );
+    const newLevel = levelFromXp(student.xp + PRACTICE_REWARD);
+    setToast(newLevel > prevLevel ? "레벨 업! 🏆" : `+${PRACTICE_REWARD} 포인트 획득! 💰`);
+    setCompletingId(null);
+    setTimeout(() => setToast(null), 2500);
   }
 
   return (
@@ -87,33 +58,67 @@ export default function PracticePage() {
       </Link>
       <h1 className="text-center font-display text-2xl">🌟 오늘의 실천 미션</h1>
       <p className="text-center text-sm text-ink/50">{t("practiceIntro", student.nativeLanguage)}</p>
+      <p className="text-center text-xs text-ink/40">
+        미션 1개 완료할 때마다 +{PRACTICE_REWARD} 포인트 &amp; XP · 5개 성공하면 레벨 1개 상승!
+        (지금까지 {student.practiceSuccessCount}개 성공)
+      </p>
 
-      <Card className="flex flex-col gap-3">
-        {MISSIONS.map((m) => (
-          <label
-            key={m.id}
-            className={`flex items-center gap-3 rounded-2xl border-2 p-4 ${
-              effectiveChecked.includes(m.id) ? "border-duo-green bg-duo-green/10" : "border-duo-gray"
-            }`}
-          >
-            <input
-              type="checkbox"
-              checked={effectiveChecked.includes(m.id)}
-              onChange={() => toggle(m.id)}
-              disabled={alreadyDoneToday}
-              className="h-5 w-5"
-            />
-            <span className="font-bold">{t(m.key, student.nativeLanguage)}</span>
-          </label>
-        ))}
-      </Card>
+      {toast && (
+        <div className="fixed left-1/2 top-6 z-50 -translate-x-1/2 rounded-2xl border-2 border-duo-yellow bg-white px-4 py-2 font-display text-sm shadow-lg">
+          {toast}
+        </div>
+      )}
 
-      {alreadyDoneToday ? (
-        <p className="text-center text-sm text-ink/50">{t("practiceDoneToday", student.nativeLanguage)}</p>
+      {rolling || todaysMissions.length === 0 ? (
+        <Card className="text-center text-sm text-ink/50">오늘의 미션을 준비하고 있어요...</Card>
       ) : (
-        <Button onClick={handleSubmit} disabled={saving || checked.length === 0} variant="pink">
-          {saving ? "저장 중..." : "제출하기"}
-        </Button>
+        <div className="flex flex-col gap-3">
+          {todaysMissions.map((m) => {
+            const done = checkedToday.includes(m.id);
+            const isOpen = openExampleId === m.id;
+            const examples = getMissionExamples(m);
+            return (
+              <Card key={m.id} className={done ? "border-duo-green bg-duo-green/5" : ""}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1">
+                    <p className="font-bold">{m.translations[student.nativeLanguage ?? "en"]}</p>
+                  </div>
+                  <button
+                    onClick={() => setOpenExampleId(isOpen ? null : m.id)}
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-duo-blue text-sm font-bold text-duo-blue-dark"
+                    aria-label="예문 보기"
+                  >
+                    ?
+                  </button>
+                </div>
+
+                {isOpen && examples.length > 0 && (
+                  <div className="mt-3 flex flex-col gap-2 rounded-xl bg-duo-blue/10 p-3">
+                    <p className="text-xs font-bold text-duo-blue-dark">{t("practiceExampleLabel", student.nativeLanguage)}</p>
+                    {examples.map((ex) => (
+                      <div key={ex.id} className="text-sm">
+                        <p className="font-bold text-ink">{ex.emoji} {ex.ko}</p>
+                        <p className="text-xs text-ink/50">{ex.translations[student.nativeLanguage ?? "en"]}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <button
+                  onClick={() => handleComplete(m.id)}
+                  disabled={done || completingId === m.id}
+                  className={`mt-3 w-full rounded-2xl border-2 py-2 text-sm font-bold ${
+                    done
+                      ? "border-duo-green bg-duo-green text-white"
+                      : "border-duo-pink bg-duo-pink/10 text-duo-pink-dark"
+                  }`}
+                >
+                  {done ? "완료했어요! ✅" : completingId === m.id ? "저장 중..." : `실천했어요! (+${PRACTICE_REWARD}P)`}
+                </button>
+              </Card>
+            );
+          })}
+        </div>
       )}
     </div>
   );
