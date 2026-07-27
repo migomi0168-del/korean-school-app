@@ -146,11 +146,11 @@ export default function HomePage() {
           </Link>
         ))}
         <Link
-          href="/mypage"
+          href="/shop"
           className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
         >
-          <div className="text-3xl">👤</div>
-          <p className="font-display text-lg">마이페이지</p>
+          <div className="text-3xl">🛍️</div>
+          <p className="font-display text-lg">꾸미기 상점</p>
         </Link>
         <Link
           href="/closet"
@@ -160,8 +160,15 @@ export default function HomePage() {
           <p className="font-display text-lg">꾸미기</p>
         </Link>
         <Link
-          href="/classmates"
+          href="/mypage"
           className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
+        >
+          <div className="text-3xl">👤</div>
+          <p className="font-display text-lg">마이페이지</p>
+        </Link>
+        <Link
+          href="/classmates"
+          className="col-span-2 flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
         >
           <div className="text-3xl">👥</div>
           <p className="font-display text-lg">반 친구들</p>
