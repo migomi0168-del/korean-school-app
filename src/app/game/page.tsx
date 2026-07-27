@@ -40,6 +40,16 @@ export default function GameHubPage() {
           </div>
         </Card>
       </Link>
+
+      <Link href="/game/scramble">
+        <Card className="flex items-center gap-4">
+          <div className="text-4xl">🧩</div>
+          <div>
+            <p className="font-display text-lg">문장 조각 맞추기</p>
+            <p className="text-xs text-ink/50">조각을 순서대로 탭해서 문장 완성하기</p>
+          </div>
+        </Card>
+      </Link>
     </div>
   );
 }
