@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { XPHeader } from "@/components/home/XPHeader";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { updateStudent, acknowledgeTeacherMessage } from "@/lib/students";
+import { updateStudent, acknowledgeTeacherMessage, markPeerMessagesSeen } from "@/lib/students";
 import { XP_REWARD, todayStr, yesterdayStr } from "@/lib/xp";
 import { getEncouragementMessage } from "@/lib/encouragement";
 import { getRoomColor, getRoomBackgroundStyle } from "@/lib/roomColors";
@@ -50,6 +50,7 @@ export default function HomePage() {
 
   const room = getRoomColor(student.roomColor);
   const ownedFurniture = getOwnedFurniture(student.ownedFurniture);
+  const newPeerMessages = student.peerMessages.filter((m) => m.sentAt > student.lastSeenPeerMessageAt);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -97,6 +98,23 @@ export default function HomePage() {
         </p>
       )}
 
+      {newPeerMessages.length > 0 && (
+        <div className="mx-4 mb-2 flex flex-col gap-2 rounded-2xl border-2 border-duo-green bg-duo-green/10 p-3">
+          <p className="font-display text-sm text-duo-green-dark">💌 친구들의 응원 메시지</p>
+          {newPeerMessages.map((m, i) => (
+            <p key={i} className="text-sm text-ink">
+              <span className="font-bold">{m.fromNickname}</span>: {m.text}
+            </p>
+          ))}
+          <button
+            onClick={() => markPeerMessagesSeen(student.id)}
+            className="self-end rounded-xl bg-duo-green px-3 py-1 text-xs font-bold text-white"
+          >
+            확인했어요
+          </button>
+        </div>
+      )}
+
       {student.teacherMessage && !student.teacherMessage.read && (
         <div className="mx-4 mb-2 flex flex-col gap-2 rounded-2xl border-2 border-duo-pink bg-duo-pink/10 p-3">
           <p className="font-display text-sm text-duo-pink-dark">💌 선생님의 메세지 도착!</p>
@@ -140,6 +158,13 @@ export default function HomePage() {
         >
           <div className="text-3xl">✨</div>
           <p className="font-display text-lg">꾸미기</p>
+        </Link>
+        <Link
+          href="/classmates"
+          className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
+        >
+          <div className="text-3xl">👥</div>
+          <p className="font-display text-lg">반 친구들</p>
         </Link>
       </div>
     </div>

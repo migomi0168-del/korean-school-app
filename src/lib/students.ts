@@ -66,6 +66,10 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     teacherMessage: (data.teacherMessage as Student["teacherMessage"]) ?? null,
     lastChatLog: (data.lastChatLog as Student["lastChatLog"]) ?? null,
     formalMistakeCount: (data.formalMistakeCount as number) ?? 0,
+    studyDate: (data.studyDate as string) ?? null,
+    studyMinutesToday: (data.studyMinutesToday as number) ?? 0,
+    peerMessages: (data.peerMessages as Student["peerMessages"]) ?? [],
+    lastSeenPeerMessageAt: (data.lastSeenPeerMessageAt as number) ?? 0,
     createdAt: (data.createdAt as number) ?? Date.now(),
   };
 }
@@ -98,6 +102,10 @@ export async function createStudent(params: { classId: string; nickname: string;
     teacherMessage: null,
     lastChatLog: null,
     formalMistakeCount: 0,
+    studyDate: null,
+    studyMinutesToday: 0,
+    peerMessages: [],
+    lastSeenPeerMessageAt: 0,
     createdAt: Date.now(),
   });
   return toStudent(docRef.id, { classId: params.classId, pinCode, nickname: params.nickname, grade: params.grade });
@@ -307,6 +315,35 @@ export async function clearWrongPhrase(studentId: string, phraseId: string) {
     return;
   }
   await updateDoc(doc(db, "students", studentId), { wrongPhraseIds: arrayRemove(phraseId) });
+}
+
+// Approximate "study time" heartbeat: the caller (a tracker mounted once at
+// the app root) already has the student's live studyDate via onSnapshot, so
+// it decides reset-vs-increment itself rather than requiring a read here.
+export async function bumpStudyMinutes(studentId: string, currentStudyDate: string | null, today: string) {
+  if (isDemoId(studentId)) {
+    updateDemoStudent((s) =>
+      s.studyDate !== today
+        ? { ...s, studyDate: today, studyMinutesToday: 1 }
+        : { ...s, studyMinutesToday: s.studyMinutesToday + 1 }
+    );
+    return;
+  }
+  if (currentStudyDate !== today) {
+    await updateDoc(doc(db, "students", studentId), { studyDate: today, studyMinutesToday: 1 });
+  } else {
+    await updateDoc(doc(db, "students", studentId), { studyMinutesToday: increment(1) });
+  }
+}
+
+export async function sendPeerMessage(toId: string, fromId: string, fromNickname: string, text: string) {
+  await updateDoc(doc(db, "students", toId), {
+    peerMessages: arrayUnion({ from: fromId, fromNickname, text, sentAt: Date.now() }),
+  });
+}
+
+export async function markPeerMessagesSeen(studentId: string) {
+  await updateDoc(doc(db, "students", studentId), { lastSeenPeerMessageAt: Date.now() });
 }
 
 export async function listStudentsForClass(classId: string): Promise<Student[]> {

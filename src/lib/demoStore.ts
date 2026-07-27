@@ -41,6 +41,10 @@ function createDemoStudent(): Student {
     teacherMessage: null,
     lastChatLog: null,
     formalMistakeCount: 0,
+    studyDate: null,
+    studyMinutesToday: 0,
+    peerMessages: [],
+    lastSeenPeerMessageAt: 0,
     createdAt: Date.now(),
   };
 }

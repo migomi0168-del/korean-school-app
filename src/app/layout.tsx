@@ -4,6 +4,7 @@ import "./globals.css";
 import { StudentSessionProvider } from "@/hooks/useStudentSession";
 import { TeacherAuthProvider } from "@/hooks/useTeacherAuth";
 import { HomeButton } from "@/components/common/HomeButton";
+import { StudyTimeTracker } from "@/components/home/StudyTimeTracker";
 
 const jua = Jua({
   variable: "--font-display",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <TeacherAuthProvider>
           <StudentSessionProvider>
             <HomeButton />
+            <StudyTimeTracker />
             <div className="mx-auto w-full max-w-md flex-1 flex flex-col">{children}</div>
           </StudentSessionProvider>
         </TeacherAuthProvider>

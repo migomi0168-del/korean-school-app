@@ -14,6 +14,13 @@ export interface ChatLog {
   savedAt: number;
 }
 
+export interface PeerMessage {
+  from: string;
+  fromNickname: string;
+  text: string;
+  sentAt: number;
+}
+
 export interface Student {
   id: string;
   classId: string;
@@ -41,6 +48,10 @@ export interface Student {
   teacherMessage: TeacherMessage | null;
   lastChatLog: ChatLog | null;
   formalMistakeCount: number;
+  studyDate: string | null;
+  studyMinutesToday: number;
+  peerMessages: PeerMessage[];
+  lastSeenPeerMessageAt: number;
   createdAt: number;
 }
 
