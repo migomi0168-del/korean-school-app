@@ -45,6 +45,7 @@ function createDemoStudent(): Student {
     studyMinutesToday: 0,
     peerMessages: [],
     lastSeenPeerMessageAt: 0,
+    proficiencyTier: null,
     createdAt: Date.now(),
   };
 }

@@ -1,5 +1,7 @@
 export type NativeLanguage = "zh" | "en" | "vi" | "ja";
 
+export type Difficulty = "easy" | "normal" | "hard";
+
 export interface TeacherMessage {
   text: string;
   points: number;
@@ -52,6 +54,7 @@ export interface Student {
   studyMinutesToday: number;
   peerMessages: PeerMessage[];
   lastSeenPeerMessageAt: number;
+  proficiencyTier: Difficulty | null;
   createdAt: number;
 }
 
@@ -68,6 +71,7 @@ export interface Word {
   reading: string;
   emoji: string;
   category: string;
+  difficulty: Difficulty;
   translations: Record<NativeLanguage, string>;
   templateKo: string;
   templateTranslations: Record<NativeLanguage, string>;
@@ -79,6 +83,7 @@ export interface Phrase {
   emoji: string;
   ko: string;
   alternates?: string[];
+  difficulty: Difficulty;
   translations: Record<NativeLanguage, string>;
 }
 

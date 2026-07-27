@@ -3,5 +3,9 @@
   { "id": "class", "name": "수업시간", "emoji": "🏫", "order": 2, "background": "classroom" },
   { "id": "break", "name": "쉬는시간", "emoji": "🏃", "order": 3, "background": "playground" },
   { "id": "cafeteria", "name": "급식실", "emoji": "🍱", "order": 4, "background": "cafeteria" },
-  { "id": "nurse", "name": "보건실", "emoji": "🏥", "order": 5, "background": "nurse" }
+  { "id": "nurse", "name": "보건실", "emoji": "🏥", "order": 5, "background": "nurse" },
+  { "id": "library", "name": "도서관", "emoji": "📚", "order": 6, "background": "library" },
+  { "id": "specialroom", "name": "특별실", "emoji": "🎨", "order": 7, "background": "specialroom" },
+  { "id": "routine", "name": "등하교/알림장", "emoji": "🎒", "order": 8, "background": "routine" },
+  { "id": "conflict", "name": "친구 갈등", "emoji": "🤝", "order": 9, "background": "conflict" }
 ]

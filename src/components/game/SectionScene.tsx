@@ -55,6 +55,46 @@ const SCENE_STYLES: Record<string, SceneStyle> = {
       { emoji: "🩺", className: "right-3 bottom-4 text-2xl", delay: "1.5s" },
     ],
   },
+  library: {
+    gradient: "from-indigo-100 via-violet-100 to-violet-300",
+    label: "도서관",
+    decor: [
+      { emoji: "📚", className: "left-3 top-3 text-2xl", delay: "0s" },
+      { emoji: "🔖", className: "right-4 top-4 text-xl", delay: "0.4s" },
+      { emoji: "🤫", className: "left-4 bottom-4 text-xl", delay: "0.8s" },
+      { emoji: "📖", className: "right-3 bottom-3 text-2xl", delay: "1.2s" },
+    ],
+  },
+  specialroom: {
+    gradient: "from-pink-200 via-fuchsia-200 to-purple-300",
+    label: "특별실",
+    decor: [
+      { emoji: "🎨", className: "left-3 top-4 text-2xl", delay: "0s" },
+      { emoji: "🎵", className: "right-4 top-3 text-xl", delay: "0.5s" },
+      { emoji: "⚽", className: "left-4 bottom-3 text-2xl", delay: "1s" },
+      { emoji: "🖌️", className: "right-3 bottom-4 text-xl", delay: "1.5s" },
+    ],
+  },
+  routine: {
+    gradient: "from-amber-100 via-yellow-200 to-orange-300",
+    label: "등하교",
+    decor: [
+      { emoji: "🎒", className: "left-3 top-3 text-2xl", delay: "0s" },
+      { emoji: "☂️", className: "right-4 top-4 text-xl", delay: "0.4s" },
+      { emoji: "📔", className: "left-4 bottom-4 text-xl", delay: "0.8s" },
+      { emoji: "⏰", className: "right-3 bottom-3 text-2xl", delay: "1.2s" },
+    ],
+  },
+  conflict: {
+    gradient: "from-rose-100 via-red-100 to-orange-200",
+    label: "친구 갈등",
+    decor: [
+      { emoji: "💭", className: "left-3 top-3 text-2xl", delay: "0s" },
+      { emoji: "😔", className: "right-4 top-4 text-xl", delay: "0.5s" },
+      { emoji: "🤝", className: "left-4 bottom-3 text-2xl", delay: "1s" },
+      { emoji: "❤️", className: "right-3 bottom-4 text-xl", delay: "1.5s" },
+    ],
+  },
 };
 
 export function SectionScene({ background, emoji }: { background: string; emoji: string }) {

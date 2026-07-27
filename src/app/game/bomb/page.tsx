@@ -11,6 +11,7 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
+import { filterByDifficulty } from "@/lib/difficulty";
 import { t } from "@/lib/i18n";
 import type { Word } from "@/types";
 
@@ -61,7 +62,8 @@ export default function BombGamePage() {
   function startGame() {
     if (!student) return;
     startXpRef.current = student.xp;
-    setRoundWords(shuffle(words).slice(0, TOTAL_ROUNDS));
+    const pool = filterByDifficulty(words, student.proficiencyTier ?? "normal");
+    setRoundWords(shuffle(pool).slice(0, TOTAL_ROUNDS));
     setRound(0);
     setScore(0);
     setSessionXp(0);

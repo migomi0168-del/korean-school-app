@@ -70,6 +70,7 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     studyMinutesToday: (data.studyMinutesToday as number) ?? 0,
     peerMessages: (data.peerMessages as Student["peerMessages"]) ?? [],
     lastSeenPeerMessageAt: (data.lastSeenPeerMessageAt as number) ?? 0,
+    proficiencyTier: (data.proficiencyTier as Student["proficiencyTier"]) ?? null,
     createdAt: (data.createdAt as number) ?? Date.now(),
   };
 }
@@ -106,6 +107,7 @@ export async function createStudent(params: { classId: string; nickname: string;
     studyMinutesToday: 0,
     peerMessages: [],
     lastSeenPeerMessageAt: 0,
+    proficiencyTier: null,
     createdAt: Date.now(),
   });
   return toStudent(docRef.id, { classId: params.classId, pinCode, nickname: params.nickname, grade: params.grade });

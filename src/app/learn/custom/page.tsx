@@ -22,7 +22,8 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongPhrase, recordFormalMistake } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
-import type { Phrase } from "@/types";
+import { filterByDifficulty } from "@/lib/difficulty";
+import type { Difficulty, Phrase } from "@/types";
 
 const QUESTION_COUNT = 6;
 type Phase = "answering" | "close" | "correct" | "wrong";
@@ -37,8 +38,9 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function buildPool(situationId: string): Phrase[] {
-  const pool = situationId === "all" ? phrases : getPhrasesForSection(situationId);
+function buildPool(situationId: string, tier: Difficulty): Phrase[] {
+  const basePool = situationId === "all" ? phrases : getPhrasesForSection(situationId);
+  const pool = filterByDifficulty(basePool, tier, situationId === "all" ? 4 : 2);
   const count = Math.min(QUESTION_COUNT, pool.length);
   return shuffle(pool).slice(0, count);
 }
@@ -53,7 +55,6 @@ function CustomLearnContent() {
   const [situation, setSituation] = useState<string | null>(auto ? "all" : null);
   const [partner, setPartner] = useState<Partner | null>(auto ? "선생님" : null);
   const [started, setStarted] = useState(auto);
-  const [questions] = useState<Phrase[] | null>(auto ? buildPool("all") : null);
 
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");
@@ -64,9 +65,12 @@ function CustomLearnContent() {
   const [saving, setSaving] = useState(false);
   const startXpRef = useRef<number | null>(null);
   const pendingWriteRef = useRef<Promise<unknown>>(Promise.resolve());
-  const poolRef = useRef<Phrase[] | null>(questions);
+  const poolRef = useRef<Phrase[] | null>(null);
 
   if (student && startXpRef.current === null) startXpRef.current = student.xp;
+  if (student && auto && poolRef.current === null) {
+    poolRef.current = buildPool("all", student.proficiencyTier ?? "normal");
+  }
 
   if (loading) return null;
   if (!student) {
@@ -81,8 +85,8 @@ function CustomLearnContent() {
   const isFormalMode = partner === "선생님";
 
   function handleStart() {
-    if (!situation || !partner) return;
-    poolRef.current = buildPool(situation);
+    if (!situation || !partner || !student) return;
+    poolRef.current = buildPool(situation, student.proficiencyTier ?? "normal");
     setStarted(true);
   }
 

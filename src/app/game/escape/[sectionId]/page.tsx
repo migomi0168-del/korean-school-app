@@ -15,6 +15,7 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent, recordWrongPhrase } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
+import { filterByDifficulty } from "@/lib/difficulty";
 import { t } from "@/lib/i18n";
 
 type Phase = "answering" | "close" | "correct" | "wrong";
@@ -25,7 +26,7 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
   const router = useRouter();
 
   const section = getSection(sectionId);
-  const doors = getPhrasesForSection(sectionId);
+  const doors = filterByDifficulty(getPhrasesForSection(sectionId), student?.proficiencyTier ?? "normal", 2);
 
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");

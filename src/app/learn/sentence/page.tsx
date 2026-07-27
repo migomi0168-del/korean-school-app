@@ -15,6 +15,7 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongPhrase } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
+import { filterByDifficulty } from "@/lib/difficulty";
 import { t } from "@/lib/i18n";
 import type { Phrase } from "@/types";
 
@@ -38,11 +39,7 @@ function SentenceLearnContent() {
   const category = searchParams.get("category");
   const next = searchParams.get("next") ?? "/learn";
 
-  const [questions] = useState<Phrase[]>(() => {
-    const pool = category ? getPhrasesForSection(category) : phrases;
-    const count = category ? Math.min(5, pool.length) : QUESTION_COUNT;
-    return shuffle(pool).slice(0, count);
-  });
+  const questionsRef = useRef<Phrase[] | null>(null);
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");
   const [retryInput, setRetryInput] = useState("");
@@ -54,11 +51,14 @@ function SentenceLearnContent() {
   const pendingWriteRef = useRef<Promise<unknown>>(Promise.resolve());
 
   if (student && startXpRef.current === null) startXpRef.current = student.xp;
+  if (student && questionsRef.current === null) {
+    const basePool = category ? getPhrasesForSection(category) : phrases;
+    const pool = filterByDifficulty(basePool, student.proficiencyTier ?? "normal", category ? 2 : 4);
+    const count = category ? Math.min(5, pool.length) : QUESTION_COUNT;
+    questionsRef.current = shuffle(pool).slice(0, count);
+  }
 
-  const q = questions[index];
-  const isLast = index === questions.length - 1;
-
-  if (loading) return null;
+  if (loading || !questionsRef.current) return null;
   if (!student) {
     router.push("/login");
     return null;
@@ -67,6 +67,10 @@ function SentenceLearnContent() {
     router.push("/onboarding");
     return null;
   }
+
+  const questions = questionsRef.current;
+  const q = questions[index];
+  const isLast = index === questions.length - 1;
 
   function grantCredit() {
     if (!student) return;

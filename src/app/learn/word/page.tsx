@@ -15,6 +15,7 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
+import { filterByDifficulty } from "@/lib/difficulty";
 import { t } from "@/lib/i18n";
 import type { Word } from "@/types";
 
@@ -31,15 +32,15 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function buildQuestions(): Question[] {
-  const pool = shuffle(words).slice(0, Math.min(QUESTION_COUNT, words.length));
-  return pool.map((word) => ({ word, kind: Math.random() < 0.5 ? "translate" : "blank" }));
+function buildQuestions(pool: Word[]): Question[] {
+  const picked = shuffle(pool).slice(0, Math.min(QUESTION_COUNT, pool.length));
+  return picked.map((word) => ({ word, kind: Math.random() < 0.5 ? "translate" : "blank" }));
 }
 
 export default function WordLearnPage() {
   const { student, loading } = useStudentSession();
   const router = useRouter();
-  const [questions] = useState<Question[]>(buildQuestions);
+  const questionsRef = useRef<Question[] | null>(null);
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -50,16 +51,18 @@ export default function WordLearnPage() {
   const pendingWriteRef = useRef<Promise<unknown>>(Promise.resolve());
 
   if (student && startXpRef.current === null) startXpRef.current = student.xp;
+  if (student && questionsRef.current === null) {
+    questionsRef.current = buildQuestions(filterByDifficulty(words, student.proficiencyTier ?? "normal"));
+  }
 
-  const q = questions[index];
-  const isLast = index === questions.length - 1;
+  const qPreview = questionsRef.current?.[index];
 
   const blankDisplay = useMemo(() => {
-    if (!q || q.kind !== "blank") return "";
-    return q.word.templateKo.replace(q.word.ko, "＿＿＿＿");
-  }, [q]);
+    if (!qPreview || qPreview.kind !== "blank") return "";
+    return qPreview.word.templateKo.replace(qPreview.word.ko, "＿＿＿＿");
+  }, [qPreview]);
 
-  if (loading) return null;
+  if (loading || !questionsRef.current) return null;
   if (!student) {
     router.push("/login");
     return null;
@@ -68,6 +71,10 @@ export default function WordLearnPage() {
     router.push("/onboarding");
     return null;
   }
+
+  const questions = questionsRef.current;
+  const q = questions[index];
+  const isLast = index === questions.length - 1;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
