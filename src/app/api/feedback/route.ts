@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MODEL = "gemini-flash-latest";
 
-const LANG_NAME: Record<string, string> = { zh: "Chinese (中文)", en: "English", vi: "Vietnamese (Tiếng Việt)" };
+const LANG_NAME: Record<string, string> = {
+  zh: "Chinese (中文)",
+  en: "English",
+  vi: "Vietnamese (Tiếng Việt)",
+  ja: "Japanese (日本語)",
+};
 
 function buildInstruction(nativeLanguage: string) {
   const lang = LANG_NAME[nativeLanguage] ?? "English";

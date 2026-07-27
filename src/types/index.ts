@@ -1,4 +1,4 @@
-export type NativeLanguage = "zh" | "en" | "vi";
+export type NativeLanguage = "zh" | "en" | "vi" | "ja";
 
 export interface TeacherMessage {
   text: string;

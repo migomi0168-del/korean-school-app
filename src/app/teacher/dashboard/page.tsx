@@ -11,7 +11,7 @@ import { createStudent, subscribeToClassStudents } from "@/lib/students";
 import { levelFromXp, todayStr } from "@/lib/xp";
 import type { NativeLanguage, Student } from "@/types";
 
-const LANG_LABEL: Record<NativeLanguage, string> = { zh: "중국어", en: "영어", vi: "베트남어" };
+const LANG_LABEL: Record<NativeLanguage, string> = { zh: "중국어", en: "영어", vi: "베트남어", ja: "일본어" };
 
 export default function TeacherDashboardPage() {
   const { user, loading, logout } = useTeacherAuth();
