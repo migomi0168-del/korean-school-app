@@ -133,7 +133,9 @@ function SentenceLearnContent() {
         ← 그만하기
       </Link>
       {category && (
-        <p className="text-center text-xs font-bold text-duo-pink-dark">🎯 AI 추천 학습 — 약점 집중 연습</p>
+        <p className="text-center text-xs font-bold text-duo-pink-dark">
+          {searchParams.get("fromAssignment") === "1" ? "📌 선생님이 배정한 학습" : "🎯 AI 추천 학습 — 약점 집중 연습"}
+        </p>
       )}
       <ProgressBar value={((index + 1) / questions.length) * 100} colorClass="bg-duo-pink" />
 
