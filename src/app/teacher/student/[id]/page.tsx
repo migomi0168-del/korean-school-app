@@ -8,7 +8,8 @@ import { Button } from "@/components/common/Button";
 import { Avatar } from "@/components/common/Avatar";
 import { useTeacherAuth } from "@/hooks/useTeacherAuth";
 import { subscribeToStudent, subscribeToClassStudents, sendTeacherMessage, clearTeacherAssignment, resetStudentPin } from "@/lib/students";
-import { getWord, getPhrase, sections } from "@/lib/content";
+import { getWord, getPhrase, getSection, sections } from "@/lib/content";
+import { getWeakestCategory } from "@/lib/weakness";
 import { levelFromXp, todayStr } from "@/lib/xp";
 import type { NativeLanguage, Student } from "@/types";
 
@@ -28,6 +29,8 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
   const [confirmingPinReset, setConfirmingPinReset] = useState(false);
   const [resettingPin, setResettingPin] = useState(false);
   const [newPin, setNewPin] = useState<string | null>(null);
+  const [aiEvaluation, setAiEvaluation] = useState<string | null>(null);
+  const [loadingEvaluation, setLoadingEvaluation] = useState(false);
 
   useEffect(() => {
     const unsubscribe = subscribeToStudent(id, setStudent);
@@ -47,6 +50,31 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
     setResettingPin(false);
     setConfirmingPinReset(false);
     setNewPin(pin);
+  }
+
+  async function handleGetEvaluation() {
+    if (!student || loadingEvaluation) return;
+    setLoadingEvaluation(true);
+    const weakestCategory = getWeakestCategory(student);
+    const res = await fetch("/api/teacher-feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nickname: student.nickname,
+        grade: student.grade,
+        level: levelFromXp(student.xp),
+        streak: student.streakCount,
+        proficiencyTier: student.proficiencyTier,
+        weakestCategoryName: weakestCategory ? getSection(weakestCategory)?.name : null,
+        wrongWords: student.wrongWordIds.map((id) => getWord(id)?.ko).filter(Boolean),
+        wrongPhrases: student.wrongPhraseIds.map((id) => getPhrase(id)?.ko).filter(Boolean),
+        attendedToday: student.lastAttendanceDate === todayStr(),
+        practiceDoneToday: student.practiceDate === todayStr(),
+      }),
+    });
+    const data = await res.json();
+    setAiEvaluation(data.feedback || "평가를 불러오지 못했어요. 잠시 후 다시 시도해주세요.");
+    setLoadingEvaluation(false);
   }
 
   async function handleSendMessage() {
@@ -147,6 +175,18 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
           <p className="text-2xl">{practiceDoneToday ? "🌟" : "⚪"}</p>
           <p className="text-xs text-ink/50">{practiceDoneToday ? "오늘 실천함" : "오늘 미실천"}</p>
         </div>
+      </Card>
+
+      <Card className="border-duo-pink bg-duo-pink/5">
+        <p className="mb-2 font-display text-lg">🧠 AI 학생 평가</p>
+        {aiEvaluation ? (
+          <p className="mb-3 whitespace-pre-line text-sm leading-relaxed text-ink">{aiEvaluation}</p>
+        ) : (
+          <p className="mb-3 text-xs text-ink/50">학습 기록을 바탕으로 AI가 이 학생에 대한 평가와 다음 지도 방향을 제안해줘요.</p>
+        )}
+        <Button onClick={handleGetEvaluation} disabled={loadingEvaluation} variant="pink">
+          {loadingEvaluation ? "평가 생성 중..." : aiEvaluation ? "다시 평가받기" : "AI 평가 받기"}
+        </Button>
       </Card>
 
       {student.teacherAssignment && (
