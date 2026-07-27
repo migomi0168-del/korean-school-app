@@ -10,11 +10,12 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { XP_PER_LEVEL, levelFromXp, todayStr } from "@/lib/xp";
 import { getNewlyUnlocked } from "@/lib/accessories";
+import { t } from "@/lib/i18n";
 
 const MISSIONS = [
-  { id: "greet", label: "친구 또는 선생님에게 인사하기" },
-  { id: "thanks", label: "친구 또는 선생님께 감사 표현하기" },
-  { id: "invite", label: "친구와 함께 놀자고 제안하기" },
+  { id: "greet", key: "missionGreet" as const },
+  { id: "thanks", key: "missionThanks" as const },
+  { id: "invite", key: "missionInvite" as const },
 ];
 
 export default function PracticePage() {
@@ -85,7 +86,7 @@ export default function PracticePage() {
         ← 돌아가기
       </Link>
       <h1 className="text-center font-display text-2xl">🌟 오늘의 실천 미션</h1>
-      <p className="text-center text-sm text-ink/50">2개 이상 실천하면 박수와 함께 레벨이 올라요!</p>
+      <p className="text-center text-sm text-ink/50">{t("practiceIntro", student.nativeLanguage)}</p>
 
       <Card className="flex flex-col gap-3">
         {MISSIONS.map((m) => (
@@ -102,13 +103,13 @@ export default function PracticePage() {
               disabled={alreadyDoneToday}
               className="h-5 w-5"
             />
-            <span className="font-bold">{m.label}</span>
+            <span className="font-bold">{t(m.key, student.nativeLanguage)}</span>
           </label>
         ))}
       </Card>
 
       {alreadyDoneToday ? (
-        <p className="text-center text-sm text-ink/50">오늘 실천은 이미 기록했어요. 내일 또 만나요!</p>
+        <p className="text-center text-sm text-ink/50">{t("practiceDoneToday", student.nativeLanguage)}</p>
       ) : (
         <Button onClick={handleSubmit} disabled={saving || checked.length === 0} variant="pink">
           {saving ? "저장 중..." : "제출하기"}

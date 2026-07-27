@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { UnlockNotice } from "@/components/common/UnlockNotice";
+import { MicButton } from "@/components/learn/MicButton";
 import { ProgressBar } from "@/components/common/ProgressBar";
 import { TTSButton } from "@/components/learn/TTSButton";
 import { SectionScene } from "@/components/game/SectionScene";
@@ -15,6 +16,7 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent, recordWrongPhrase } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { getNewlyUnlocked } from "@/lib/accessories";
+import { t } from "@/lib/i18n";
 
 export default function EscapeSectionPage({ params }: { params: Promise<{ sectionId: string }> }) {
   const { sectionId } = use(params);
@@ -117,19 +119,23 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
       <ProgressBar value={((index + 1) / doors.length) * 100} colorClass="bg-duo-pink" />
 
       <Card className="flex flex-col items-center gap-3 py-6 text-center">
+        <div className="text-4xl">{door.emoji}</div>
         <p className="text-xl font-bold text-duo-blue-dark">{door.translations[nativeLanguage]}</p>
-        <p className="text-xs text-ink/40">이 표현을 한국어로 입력해서 문을 여세요</p>
+        <p className="text-xs text-ink/40">{t("typeDoorHint", nativeLanguage)}</p>
       </Card>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={submitted || grading}
-          autoFocus
-          placeholder="한국어로 입력..."
-          className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-pink disabled:opacity-60"
-        />
+        <div className="flex items-center gap-2">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={submitted || grading}
+            autoFocus
+            placeholder="한국어로 입력하거나 마이크를 누르세요"
+            className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-pink disabled:opacity-60"
+          />
+          <MicButton onResult={setInput} disabled={submitted || grading} />
+        </div>
         {!submitted && (
           <Button type="submit" variant="pink" disabled={!input.trim() || grading}>
             {grading ? "채점 중..." : "문 열기"}

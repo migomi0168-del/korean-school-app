@@ -32,6 +32,7 @@ export interface Word {
   ko: string;
   reading: string;
   emoji: string;
+  category: string;
   translations: Record<NativeLanguage, string>;
   templateKo: string;
   templateTranslations: Record<NativeLanguage, string>;
@@ -40,6 +41,7 @@ export interface Word {
 export interface Phrase {
   id: string;
   section: string;
+  emoji: string;
   ko: string;
   alternates?: string[];
   translations: Record<NativeLanguage, string>;

@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
+import { MicButton } from "@/components/learn/MicButton";
 import { useStudentSession } from "@/hooks/useStudentSession";
+import { t } from "@/lib/i18n";
 
 interface Message {
   role: "user" | "ai";
@@ -77,7 +79,7 @@ export default function ChatPage() {
             </div>
             {m.correction && (
               <div className="mt-1 max-w-[80%] rounded-xl bg-duo-yellow/20 px-3 py-1 text-xs text-duo-yellow-dark">
-                💡 이렇게 말하면 더 자연스러워요: <span className="font-bold">{m.correction}</span>
+                💡 {t("correctionLabel", student.nativeLanguage)} <span className="font-bold">{m.correction}</span>
               </div>
             )}
           </div>
@@ -92,6 +94,7 @@ export default function ChatPage() {
           placeholder="한국어로 메시지를 입력하세요..."
           className="flex-1 rounded-2xl border-2 border-duo-gray px-4 py-3 outline-none focus:border-duo-green"
         />
+        <MicButton onResult={setInput} disabled={sending} />
         <Button type="submit" fullWidth={false} disabled={sending || !input.trim()}>
           전송
         </Button>

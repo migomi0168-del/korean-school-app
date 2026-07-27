@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { useTeacherAuth } from "@/hooks/useTeacherAuth";
 import { ensureClassForTeacher } from "@/lib/classes";
 import { createStudent, subscribeToClassStudents } from "@/lib/students";
-import { levelFromXp } from "@/lib/xp";
+import { levelFromXp, todayStr } from "@/lib/xp";
 import type { NativeLanguage, Student } from "@/types";
 
 const LANG_LABEL: Record<NativeLanguage, string> = { zh: "중국어", en: "영어", vi: "베트남어" };
@@ -107,20 +108,29 @@ export default function TeacherDashboardPage() {
           <p className="text-sm text-ink/50">아직 등록된 학생이 없어요</p>
         ) : (
           <div className="flex flex-col gap-2">
-            {students.map((s) => (
-              <div key={s.id} className="flex items-center justify-between rounded-xl border-2 border-duo-gray p-3 text-sm">
-                <div>
-                  <p className="font-bold">{s.nickname}</p>
-                  <p className="text-ink/50">
-                    {s.grade}학년 · {s.nativeLanguage ? LANG_LABEL[s.nativeLanguage] : "미선택"} · PIN {s.pinCode}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-duo-green-dark">Lv.{levelFromXp(s.xp)}</p>
-                  <p className="text-xs text-ink/50">🔥{s.streakCount}</p>
-                </div>
-              </div>
-            ))}
+            {students.map((s) => {
+              const attendedToday = s.lastAttendanceDate === todayStr();
+              return (
+                <Link
+                  key={s.id}
+                  href={`/teacher/student/${s.id}`}
+                  className="flex items-center justify-between rounded-xl border-2 border-duo-gray p-3 text-sm active:scale-[0.99]"
+                >
+                  <div>
+                    <p className="font-bold">
+                      {s.nickname} <span>{attendedToday ? "🟢" : "⚪"}</span>
+                    </p>
+                    <p className="text-ink/50">
+                      {s.grade}학년 · {s.nativeLanguage ? LANG_LABEL[s.nativeLanguage] : "미선택"} · PIN {s.pinCode}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-duo-green-dark">Lv.{levelFromXp(s.xp)}</p>
+                    <p className="text-xs text-ink/50">🔥{s.streakCount}</p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </Card>

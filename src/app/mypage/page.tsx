@@ -4,18 +4,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/common/Card";
+import { Button } from "@/components/common/Button";
 import { Avatar } from "@/components/common/Avatar";
-import { sections } from "@/lib/content";
+import { sections, getWord, getPhrase, getSection } from "@/lib/content";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { levelFromXp, todayStr } from "@/lib/xp";
 import { LANGUAGES } from "@/lib/languages";
+import { getWeakestCategory } from "@/lib/weakness";
 import type { NativeLanguage } from "@/types";
 
 export default function MyPage() {
   const { student, loading } = useStudentSession();
   const router = useRouter();
   const [editingLang, setEditingLang] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [loadingFeedback, setLoadingFeedback] = useState(false);
 
   if (loading) return null;
   if (!student) {
@@ -25,6 +29,27 @@ export default function MyPage() {
 
   const level = levelFromXp(student.xp);
   const practiceDoneToday = student.practiceDate === todayStr();
+  const weakestCategory = getWeakestCategory(student);
+
+  async function handleGetFeedback() {
+    if (!student) return;
+    setLoadingFeedback(true);
+    const res = await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nativeLanguage: student.nativeLanguage,
+        weakestCategoryName: weakestCategory ? getSection(weakestCategory)?.name : null,
+        wrongWords: student.wrongWordIds.map((id) => getWord(id)?.ko).filter(Boolean),
+        wrongPhrases: student.wrongPhraseIds.map((id) => getPhrase(id)?.ko).filter(Boolean),
+        level,
+        streak: student.streakCount,
+      }),
+    });
+    const data = await res.json();
+    setFeedback(data.feedback || "...");
+    setLoadingFeedback(false);
+  }
 
   function handleChangeLanguage(code: NativeLanguage) {
     if (!student) return;
@@ -94,6 +119,24 @@ export default function MyPage() {
                 {l.label}
               </button>
             ))}
+          </div>
+        )}
+      </Card>
+
+      <Card>
+        <p className="mb-2 font-display text-lg">🧠 AI 학습 피드백</p>
+        {!feedback ? (
+          <Button onClick={handleGetFeedback} disabled={loadingFeedback} variant="blue">
+            {loadingFeedback ? "분석 중..." : "피드백 받기"}
+          </Button>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <p className="rounded-xl bg-duo-blue/10 p-3 text-sm leading-relaxed text-ink">{feedback}</p>
+            {weakestCategory && (
+              <Link href={`/learn/sentence?category=${weakestCategory}&next=${encodeURIComponent("/mypage")}`}>
+                <Button variant="pink">🎯 AI 추천 학습 시작하기</Button>
+              </Link>
+            )}
           </div>
         )}
       </Card>

@@ -7,11 +7,14 @@ import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { ProgressBar } from "@/components/common/ProgressBar";
 import { TTSButton } from "@/components/learn/TTSButton";
+import { ContextTag } from "@/components/learn/ContextTag";
+import { MicButton } from "@/components/learn/MicButton";
 import { getPhrase } from "@/lib/content";
 import { isPhraseCorrectSmart } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, clearWrongPhrase } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
+import { t } from "@/lib/i18n";
 import type { Phrase } from "@/types";
 
 export default function ReviewSentencePage() {
@@ -88,19 +91,24 @@ export default function ReviewSentencePage() {
       <ProgressBar value={((index + 1) / questions.length) * 100} colorClass="bg-duo-yellow" />
 
       <Card className="flex flex-col items-center gap-3 py-8 text-center">
+        <ContextTag categoryId={q.section} />
+        <div className="text-5xl">{q.emoji}</div>
         <p className="text-xl font-bold text-duo-blue-dark">{q.translations[nativeLanguage]}</p>
-        <p className="text-xs text-ink/40">이 문장을 한국어로 입력하세요</p>
+        <p className="text-xs text-ink/40">{t("typeSentenceHint", nativeLanguage)}</p>
       </Card>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={submitted || grading}
-          autoFocus
-          placeholder="한국어 문장으로 입력..."
-          className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-yellow disabled:opacity-60"
-        />
+        <div className="flex items-center gap-2">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={submitted || grading}
+            autoFocus
+            placeholder="한국어 문장으로 입력하거나 마이크를 누르세요"
+            className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-yellow disabled:opacity-60"
+          />
+          <MicButton onResult={setInput} disabled={submitted || grading} />
+        </div>
         {!submitted && (
           <Button type="submit" variant="yellow" disabled={!input.trim() || grading}>
             {grading ? "채점 중..." : "확인"}

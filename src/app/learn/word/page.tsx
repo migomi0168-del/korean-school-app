@@ -7,11 +7,14 @@ import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { ProgressBar } from "@/components/common/ProgressBar";
 import { TTSButton } from "@/components/learn/TTSButton";
+import { ContextTag } from "@/components/learn/ContextTag";
+import { MicButton } from "@/components/learn/MicButton";
 import { words } from "@/lib/content";
 import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
+import { t } from "@/lib/i18n";
 import type { Word } from "@/types";
 
 const QUESTION_COUNT = 8;
@@ -105,30 +108,34 @@ export default function WordLearnPage() {
       <ProgressBar value={((index + 1) / questions.length) * 100} colorClass="bg-duo-blue" />
 
       <Card className="flex flex-col items-center gap-4 py-8 text-center">
+        <ContextTag categoryId={q.word.category} />
         {q.kind === "translate" ? (
           <>
             <div className="text-6xl">{q.word.emoji}</div>
             <p className="text-xl font-bold text-duo-blue-dark">{q.word.translations[nativeLanguage]}</p>
-            <p className="text-xs text-ink/40">이 단어를 한국어로 입력하세요</p>
+            <p className="text-xs text-ink/40">{t("typeWordHint", nativeLanguage)}</p>
           </>
         ) : (
           <>
             <p className="font-display text-2xl leading-relaxed">{blankDisplay}</p>
             <p className="text-lg font-bold text-duo-blue-dark">{q.word.templateTranslations[nativeLanguage]}</p>
-            <p className="text-xs text-ink/40">빈칸에 들어갈 단어를 입력하세요</p>
+            <p className="text-xs text-ink/40">{t("typeBlankHint", nativeLanguage)}</p>
           </>
         )}
       </Card>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={submitted}
-          autoFocus
-          placeholder="한국어로 입력..."
-          className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-2xl outline-none focus:border-duo-blue disabled:opacity-60"
-        />
+        <div className="flex items-center gap-2">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={submitted}
+            autoFocus
+            placeholder="한국어로 입력하거나 마이크를 누르세요"
+            className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-2xl outline-none focus:border-duo-blue disabled:opacity-60"
+          />
+          <MicButton onResult={setInput} disabled={submitted} />
+        </div>
         {!submitted && (
           <Button type="submit" variant="blue" disabled={!input.trim()}>
             확인

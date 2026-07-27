@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
 import { UnlockNotice } from "@/components/common/UnlockNotice";
+import { MicButton } from "@/components/learn/MicButton";
 import { words } from "@/lib/content";
 import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { getNewlyUnlocked } from "@/lib/accessories";
+import { t } from "@/lib/i18n";
 import type { Word } from "@/types";
 
 const TOTAL_ROUNDS = 10;
@@ -123,7 +125,7 @@ export default function BombGamePage() {
         </Link>
         <div className="text-6xl">💣</div>
         <h1 className="font-display text-2xl">단어 폭탄 게임</h1>
-        <p className="text-sm text-ink/50">떨어지는 뜻을 보고 로켓에 한글 단어를 입력하세요!</p>
+        <p className="text-sm text-ink/50">{t("bombWatchHint", nativeLanguage)}</p>
         <div className="flex flex-col gap-3 w-full">
           <p className="font-display text-lg">속도 난이도</p>
           {[1, 3, 5].map((s) => (
@@ -219,6 +221,7 @@ export default function BombGamePage() {
           placeholder="한국어 단어 입력..."
           className="flex-1 bg-transparent px-2 py-2 font-display text-lg outline-none disabled:opacity-50"
         />
+        <MicButton onResult={handleInputChange} disabled={result !== "falling"} />
       </div>
 
       <Link href="/game" className="text-center text-sm text-ink/40">
