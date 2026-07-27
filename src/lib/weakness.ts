@@ -30,6 +30,13 @@ export function getWeakestCategory(student: Student): string | null {
   return ranked[0].categoryId;
 }
 
+// 교사 대시보드 전용 신호: 레벨 테스트 결과가 최하 단계이거나, 틀린 단어/문장이
+// 누적되어 AI 추천학습이 계속 같은 취약점을 가리키는 학생을 "관심 필요"로 표시.
+export function needsAttention(student: Student): boolean {
+  if (student.proficiencyTier === "easy") return true;
+  return student.wrongWordIds.length + student.wrongPhraseIds.length >= 8;
+}
+
 export type Recommendation = { type: "category"; categoryId: string } | { type: "formal" } | null;
 
 // AI 추천학습: picks between "practice your weakest location" and "practice

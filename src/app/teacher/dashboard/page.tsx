@@ -10,6 +10,7 @@ import { ensureClassForTeacher } from "@/lib/classes";
 import { createStudent, subscribeToClassStudents, assignTeacherContent } from "@/lib/students";
 import { levelFromXp, todayStr } from "@/lib/xp";
 import { ASSIGNMENT_OPTIONS } from "@/lib/assignments";
+import { needsAttention } from "@/lib/weakness";
 import type { NativeLanguage, Student } from "@/types";
 
 const LANG_LABEL: Record<NativeLanguage, string> = { zh: "중국어", en: "영어", vi: "베트남어", ja: "일본어" };
@@ -176,7 +177,11 @@ export default function TeacherDashboardPage() {
                   <Link href={`/teacher/student/${s.id}`} className="flex flex-1 items-center justify-between active:scale-[0.99]">
                     <div>
                       <p className="font-bold">
-                        {s.nickname} <span>{attendedToday ? "🟢" : "⚪"}</span>
+                        {s.nickname}{" "}
+                        {needsAttention(s) && (
+                          <span title="실력이 낮아 특별 관심이 필요해요">⭐</span>
+                        )}{" "}
+                        <span>{attendedToday ? "🟢" : "⚪"}</span>
                       </p>
                       <p className="text-ink/50">
                         {s.grade}학년 · {s.nativeLanguage ? LANG_LABEL[s.nativeLanguage] : "미선택"} · PIN {s.pinCode}
