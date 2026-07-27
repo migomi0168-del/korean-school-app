@@ -55,6 +55,30 @@ const DICT = {
     vi: "Tiếng Hàn thì nói thế này:",
     ja: "韓国語ではこう言います：",
   },
+  diagnosticTitle: {
+    zh: "我们来简单确认一下你的韩语水平",
+    en: "Let's check your Korean level a little",
+    vi: "Hãy cùng kiểm tra một chút trình độ tiếng Hàn của em nhé",
+    ja: "韓国語のレベルを少し確認してみましょう",
+  },
+  diagnosticSubtext: {
+    zh: "不会也没关系！写你知道的就可以了",
+    en: "It's okay if you don't know! Just write as much as you can",
+    vi: "Không biết cũng không sao! Hãy viết những gì em biết thôi",
+    ja: "わからなくても大丈夫！わかる分だけ書いてみてね",
+  },
+  diagnosticInputPlaceholder: {
+    zh: "请用韩语输入或点击麦克风",
+    en: "Type in Korean or tap the microphone",
+    vi: "Hãy gõ bằng tiếng Hàn hoặc nhấn micro",
+    ja: "韓国語で入力するか、マイクを押してください",
+  },
+  diagnosticSkip: {
+    zh: "不太清楚（跳过）",
+    en: "I'm not sure (skip)",
+    vi: "Em chưa biết (bỏ qua)",
+    ja: "わかりません（スキップ）",
+  },
 } as const;
 
 type DictKey = keyof typeof DICT;

@@ -11,6 +11,7 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { LANGUAGES } from "@/lib/languages";
 import { isPhraseCorrect } from "@/lib/grading";
 import { getDiagnosticPhrases, tierFromScore } from "@/lib/difficulty";
+import { t } from "@/lib/i18n";
 import type { NativeLanguage } from "@/types";
 
 export default function OnboardingPage() {
@@ -158,8 +159,10 @@ export default function OnboardingPage() {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6">
         <div className="text-center">
-          <h1 className="font-display text-2xl">한국어 실력을 살짝 확인해볼게요</h1>
-          <p className="mt-1 text-sm text-ink/60">몰라도 괜찮아요! 아는 만큼만 써보세요 ({qIndex + 1}/{diagnosticQuestions.length})</p>
+          <h1 className="font-display text-2xl">{t("diagnosticTitle", nativeLanguage)}</h1>
+          <p className="mt-1 text-sm text-ink/60">
+            {t("diagnosticSubtext", nativeLanguage)} ({qIndex + 1}/{diagnosticQuestions.length})
+          </p>
         </div>
 
         <Card className="flex w-full flex-col items-center gap-3 py-8 text-center">
@@ -173,7 +176,7 @@ export default function OnboardingPage() {
               value={qInput}
               onChange={(e) => setQInput(e.target.value)}
               autoFocus
-              placeholder="한국어로 입력하거나 마이크를 누르세요"
+              placeholder={t("diagnosticInputPlaceholder", nativeLanguage)}
               className="min-w-0 flex-1 rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-blue"
             />
             <MicButton onResult={setQInput} />
@@ -182,7 +185,7 @@ export default function OnboardingPage() {
             다음
           </Button>
           <button type="button" onClick={handleSkip} className="text-sm text-ink/40 underline">
-            잘 모르겠어요 (건너뛰기)
+            {t("diagnosticSkip", nativeLanguage)}
           </button>
         </form>
       </div>
