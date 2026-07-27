@@ -60,6 +60,16 @@ export default function GameHubPage() {
           </div>
         </Card>
       </Link>
+
+      <Link href="/game/sort">
+        <Card className="flex items-center gap-4">
+          <div className="text-4xl">🗂️</div>
+          <div>
+            <p className="font-display text-lg">상황별 분류 게임</p>
+            <p className="text-xs text-ink/50">표현이 어디서 쓰이는지 골라보기</p>
+          </div>
+        </Card>
+      </Link>
     </div>
   );
 }
