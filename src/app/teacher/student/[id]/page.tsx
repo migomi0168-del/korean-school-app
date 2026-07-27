@@ -7,7 +7,7 @@ import { Card } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
 import { Avatar } from "@/components/common/Avatar";
 import { useTeacherAuth } from "@/hooks/useTeacherAuth";
-import { subscribeToStudent, sendTeacherMessage } from "@/lib/students";
+import { subscribeToStudent, sendTeacherMessage, clearTeacherAssignment } from "@/lib/students";
 import { getWord, getPhrase, sections } from "@/lib/content";
 import { levelFromXp, todayStr } from "@/lib/xp";
 import type { NativeLanguage, Student } from "@/types";
@@ -99,6 +99,21 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
           <p className="text-xs text-ink/50">{practiceDoneToday ? "오늘 실천함" : "오늘 미실천"}</p>
         </div>
       </Card>
+
+      {student.teacherAssignment && (
+        <Card className="border-duo-blue bg-duo-blue/5">
+          <p className="mb-2 font-display text-lg">📌 배정된 학습</p>
+          <p className="text-sm text-ink">
+            {student.teacherAssignment.label} · {student.teacherAssignment.completed ? "완료 ✅" : "진행 중"}
+          </p>
+          <button
+            onClick={() => clearTeacherAssignment(student.id)}
+            className="mt-2 text-xs text-ink/40 underline"
+          >
+            배정 취소
+          </button>
+        </Card>
+      )}
 
       <Card>
         <p className="mb-3 font-display text-lg">💌 칭찬 메시지 보내기</p>

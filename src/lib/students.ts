@@ -71,6 +71,7 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     peerMessages: (data.peerMessages as Student["peerMessages"]) ?? [],
     lastSeenPeerMessageAt: (data.lastSeenPeerMessageAt as number) ?? 0,
     proficiencyTier: (data.proficiencyTier as Student["proficiencyTier"]) ?? null,
+    teacherAssignment: (data.teacherAssignment as Student["teacherAssignment"]) ?? null,
     createdAt: (data.createdAt as number) ?? Date.now(),
   };
 }
@@ -108,6 +109,7 @@ export async function createStudent(params: { classId: string; nickname: string;
     peerMessages: [],
     lastSeenPeerMessageAt: 0,
     proficiencyTier: null,
+    teacherAssignment: null,
     createdAt: Date.now(),
   });
   return toStudent(docRef.id, { classId: params.classId, pinCode, nickname: params.nickname, grade: params.grade });
@@ -279,6 +281,23 @@ export async function sendTeacherMessage(studentId: string, text: string, bonusP
 
 export async function acknowledgeTeacherMessage(studentId: string) {
   await updateDoc(doc(db, "students", studentId), { "teacherMessage.read": true });
+}
+
+// Lets a teacher push "today's focus" to one or more students at once,
+// instead of only ever relying on each student's own auto-picked weak spot.
+export async function assignTeacherContent(studentIds: string[], situationId: string, label: string) {
+  const assignment = { situationId, label, assignedAt: Date.now(), completed: false };
+  await Promise.all(
+    studentIds.map((id) => updateDoc(doc(db, "students", id), { teacherAssignment: assignment }))
+  );
+}
+
+export async function clearTeacherAssignment(studentId: string) {
+  await updateDoc(doc(db, "students", studentId), { teacherAssignment: null });
+}
+
+export async function completeTeacherAssignment(studentId: string) {
+  await updateDoc(doc(db, "students", studentId), { "teacherAssignment.completed": true });
 }
 
 export async function recordWrongWord(studentId: string, wordId: string) {

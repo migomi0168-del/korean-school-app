@@ -12,7 +12,7 @@ import { MicButton } from "@/components/learn/MicButton";
 import { phrases, getPhrasesForSection } from "@/lib/content";
 import { gradePhrase, isPhraseCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { addXp, recordWrongPhrase } from "@/lib/students";
+import { addXp, recordWrongPhrase, completeTeacherAssignment } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { filterByDifficulty } from "@/lib/difficulty";
@@ -117,6 +117,9 @@ function SentenceLearnContent() {
     }
     setSaving(true);
     await pendingWriteRef.current;
+    if (searchParams.get("fromAssignment") === "1" && student) {
+      await completeTeacherAssignment(student.id);
+    }
     const prevLevel = levelFromXp(startXpRef.current ?? 0);
     const newLevel = levelFromXp((startXpRef.current ?? 0) + sessionXp);
     router.push(`/result?xp=${sessionXp}&next=${encodeURIComponent(next)}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);

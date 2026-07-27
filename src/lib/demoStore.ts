@@ -46,6 +46,7 @@ function createDemoStudent(): Student {
     peerMessages: [],
     lastSeenPeerMessageAt: 0,
     proficiencyTier: null,
+    teacherAssignment: null,
     createdAt: Date.now(),
   };
 }

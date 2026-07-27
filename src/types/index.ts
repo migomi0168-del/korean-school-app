@@ -23,6 +23,13 @@ export interface PeerMessage {
   sentAt: number;
 }
 
+export interface TeacherAssignment {
+  situationId: string;
+  label: string;
+  assignedAt: number;
+  completed: boolean;
+}
+
 export interface Student {
   id: string;
   classId: string;
@@ -55,6 +62,7 @@ export interface Student {
   peerMessages: PeerMessage[];
   lastSeenPeerMessageAt: number;
   proficiencyTier: Difficulty | null;
+  teacherAssignment: TeacherAssignment | null;
   createdAt: number;
 }
 

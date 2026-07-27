@@ -19,7 +19,7 @@ import {
   similarity,
 } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { addXp, recordWrongPhrase, recordFormalMistake } from "@/lib/students";
+import { addXp, recordWrongPhrase, recordFormalMistake, completeTeacherAssignment } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { filterByDifficulty } from "@/lib/difficulty";
@@ -209,6 +209,9 @@ function CustomLearnContent() {
     }
     setSaving(true);
     await pendingWriteRef.current;
+    if (searchParams.get("fromAssignment") === "1" && student) {
+      await completeTeacherAssignment(student.id);
+    }
     const prevLevel = levelFromXp(startXpRef.current ?? 0);
     const newLevel = levelFromXp((startXpRef.current ?? 0) + sessionXp);
     router.push(`/result?xp=${sessionXp}&next=${encodeURIComponent(next)}&leveledUp=${newLevel > prevLevel ? 1 : 0}&prevLevel=${prevLevel}&newLevel=${newLevel}`);

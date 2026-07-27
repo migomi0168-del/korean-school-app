@@ -10,6 +10,7 @@ import { XP_REWARD, todayStr, yesterdayStr } from "@/lib/xp";
 import { getEncouragementMessage } from "@/lib/encouragement";
 import { getRoomColor, getRoomBackgroundStyle } from "@/lib/roomColors";
 import { getOwnedFurniture } from "@/lib/furniture";
+import { getAssignmentHref } from "@/lib/assignments";
 
 const MODES = [
   { href: "/learn", emoji: "📖", label: "학습모드", desc: "단어 · 문장 배우기", color: "bg-duo-blue" },
@@ -78,6 +79,21 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      {student.teacherAssignment && !student.teacherAssignment.completed && (
+        <div className="mx-4 mb-2 flex items-center justify-between gap-3 rounded-2xl border-2 border-duo-blue bg-duo-blue/10 p-3">
+          <div>
+            <p className="font-display text-sm text-duo-blue-dark">📌 선생님이 오늘 준비했어요!</p>
+            <p className="text-sm text-ink">{student.teacherAssignment.label}</p>
+          </div>
+          <Link
+            href={getAssignmentHref(student.teacherAssignment.situationId, "/home")}
+            className="shrink-0 rounded-xl bg-duo-blue px-3 py-2 text-xs font-bold text-white"
+          >
+            지금 풀기
+          </Link>
+        </div>
+      )}
 
       {isDemo && (
         <p className="mx-4 mb-2 rounded-xl bg-ink/5 p-2 text-center text-xs font-bold text-ink/50">
