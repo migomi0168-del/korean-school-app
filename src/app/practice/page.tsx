@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/common/Card";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { setDailyMissions, completeMission } from "@/lib/students";
+import { setDailyMissions, completeMission, undoMission } from "@/lib/students";
 import { levelFromXp, todayStr } from "@/lib/xp";
 import { getMission, getMissionExamples, pickDailyMissionIds } from "@/lib/missions";
 import { t } from "@/lib/i18n";
@@ -16,7 +16,7 @@ export default function PracticePage() {
   const { student, loading, refresh } = useStudentSession();
   const router = useRouter();
   const [openExampleId, setOpenExampleId] = useState<string | null>(null);
-  const [completingId, setCompletingId] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [rolling, setRolling] = useState(false);
 
@@ -40,15 +40,23 @@ export default function PracticePage() {
   const todaysMissions = optionIds.map((id) => getMission(id)).filter((m): m is NonNullable<typeof m> => m !== null);
 
   async function handleComplete(missionId: string) {
-    if (!student || checkedToday.includes(missionId)) return;
-    setCompletingId(missionId);
+    if (!student) return;
+    setBusyId(missionId);
     const prevLevel = levelFromXp(student.xp);
     await completeMission(student.id, missionId, PRACTICE_REWARD);
     await refresh();
     const newLevel = levelFromXp(student.xp + PRACTICE_REWARD);
     setToast(newLevel > prevLevel ? "레벨 업! 🏆" : `+${PRACTICE_REWARD} 포인트 획득! 💰`);
-    setCompletingId(null);
+    setBusyId(null);
     setTimeout(() => setToast(null), 2500);
+  }
+
+  async function handleUndo(missionId: string) {
+    if (!student) return;
+    setBusyId(missionId);
+    await undoMission(student.id, missionId, PRACTICE_REWARD);
+    await refresh();
+    setBusyId(null);
   }
 
   return (
@@ -81,39 +89,48 @@ export default function PracticePage() {
               <Card key={m.id} className={done ? "border-duo-green bg-duo-green/5" : ""}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1">
-                    <p className="font-bold">{m.translations[student.nativeLanguage ?? "en"]}</p>
+                    <p className="font-bold">{m.ko}</p>
                   </div>
                   <button
                     onClick={() => setOpenExampleId(isOpen ? null : m.id)}
                     className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-duo-blue text-sm font-bold text-duo-blue-dark"
-                    aria-label="예문 보기"
+                    aria-label="설명 보기"
                   >
                     ?
                   </button>
                 </div>
 
-                {isOpen && examples.length > 0 && (
+                {isOpen && (
                   <div className="mt-3 flex flex-col gap-2 rounded-xl bg-duo-blue/10 p-3">
-                    <p className="text-xs font-bold text-duo-blue-dark">{t("practiceExampleLabel", student.nativeLanguage)}</p>
-                    {examples.map((ex) => (
-                      <div key={ex.id} className="text-sm">
-                        <p className="font-bold text-ink">{ex.emoji} {ex.ko}</p>
-                        <p className="text-xs text-ink/50">{ex.translations[student.nativeLanguage ?? "en"]}</p>
-                      </div>
-                    ))}
+                    <p className="text-sm text-ink">{m.translations[student.nativeLanguage ?? "en"]}</p>
+                    {examples.length > 0 && (
+                      <>
+                        <p className="mt-1 text-xs font-bold text-duo-blue-dark">{t("practiceExampleLabel", student.nativeLanguage)}</p>
+                        {examples.map((ex) => (
+                          <div key={ex.id} className="text-sm">
+                            <p className="font-bold text-ink">{ex.emoji} {ex.ko}</p>
+                            <p className="text-xs text-ink/50">{ex.translations[student.nativeLanguage ?? "en"]}</p>
+                          </div>
+                        ))}
+                      </>
+                    )}
                   </div>
                 )}
 
                 <button
-                  onClick={() => handleComplete(m.id)}
-                  disabled={done || completingId === m.id}
+                  onClick={() => (done ? handleUndo(m.id) : handleComplete(m.id))}
+                  disabled={busyId === m.id}
                   className={`mt-3 w-full rounded-2xl border-2 py-2 text-sm font-bold ${
                     done
                       ? "border-duo-green bg-duo-green text-white"
                       : "border-duo-pink bg-duo-pink/10 text-duo-pink-dark"
                   }`}
                 >
-                  {done ? "완료했어요! ✅" : completingId === m.id ? "저장 중..." : `실천했어요! (+${PRACTICE_REWARD}P)`}
+                  {busyId === m.id
+                    ? "저장 중..."
+                    : done
+                      ? "완료했어요! ✅ (다시 누르면 취소)"
+                      : `실천했어요! (+${PRACTICE_REWARD}P)`}
                 </button>
               </Card>
             );

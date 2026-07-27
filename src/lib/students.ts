@@ -64,6 +64,7 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     ownedRoomColors: (data.ownedRoomColors as string[]) ?? [],
     roomColor: (data.roomColor as string) ?? null,
     teacherMessage: (data.teacherMessage as Student["teacherMessage"]) ?? null,
+    lastChatLog: (data.lastChatLog as Student["lastChatLog"]) ?? null,
     createdAt: (data.createdAt as number) ?? Date.now(),
   };
 }
@@ -94,6 +95,7 @@ export async function createStudent(params: { classId: string; nickname: string;
     ownedRoomColors: [],
     roomColor: null,
     teacherMessage: null,
+    lastChatLog: null,
     createdAt: Date.now(),
   });
   return toStudent(docRef.id, { classId: params.classId, pinCode, nickname: params.nickname, grade: params.grade });
@@ -220,6 +222,26 @@ export async function completeMission(studentId: string, missionId: string, rewa
     practiceSuccessCount: increment(1),
     xp: increment(reward),
     points: increment(reward),
+  });
+}
+
+// Undoes a mistaken tap: reverses exactly what completeMission granted.
+export async function undoMission(studentId: string, missionId: string, reward: number) {
+  if (isDemoId(studentId)) {
+    updateDemoStudent((s) => ({
+      ...s,
+      practiceChecked: s.practiceChecked.filter((id) => id !== missionId),
+      practiceSuccessCount: Math.max(0, s.practiceSuccessCount - 1),
+      xp: Math.max(0, s.xp - reward),
+      points: Math.max(0, s.points - reward),
+    }));
+    return;
+  }
+  await updateDoc(doc(db, "students", studentId), {
+    practiceChecked: arrayRemove(missionId),
+    practiceSuccessCount: increment(-1),
+    xp: increment(-reward),
+    points: increment(-reward),
   });
 }
 

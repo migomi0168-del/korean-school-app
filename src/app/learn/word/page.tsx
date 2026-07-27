@@ -14,6 +14,7 @@ import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
+import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { t } from "@/lib/i18n";
 import type { Word } from "@/types";
 
@@ -77,9 +78,11 @@ export default function WordLearnPage() {
     // Write immediately (not batched at session end) so nothing is lost if
     // the student quits partway through instead of finishing all questions.
     if (ok) {
+      playCorrectSound();
       setSessionXp((x) => x + XP_REWARD.wordCorrect);
       pendingWriteRef.current = addXp(student.id, XP_REWARD.wordCorrect);
     } else {
+      playWrongSound();
       pendingWriteRef.current = recordWrongWord(student.id, q.word.id);
     }
   }

@@ -49,6 +49,12 @@ const DICT = {
     vi: "Cách nói tự nhiên hơn là:",
     ja: "より自然な言い方は：",
   },
+  translatedLabel: {
+    zh: "韩语可以这样说：",
+    en: "In Korean, say it like this:",
+    vi: "Tiếng Hàn thì nói thế này:",
+    ja: "韓国語ではこう言います：",
+  },
 } as const;
 
 type DictKey = keyof typeof DICT;

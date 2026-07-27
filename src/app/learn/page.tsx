@@ -2,8 +2,15 @@
 
 import Link from "next/link";
 import { Card } from "@/components/common/Card";
+import { useStudentSession } from "@/hooks/useStudentSession";
+import { getWeakestCategory } from "@/lib/weakness";
+import { getSection } from "@/lib/content";
 
 export default function LearnHubPage() {
+  const { student } = useStudentSession();
+  const weakestCategory = student ? getWeakestCategory(student) : null;
+  const weakestSection = weakestCategory ? getSection(weakestCategory) : null;
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       <Link href="/home" className="text-sm text-ink/40">
@@ -30,6 +37,20 @@ export default function LearnHubPage() {
           </div>
         </Card>
       </Link>
+
+      {weakestSection && (
+        <Link href={`/learn/sentence?category=${weakestSection.id}&next=${encodeURIComponent("/learn")}`}>
+          <Card className="flex items-center gap-4 border-duo-pink bg-duo-pink/5">
+            <div className="text-4xl">🎯</div>
+            <div>
+              <p className="font-display text-lg text-duo-pink-dark">AI 추천 학습</p>
+              <p className="text-xs text-ink/50">
+                {weakestSection.emoji} {weakestSection.name} 집중 연습 (자주 틀리는 부분이에요)
+              </p>
+            </div>
+          </Card>
+        </Link>
+      )}
     </div>
   );
 }

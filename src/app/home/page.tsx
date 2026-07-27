@@ -54,6 +54,7 @@ export default function HomePage() {
           avatar={student.avatar}
           accessoryId={student.equippedAccessory}
           xp={student.xp}
+          points={student.points}
           streakCount={student.streakCount}
         />
         <button onClick={logout} className="mr-4 text-xs text-ink/40 underline">

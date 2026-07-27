@@ -10,14 +10,17 @@ import { TTSButton } from "@/components/learn/TTSButton";
 import { ContextTag } from "@/components/learn/ContextTag";
 import { MicButton } from "@/components/learn/MicButton";
 import { phrases, getPhrasesForSection } from "@/lib/content";
-import { isPhraseCorrectSmart } from "@/lib/grading";
+import { gradePhrase, isPhraseCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongPhrase } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
+import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { t } from "@/lib/i18n";
 import type { Phrase } from "@/types";
 
 const QUESTION_COUNT = 6;
+
+type Phase = "answering" | "close" | "correct" | "wrong";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -42,9 +45,9 @@ function SentenceLearnContent() {
   });
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");
+  const [retryInput, setRetryInput] = useState("");
   const [grading, setGrading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [correct, setCorrect] = useState(false);
+  const [phase, setPhase] = useState<Phase>("answering");
   const [sessionXp, setSessionXp] = useState(0);
   const [saving, setSaving] = useState(false);
   const startXpRef = useRef<number | null>(null);
@@ -65,19 +68,39 @@ function SentenceLearnContent() {
     return null;
   }
 
+  function grantCredit() {
+    if (!student) return;
+    playCorrectSound();
+    setPhase("correct");
+    setSessionXp((x) => x + XP_REWARD.phraseCorrect);
+    pendingWriteRef.current = addXp(student.id, XP_REWARD.phraseCorrect);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (submitted || grading || !student) return;
+    if (phase !== "answering" || grading || !student) return;
     setGrading(true);
-    const ok = await isPhraseCorrectSmart(input, q);
+    const verdict = await gradePhrase(input, q);
     setGrading(false);
-    setCorrect(ok);
-    setSubmitted(true);
-    if (ok) {
-      setSessionXp((x) => x + XP_REWARD.phraseCorrect);
-      pendingWriteRef.current = addXp(student.id, XP_REWARD.phraseCorrect);
+    if (verdict === "correct") {
+      grantCredit();
+    } else if (verdict === "close") {
+      setPhase("close");
+      setRetryInput("");
     } else {
+      playWrongSound();
+      setPhase("wrong");
       pendingWriteRef.current = recordWrongPhrase(student.id, q.id);
+    }
+  }
+
+  function handleRetry(e: React.FormEvent) {
+    e.preventDefault();
+    if (phase !== "close") return;
+    if (isPhraseCorrect(retryInput, q)) {
+      grantCredit();
+    } else {
+      setRetryInput("");
     }
   }
 
@@ -85,7 +108,7 @@ function SentenceLearnContent() {
     if (!isLast) {
       setIndex((i) => i + 1);
       setInput("");
-      setSubmitted(false);
+      setPhase("answering");
       return;
     }
     setSaving(true);
@@ -114,29 +137,56 @@ function SentenceLearnContent() {
         <p className="text-xs text-ink/40">{t("typeSentenceHint", nativeLanguage)}</p>
       </Card>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            disabled={submitted || grading}
-            autoFocus
-            placeholder="한국어 문장으로 입력하거나 마이크를 누르세요"
-            className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-pink disabled:opacity-60"
-          />
-          <MicButton onResult={setInput} disabled={submitted || grading} />
-        </div>
-        {!submitted && (
+      {phase === "answering" && (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={grading}
+              autoFocus
+              placeholder="한국어 문장으로 입력하거나 마이크를 누르세요"
+              className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-pink disabled:opacity-60"
+            />
+            <MicButton onResult={setInput} disabled={grading} />
+          </div>
           <Button type="submit" variant="pink" disabled={!input.trim() || grading}>
             {grading ? "채점 중..." : "확인"}
           </Button>
-        )}
-      </form>
+        </form>
+      )}
 
-      {submitted && (
-        <div className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center ${correct ? "border-duo-green bg-duo-green/10" : "border-duo-red bg-duo-red/10"}`}>
-          <p className={`font-display text-xl ${correct ? "text-duo-green-dark" : "text-duo-red"}`}>
-            {correct ? "정답이에요! 🎉" : "아쉬워요"}
+      {phase === "close" && (
+        <>
+          <div className="flex flex-col items-center gap-2 rounded-2xl border-2 border-duo-yellow bg-duo-yellow/10 p-4 text-center">
+            <p className="font-display text-lg text-duo-yellow-dark">🤔 의미는 통해요! 모범 답안을 보고 따라 써볼까요?</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-ink/60">모범 답안: <span className="font-bold text-ink">{q.ko}</span></p>
+              <TTSButton text={q.ko} size="sm" />
+            </div>
+          </div>
+          <form onSubmit={handleRetry} className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <input
+                value={retryInput}
+                onChange={(e) => setRetryInput(e.target.value)}
+                autoFocus
+                placeholder="모범 답안을 그대로 따라 써보세요"
+                className="w-full rounded-2xl border-2 border-duo-gray bg-white px-4 py-4 text-center font-display text-xl outline-none focus:border-duo-yellow"
+              />
+              <MicButton onResult={setRetryInput} />
+            </div>
+            <Button type="submit" variant="yellow" disabled={!retryInput.trim()}>
+              확인
+            </Button>
+          </form>
+        </>
+      )}
+
+      {(phase === "correct" || phase === "wrong") && (
+        <div className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center ${phase === "correct" ? "border-duo-green bg-duo-green/10" : "border-duo-red bg-duo-red/10"}`}>
+          <p className={`font-display text-xl ${phase === "correct" ? "text-duo-green-dark" : "text-duo-red"}`}>
+            {phase === "correct" ? "정답이에요! 🎉" : "아쉬워요"}
           </p>
           <div className="flex items-center gap-2">
             <p className="text-sm text-ink/60">모범 답안: <span className="font-bold text-ink">{q.ko}</span></p>
@@ -145,8 +195,8 @@ function SentenceLearnContent() {
         </div>
       )}
 
-      {submitted && (
-        <Button onClick={handleNext} disabled={saving} variant={correct ? "green" : "gray"}>
+      {(phase === "correct" || phase === "wrong") && (
+        <Button onClick={handleNext} disabled={saving} variant={phase === "correct" ? "green" : "gray"}>
           {saving ? "저장 중..." : isLast ? "결과 보기" : "다음"}
         </Button>
       )}

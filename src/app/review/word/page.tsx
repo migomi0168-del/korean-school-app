@@ -14,6 +14,7 @@ import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, clearWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
+import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { t } from "@/lib/i18n";
 import type { Word } from "@/types";
 
@@ -58,11 +59,14 @@ export default function ReviewWordPage() {
     setCorrect(ok);
     setSubmitted(true);
     if (ok) {
+      playCorrectSound();
       setSessionXp((x) => x + XP_REWARD.wordCorrect);
       pendingWriteRef.current = Promise.all([
         addXp(student.id, XP_REWARD.wordCorrect),
         clearWrongWord(student.id, q.id),
       ]);
+    } else {
+      playWrongSound();
     }
   }
 

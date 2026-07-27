@@ -39,6 +39,7 @@ function createDemoStudent(): Student {
     ownedRoomColors: [],
     roomColor: null,
     teacherMessage: null,
+    lastChatLog: null,
     createdAt: Date.now(),
   };
 }

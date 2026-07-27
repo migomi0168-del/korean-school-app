@@ -10,6 +10,7 @@ import { isWordCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
+import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { t } from "@/lib/i18n";
 import type { Word } from "@/types";
 
@@ -99,6 +100,7 @@ export default function BombGamePage() {
     if (result !== "falling" || !student) return;
     const word = roundWords[round];
     if (isWordCorrect(value, word.ko)) {
+      playCorrectSound();
       setResult("cleared");
       setScore((s) => s + 1);
       setSessionXp((x) => x + XP_REWARD.bombGame);
@@ -110,6 +112,7 @@ export default function BombGamePage() {
   function handleMiss() {
     if (result !== "falling" || !student) return;
     const word = roundWords[round];
+    playWrongSound();
     setResult("missed");
     pendingWriteRef.current = recordWrongWord(student.id, word.id);
     nextRound(round);

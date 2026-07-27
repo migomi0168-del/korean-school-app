@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MODEL = "gemini-flash-latest";
 
-const BASE_SYSTEM_INSTRUCTION = `너는 초등학생의 한국어 회화 연습을 도와주는 AI야.
-답변은 항상 한국어로, 초등학생이 이해하기 쉬운 짧고 쉬운 문장 1~2개로 해.
-사용자의 마지막 메시지에 어색한 표현, 문법 오류, 혹은 더 자연스럽게 말할 수 있는 부분이 있으면
-correction 필드에 자연스러운 한국어 표현으로 고쳐서 알려주고, 문제가 없으면 correction은 null로 해.
+const BASE_SYSTEM_INSTRUCTION = `너는 초등학생의 한국어 회화 연습 상대야. 실제 사람처럼 행동해.
+답변(reply)은 항상 한국어로, 초등학생이 이해하기 쉬운 짧고 쉬운 문장 1~2개로 해.
+
+학생의 마지막 메시지가 한국어가 아니라 다른 언어로 쓰여 있으면:
+- 그 뜻을 이해한 다음, 그 상황에 자연스럽게 어울리는 한국어 대답을 reply에 써.
+- correction 필드에는 학생이 하려던 말을 한국어로 어떻게 말하면 되는지 알려줘 (예: "그건 한국어로 '~'라고 말해봐!").
+- translated 필드는 true로 해.
+
+학생의 마지막 메시지가 한국어인데 어색한 표현, 문법 오류, 더 자연스러운 표현이 있으면:
+- correction 필드에 더 자연스러운 한국어 표현을 알려주고, translated는 false로 해.
+
+문제가 없으면 correction은 null, translated는 false로 해.
 반드시 JSON으로만 응답해.`;
 
 interface ChatMessage {
@@ -15,11 +23,12 @@ interface ChatMessage {
 
 function buildSystemInstruction(partner?: string, location?: string) {
   if (!partner || !location) return BASE_SYSTEM_INSTRUCTION;
-  const formal = partner.includes("선생님");
   return `${BASE_SYSTEM_INSTRUCTION}
-지금부터 너는 "${partner}" 역할이야. 대화 장소는 "${location}"이고, 그 역할과 장소에 어울리는 상황으로 자연스럽게 대화를 이어가.
-${formal ? "선생님답게 다정한 존댓말을 사용해." : "또래 친구처럼 편안한 반말을 사용해."}
-역할과 장소 설정에서 벗어나지 말고 계속 그 캐릭터를 유지해.`;
+
+지금부터 너는 "${partner}"이고, 지금 있는 장소는 "${location}"이야. AI라는 티를 절대 내지 말고, 진짜 그 사람이 그 장소에 있는 것처럼 실감나게 연기해.
+- 그 장소에서 실제로 있을 법한 상황, 물건, 분위기를 대화에 자연스럽게 녹여내 (예: 급식실이면 지금 먹는 음식 얘기, 도서관이면 조용히 하자는 말, 보건실이면 다친 곳을 걱정하는 말 등).
+- 말투는 그 사람과 학생의 실제 관계를 생각해서 정해. 예를 들어 초등학교 선생님은 학생에게 보통 다정하고 친근한 '해요체'나 부드러운 반말을 섞어 쓰지, 딱딱하고 격식 차린 존댓말은 쓰지 않아. 친구 역할이면 또래처럼 편한 반말을 써. 다른 역할이면 그 사람다운 말투를 자연스럽게 골라.
+- "저는 AI입니다", "도와드릴게요" 같은 챗봇스러운 말은 절대 하지 말고, 끝까지 그 역할과 상황에 몰입해.`;
 }
 
 export async function POST(req: NextRequest) {
@@ -54,6 +63,7 @@ export async function POST(req: NextRequest) {
               properties: {
                 reply: { type: "STRING" },
                 correction: { type: "STRING", nullable: true },
+                translated: { type: "BOOLEAN" },
               },
               required: ["reply"],
             },
@@ -70,7 +80,11 @@ export async function POST(req: NextRequest) {
     const data = await res.json();
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
     const parsed = JSON.parse(text);
-    return NextResponse.json({ reply: parsed.reply ?? "...", correction: parsed.correction ?? null });
+    return NextResponse.json({
+      reply: parsed.reply ?? "...",
+      correction: parsed.correction ?? null,
+      translated: Boolean(parsed.translated),
+    });
   } catch {
     return NextResponse.json({ error: "AI 서버 연결에 실패했어요." }, { status: 500 });
   }

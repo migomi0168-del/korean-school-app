@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
@@ -8,12 +8,16 @@ import { Card } from "@/components/common/Card";
 import { MicButton } from "@/components/learn/MicButton";
 import { TTSButton } from "@/components/learn/TTSButton";
 import { useStudentSession } from "@/hooks/useStudentSession";
+import { updateStudent } from "@/lib/students";
+import { registerHomeGuard } from "@/lib/navGuard";
 import { t } from "@/lib/i18n";
+import { getLanguage, STT_LANG } from "@/lib/languages";
 
 interface Message {
   role: "user" | "ai";
   text: string;
   correction?: string | null;
+  translated?: boolean;
 }
 
 const PARTNERS = ["친구", "선생님", "기타"] as const;
@@ -39,6 +43,19 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [voiceLang, setVoiceLang] = useState<"ko" | "native">("ko");
+  const [showExitModal, setShowExitModal] = useState(false);
+
+  const hasConversation = started && messages.length > 1;
+
+  useEffect(() => {
+    if (!hasConversation) {
+      registerHomeGuard(null);
+      return;
+    }
+    registerHomeGuard(() => setShowExitModal(true));
+    return () => registerHomeGuard(null);
+  }, [hasConversation]);
 
   if (loading) return null;
   if (!student) {
@@ -54,6 +71,20 @@ export default function ChatPage() {
     if (!canStart) return;
     setMessages([{ role: "ai", text: buildOpener(partnerLabel, locationLabel) }]);
     setStarted(true);
+  }
+
+  async function handleSaveAndExit() {
+    if (student) {
+      await updateStudent(student.id, {
+        lastChatLog: {
+          partner: partnerLabel,
+          location: locationLabel,
+          messages: messages.map((m) => ({ role: m.role, text: m.text })),
+          savedAt: Date.now(),
+        },
+      });
+    }
+    router.push("/home");
   }
 
   async function handleSend(e: React.FormEvent) {
@@ -78,7 +109,7 @@ export default function ChatPage() {
       if (data.error) {
         setMessages((prev) => [...prev, { role: "ai", text: "미안, 지금은 대답하기 어려워. 다시 말해줄래?" }]);
       } else {
-        setMessages((prev) => [...prev, { role: "ai", text: data.reply, correction: data.correction }]);
+        setMessages((prev) => [...prev, { role: "ai", text: data.reply, correction: data.correction, translated: data.translated }]);
       }
     } catch {
       setMessages((prev) => [...prev, { role: "ai", text: "연결에 문제가 생겼어. 잠시 후 다시 시도해줘." }]);
@@ -178,7 +209,8 @@ export default function ChatPage() {
             </div>
             {m.correction && (
               <div className="mt-1 max-w-[80%] rounded-xl bg-duo-yellow/20 px-3 py-1 text-xs text-duo-yellow-dark">
-                💡 {t("correctionLabel", student.nativeLanguage)} <span className="font-bold">{m.correction}</span>
+                {m.translated ? "🌐" : "💡"} {t(m.translated ? "translatedLabel" : "correctionLabel", student.nativeLanguage)}{" "}
+                <span className="font-bold">{m.correction}</span>
               </div>
             )}
           </div>
@@ -186,18 +218,62 @@ export default function ChatPage() {
         {sending && <p className="text-sm text-ink/40">AI가 답장 쓰는 중...</p>}
       </div>
 
+      {student.nativeLanguage && (
+        <div className="flex gap-2 text-xs">
+          <button
+            type="button"
+            onClick={() => setVoiceLang("ko")}
+            className={`rounded-full border-2 px-3 py-1 font-bold ${
+              voiceLang === "ko" ? "border-duo-green bg-duo-green/10 text-duo-green-dark" : "border-duo-gray text-ink/40"
+            }`}
+          >
+            🇰🇷 한국어로 말하기
+          </button>
+          <button
+            type="button"
+            onClick={() => setVoiceLang("native")}
+            className={`rounded-full border-2 px-3 py-1 font-bold ${
+              voiceLang === "native" ? "border-duo-green bg-duo-green/10 text-duo-green-dark" : "border-duo-gray text-ink/40"
+            }`}
+          >
+            {getLanguage(student.nativeLanguage)?.emoji} 모국어로 말하기
+          </button>
+        </div>
+      )}
+
       <form onSubmit={handleSend} className="flex gap-2">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="한국어로 메시지를 입력하세요..."
+          placeholder="한국어 또는 모국어로 메시지를 입력하세요..."
           className="flex-1 rounded-2xl border-2 border-duo-gray px-4 py-3 outline-none focus:border-duo-green"
         />
-        <MicButton onResult={setInput} disabled={sending} />
+        <MicButton
+          onResult={setInput}
+          disabled={sending}
+          lang={voiceLang === "native" && student.nativeLanguage ? STT_LANG[student.nativeLanguage] : "ko-KR"}
+        />
         <Button type="submit" fullWidth={false} disabled={sending || !input.trim()}>
           전송
         </Button>
       </form>
+
+      {showExitModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6">
+          <div className="flex w-full max-w-xs flex-col gap-3 rounded-3xl bg-white p-5 text-center shadow-lg">
+            <p className="font-display text-lg">지금까지의 대화를 저장할까요?</p>
+            <Button variant="green" onClick={handleSaveAndExit}>
+              대화 저장하고 나가기
+            </Button>
+            <Button variant="gray" onClick={() => router.push("/home")}>
+              저장 안 하고 나가기
+            </Button>
+            <button onClick={() => setShowExitModal(false)} className="text-sm text-ink/40 underline">
+              취소
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

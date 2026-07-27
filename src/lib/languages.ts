@@ -10,3 +10,12 @@ export const LANGUAGES: { code: NativeLanguage; label: string; emoji: string }[]
 export function getLanguage(code: NativeLanguage | null) {
   return LANGUAGES.find((l) => l.code === code) ?? null;
 }
+
+// BCP-47 tags for the Web Speech API's SpeechRecognition (STT), used when a
+// student wants to dictate in their native language instead of Korean.
+export const STT_LANG: Record<NativeLanguage, string> = {
+  zh: "zh-CN",
+  en: "en-US",
+  vi: "vi-VN",
+  ja: "ja-JP",
+};

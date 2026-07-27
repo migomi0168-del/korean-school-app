@@ -20,6 +20,7 @@ export default function MyPage() {
   const [editingLang, setEditingLang] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [loadingFeedback, setLoadingFeedback] = useState(false);
+  const [showChatLog, setShowChatLog] = useState(false);
 
   if (loading) return null;
   if (!student) {
@@ -160,6 +161,31 @@ export default function MyPage() {
           </div>
         </div>
       </Card>
+
+      {student.lastChatLog && (
+        <Card>
+          <div className="flex items-center justify-between">
+            <p className="font-display text-lg">💬 최근 대화 기록</p>
+            <button onClick={() => setShowChatLog((v) => !v)} className="text-xs font-bold text-duo-blue-dark underline">
+              {showChatLog ? "닫기" : "보기"}
+            </button>
+          </div>
+          <p className="mt-1 text-xs text-ink/50">
+            {student.lastChatLog.partner} · {student.lastChatLog.location} ·{" "}
+            {new Date(student.lastChatLog.savedAt).toLocaleDateString("ko-KR")}
+          </p>
+          {showChatLog && (
+            <div className="mt-3 flex max-h-64 flex-col gap-2 overflow-y-auto rounded-xl bg-duo-gray/10 p-3">
+              {student.lastChatLog.messages.map((m, i) => (
+                <p key={i} className={`text-sm ${m.role === "user" ? "text-right text-duo-blue-dark" : "text-ink"}`}>
+                  {m.role === "ai" && "🤖 "}
+                  {m.text}
+                </p>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       <Card>
         <p className="mb-3 font-display text-lg">방탈출 진행</p>

@@ -7,12 +7,14 @@ export function XPHeader({
   avatar,
   accessoryId,
   xp,
+  points,
   streakCount,
 }: {
   nickname: string;
   avatar: string | null;
   accessoryId?: string | null;
   xp: number;
+  points: number;
   streakCount: number;
 }) {
   const level = levelFromXp(xp);
@@ -32,6 +34,7 @@ export function XPHeader({
           <span className="text-xs font-bold text-duo-green-dark">Lv.{level}</span>
           <ProgressBar value={(into / XP_PER_LEVEL) * 100} />
         </div>
+        <p className="mt-0.5 text-xs font-bold text-duo-yellow-dark">💰 {points}P</p>
       </div>
     </div>
   );

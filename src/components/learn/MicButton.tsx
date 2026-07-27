@@ -29,7 +29,15 @@ function getSpeechRecognition(): (new () => SpeechRecognitionLike) | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
-export function MicButton({ onResult, disabled }: { onResult: (text: string) => void; disabled?: boolean }) {
+export function MicButton({
+  onResult,
+  disabled,
+  lang = "ko-KR",
+}: {
+  onResult: (text: string) => void;
+  disabled?: boolean;
+  lang?: string;
+}) {
   const [listening, setListening] = useState(false);
   const [supported, setSupported] = useState(true);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
@@ -45,7 +53,7 @@ export function MicButton({ onResult, disabled }: { onResult: (text: string) => 
     const SpeechRecognitionCtor = getSpeechRecognition();
     if (!SpeechRecognitionCtor) return;
     const recognition = new SpeechRecognitionCtor();
-    recognition.lang = "ko-KR";
+    recognition.lang = lang;
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
     recognition.onresult = (event) => {

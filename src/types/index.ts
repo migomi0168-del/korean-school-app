@@ -7,6 +7,13 @@ export interface TeacherMessage {
   read: boolean;
 }
 
+export interface ChatLog {
+  partner: string;
+  location: string;
+  messages: { role: "user" | "ai"; text: string }[];
+  savedAt: number;
+}
+
 export interface Student {
   id: string;
   classId: string;
@@ -32,6 +39,7 @@ export interface Student {
   ownedRoomColors: string[];
   roomColor: string | null;
   teacherMessage: TeacherMessage | null;
+  lastChatLog: ChatLog | null;
   createdAt: number;
 }
 
@@ -97,6 +105,7 @@ export interface RoomColor {
 export interface Mission {
   id: string;
   category: string;
+  ko: string;
   translations: Record<NativeLanguage, string>;
   exampleIds: string[];
 }

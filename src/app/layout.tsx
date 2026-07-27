@@ -3,6 +3,7 @@ import { Jua, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { StudentSessionProvider } from "@/hooks/useStudentSession";
 import { TeacherAuthProvider } from "@/hooks/useTeacherAuth";
+import { HomeButton } from "@/components/common/HomeButton";
 
 const jua = Jua({
   variable: "--font-display",
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-cream text-ink font-body">
         <TeacherAuthProvider>
           <StudentSessionProvider>
+            <HomeButton />
             <div className="mx-auto w-full max-w-md flex-1 flex flex-col">{children}</div>
           </StudentSessionProvider>
         </TeacherAuthProvider>

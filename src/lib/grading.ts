@@ -51,23 +51,26 @@ export function isPhraseCorrect(input: string, phrase: Phrase, threshold = 0.75)
   return candidates.some((c) => bestSimilarity(input, c) >= threshold);
 }
 
-// Fast local check first; only falls back to an AI judgment call when that
-// fails, so things like conjugation variants ("반갑다" vs "반가워") that no
-// hand-written alternates list or string-similarity threshold can fully
-// anticipate still get graded correctly, without adding latency to the
-// common case where the local check already matches.
-export async function isPhraseCorrectSmart(input: string, phrase: Phrase): Promise<boolean> {
-  if (isPhraseCorrect(input, phrase)) return true;
+export type GradeVerdict = "correct" | "close" | "wrong";
+
+// Fast local check first for an exact/near-exact match (instant credit).
+// Only falls back to an AI judgment call when that fails; if the AI says the
+// meaning/context is right but the wording isn't one of the known exact
+// forms, that's "close" — not credited yet. The caller should show the
+// model answer and require the student to repeat it back (checked locally)
+// before granting credit, rather than auto-accepting any paraphrase.
+export async function gradePhrase(input: string, phrase: Phrase): Promise<GradeVerdict> {
+  if (isPhraseCorrect(input, phrase)) return "correct";
   try {
     const res = await fetch("/api/grade", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ input, answer: phrase.ko, alternates: phrase.alternates ?? [] }),
     });
-    if (!res.ok) return false;
+    if (!res.ok) return "wrong";
     const data = await res.json();
-    return Boolean(data.correct);
+    return data.correct ? "close" : "wrong";
   } catch {
-    return false;
+    return "wrong";
   }
 }
