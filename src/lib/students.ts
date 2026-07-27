@@ -283,6 +283,14 @@ export async function acknowledgeTeacherMessage(studentId: string) {
   await updateDoc(doc(db, "students", studentId), { "teacherMessage.read": true });
 }
 
+// Lets a teacher self-serve a forgotten/lost PIN instead of needing a direct
+// database edit, reusing the same uniqueness check createStudent relies on.
+export async function resetStudentPin(studentId: string): Promise<string> {
+  const pinCode = await generateUniquePin();
+  await updateDoc(doc(db, "students", studentId), { pinCode });
+  return pinCode;
+}
+
 // Lets a teacher push "today's focus" to one or more students at once,
 // instead of only ever relying on each student's own auto-picked weak spot.
 export async function assignTeacherContent(studentIds: string[], situationId: string, label: string) {

@@ -7,7 +7,7 @@ import { Card } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
 import { Avatar } from "@/components/common/Avatar";
 import { useTeacherAuth } from "@/hooks/useTeacherAuth";
-import { subscribeToStudent, subscribeToClassStudents, sendTeacherMessage, clearTeacherAssignment } from "@/lib/students";
+import { subscribeToStudent, subscribeToClassStudents, sendTeacherMessage, clearTeacherAssignment, resetStudentPin } from "@/lib/students";
 import { getWord, getPhrase, sections } from "@/lib/content";
 import { levelFromXp, todayStr } from "@/lib/xp";
 import type { NativeLanguage, Student } from "@/types";
@@ -25,6 +25,9 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
+  const [confirmingPinReset, setConfirmingPinReset] = useState(false);
+  const [resettingPin, setResettingPin] = useState(false);
+  const [newPin, setNewPin] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = subscribeToStudent(id, setStudent);
@@ -36,6 +39,15 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
     const unsubscribe = subscribeToClassStudents(student.classId, setClassmates);
     return unsubscribe;
   }, [student?.classId]);
+
+  async function handleResetPin() {
+    if (!student || resettingPin) return;
+    setResettingPin(true);
+    const pin = await resetStudentPin(student.id);
+    setResettingPin(false);
+    setConfirmingPinReset(false);
+    setNewPin(pin);
+  }
 
   async function handleSendMessage() {
     if (!student || !messageText.trim() || sending) return;
@@ -76,9 +88,14 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <Link href="/teacher/dashboard" className="text-sm text-ink/40">
-        ← 대시보드로
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/teacher/dashboard" className="text-sm text-ink/40">
+          ← 대시보드로
+        </Link>
+        <Link href={`/teacher/report/${student.id}`} className="text-sm font-bold text-duo-blue-dark underline">
+          📋 성장 기록 출력
+        </Link>
+      </div>
 
       <div className="flex flex-col items-center gap-2 py-2">
         <Avatar emoji={student.avatar} accessoryId={student.equippedAccessory} size="lg" />
@@ -86,6 +103,26 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
         <p className="text-sm text-ink/50">
           {student.grade}학년 · {student.nativeLanguage ? LANG_LABEL[student.nativeLanguage] : "언어 미선택"} · PIN {student.pinCode}
         </p>
+
+        {newPin ? (
+          <p className="rounded-xl bg-duo-green/10 px-3 py-2 text-sm font-bold text-duo-green-dark">
+            새 PIN: <span className="tracking-widest">{newPin}</span> — 학생에게 알려주세요
+          </p>
+        ) : confirmingPinReset ? (
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-ink/50">기존 PIN은 더 이상 쓸 수 없어요. 재설정할까요?</span>
+            <button onClick={handleResetPin} disabled={resettingPin} className="font-bold text-duo-red underline">
+              {resettingPin ? "재설정 중..." : "재설정"}
+            </button>
+            <button onClick={() => setConfirmingPinReset(false)} className="text-ink/40 underline">
+              취소
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => setConfirmingPinReset(true)} className="text-xs text-ink/40 underline">
+            PIN 재설정
+          </button>
+        )}
       </div>
 
       <Card className="flex justify-around text-center">
