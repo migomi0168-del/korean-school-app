@@ -40,6 +40,7 @@ export interface Student {
   roomColor: string | null;
   teacherMessage: TeacherMessage | null;
   lastChatLog: ChatLog | null;
+  formalMistakeCount: number;
   createdAt: number;
 }
 
@@ -95,11 +96,14 @@ export interface Furniture {
   price: number;
 }
 
+export type RoomPattern = "solid" | "stripes" | "dots";
+
 export interface RoomColor {
   id: string;
   name: string;
-  gradient: string;
   price: number;
+  pattern: RoomPattern;
+  colors: [string, string];
 }
 
 export interface Mission {

@@ -29,3 +29,20 @@ export function getWeakestCategory(student: Student): string | null {
   if (ranked.length === 0 || ranked[0].count === 0) return null;
   return ranked[0].categoryId;
 }
+
+export type Recommendation = { type: "category"; categoryId: string } | { type: "formal" } | null;
+
+// AI 추천학습: picks between "practice your weakest location" and "practice
+// polite speech" depending on which signal is stronger, instead of only ever
+// looking at wrong-answer counts by category. Returns null when there isn't
+// enough data yet to recommend anything.
+export function getRecommendation(student: Student): Recommendation {
+  const ranked = getWeaknessByCategory(student);
+  const topCategoryCount = ranked.length > 0 ? ranked[0].count : 0;
+  const formalCount = student.formalMistakeCount;
+
+  if (topCategoryCount === 0 && formalCount === 0) return null;
+  if (formalCount >= 3 && formalCount >= topCategoryCount) return { type: "formal" };
+  if (topCategoryCount > 0) return { type: "category", categoryId: ranked[0].categoryId };
+  return { type: "formal" };
+}

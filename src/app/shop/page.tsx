@@ -7,7 +7,7 @@ import { Card } from "@/components/common/Card";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { accessories } from "@/lib/accessories";
 import { furniture } from "@/lib/furniture";
-import { roomColors } from "@/lib/roomColors";
+import { roomColors, getRoomBackgroundStyle } from "@/lib/roomColors";
 import { buyAccessory, buyFurniture, buyRoomColor, selectRoomColor, updateStudent } from "@/lib/students";
 
 type Tab = "accessory" | "furniture" | "color";
@@ -141,7 +141,7 @@ export default function ShopPage() {
               const canAfford = student.points >= c.price;
               return (
                 <div key={c.id} className="flex flex-col items-center gap-2 rounded-2xl border-2 border-duo-gray p-3 text-center">
-                  <div className={`h-12 w-full rounded-xl bg-gradient-to-br ${c.gradient}`} />
+                  <div style={getRoomBackgroundStyle(c)} className="h-12 w-full rounded-xl" />
                   <span className="text-sm font-bold">{c.name}</span>
                   {owned ? (
                     <button

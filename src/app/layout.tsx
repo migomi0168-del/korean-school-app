@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${jua.variable} ${notoSansKr.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-cream text-ink font-body">
+      <body className="min-h-full flex flex-col overflow-x-hidden bg-cream text-ink font-body">
         <TeacherAuthProvider>
           <StudentSessionProvider>
             <HomeButton />

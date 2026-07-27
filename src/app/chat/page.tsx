@@ -185,20 +185,20 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-3 p-4">
-      <div className="flex items-center justify-between">
-        <button onClick={() => setStarted(false)} className="text-sm text-ink/40">
+      <div className="flex items-center justify-between gap-2">
+        <button onClick={() => setStarted(false)} className="shrink-0 text-sm text-ink/40">
           ← 다시 설정하기
         </button>
-        <p className="font-display text-sm text-ink/60">{partnerLabel} · {locationLabel}</p>
-        <span className="w-10" />
+        <p className="min-w-0 truncate font-display text-sm text-ink/60">{partnerLabel} · {locationLabel}</p>
+        <span className="w-10 shrink-0" />
       </div>
 
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto rounded-3xl border-2 border-duo-gray bg-white p-4">
         {messages.map((m, i) => (
-          <div key={i} className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
-            <div className={`flex max-w-[80%] items-end gap-2 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+          <div key={i} className={`flex w-full flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
+            <div className={`flex min-w-0 max-w-[80%] items-end gap-2 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
               <div
-                className={`rounded-2xl px-4 py-2 ${
+                className={`min-w-0 shrink break-words rounded-2xl px-4 py-2 ${
                   m.role === "user" ? "bg-duo-blue text-white" : "bg-duo-gray/60 text-ink"
                 }`}
               >
@@ -219,11 +219,11 @@ export default function ChatPage() {
       </div>
 
       {student.nativeLanguage && (
-        <div className="flex gap-2 text-xs">
+        <div className="flex flex-wrap gap-2 text-xs">
           <button
             type="button"
             onClick={() => setVoiceLang("ko")}
-            className={`rounded-full border-2 px-3 py-1 font-bold ${
+            className={`shrink-0 rounded-full border-2 px-3 py-1 font-bold ${
               voiceLang === "ko" ? "border-duo-green bg-duo-green/10 text-duo-green-dark" : "border-duo-gray text-ink/40"
             }`}
           >
@@ -232,7 +232,7 @@ export default function ChatPage() {
           <button
             type="button"
             onClick={() => setVoiceLang("native")}
-            className={`rounded-full border-2 px-3 py-1 font-bold ${
+            className={`shrink-0 rounded-full border-2 px-3 py-1 font-bold ${
               voiceLang === "native" ? "border-duo-green bg-duo-green/10 text-duo-green-dark" : "border-duo-gray text-ink/40"
             }`}
           >
@@ -241,19 +241,19 @@ export default function ChatPage() {
         </div>
       )}
 
-      <form onSubmit={handleSend} className="flex gap-2">
+      <form onSubmit={handleSend} className="flex min-w-0 gap-2">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="한국어 또는 모국어로 메시지를 입력하세요..."
-          className="flex-1 rounded-2xl border-2 border-duo-gray px-4 py-3 outline-none focus:border-duo-green"
+          placeholder="한국어 또는 모국어로 입력..."
+          className="min-w-0 flex-1 rounded-2xl border-2 border-duo-gray px-3 py-3 outline-none focus:border-duo-green"
         />
         <MicButton
           onResult={setInput}
           disabled={sending}
           lang={voiceLang === "native" && student.nativeLanguage ? STT_LANG[student.nativeLanguage] : "ko-KR"}
         />
-        <Button type="submit" fullWidth={false} disabled={sending || !input.trim()}>
+        <Button type="submit" fullWidth={false} disabled={sending || !input.trim()} className="shrink-0 px-4">
           전송
         </Button>
       </form>

@@ -51,6 +51,29 @@ export function isPhraseCorrect(input: string, phrase: Phrase, threshold = 0.75)
   return candidates.some((c) => bestSimilarity(input, c) >= threshold);
 }
 
+// Polite endings (해요체/합쇼체): "~요", "~습니다/ㅂ니다", "~십시오". Used for
+// self-designed practice with a 선생님 partner, where the point of the
+// exercise is specifically to force polite speech — the formality-agnostic
+// bestSimilarity() relaxation above is deliberately NOT used here.
+export function isFormalKorean(input: string) {
+  const n = normalize(input);
+  return /(요|니다|십시오)$/.test(n);
+}
+
+export function isPhraseCorrectFormal(input: string, phrase: Phrase, threshold = 0.75) {
+  if (!isFormalKorean(input)) return false;
+  const candidates = [phrase.ko, ...(phrase.alternates ?? [])].filter(isFormalKorean);
+  return candidates.some((c) => similarity(input, c) >= threshold);
+}
+
+// The polite form to show/require on the close-retry step, when the phrase's
+// main form itself isn't polite (falls back to phrase.ko regardless so there
+// is always something to show).
+export function getFormalForm(phrase: Phrase) {
+  const candidates = [phrase.ko, ...(phrase.alternates ?? [])];
+  return candidates.find(isFormalKorean) ?? phrase.ko;
+}
+
 export type GradeVerdict = "correct" | "close" | "wrong";
 
 // Fast local check first for an exact/near-exact match (instant credit).
@@ -61,6 +84,27 @@ export type GradeVerdict = "correct" | "close" | "wrong";
 // before granting credit, rather than auto-accepting any paraphrase.
 export async function gradePhrase(input: string, phrase: Phrase): Promise<GradeVerdict> {
   if (isPhraseCorrect(input, phrase)) return "correct";
+  try {
+    const res = await fetch("/api/grade", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input, answer: phrase.ko, alternates: phrase.alternates ?? [] }),
+    });
+    if (!res.ok) return "wrong";
+    const data = await res.json();
+    return data.correct ? "close" : "wrong";
+  } catch {
+    return "wrong";
+  }
+}
+
+// Same shape as gradePhrase, but requires polite speech: a casual-but-
+// correct-meaning answer is never instant-credit — it's "wrong" outright if
+// it isn't even polite in form, so the student has to retype the polite
+// form on the close-retry step to get credit either way.
+export async function gradePhraseFormal(input: string, phrase: Phrase): Promise<GradeVerdict> {
+  if (isPhraseCorrectFormal(input, phrase)) return "correct";
+  if (!isFormalKorean(input)) return "wrong";
   try {
     const res = await fetch("/api/grade", {
       method: "POST",

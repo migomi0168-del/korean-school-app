@@ -8,6 +8,8 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent, acknowledgeTeacherMessage } from "@/lib/students";
 import { XP_REWARD, todayStr, yesterdayStr } from "@/lib/xp";
 import { getEncouragementMessage } from "@/lib/encouragement";
+import { getRoomColor, getRoomBackgroundStyle } from "@/lib/roomColors";
+import { getOwnedFurniture } from "@/lib/furniture";
 
 const MODES = [
   { href: "/learn", emoji: "📖", label: "학습모드", desc: "단어 · 문장 배우기", color: "bg-duo-blue" },
@@ -46,20 +48,34 @@ export default function HomePage() {
     return null;
   }
 
+  const room = getRoomColor(student.roomColor);
+  const ownedFurniture = getOwnedFurniture(student.ownedFurniture);
+
   return (
     <div className="flex flex-1 flex-col">
-      <div className="flex items-center justify-between">
-        <XPHeader
-          nickname={student.nickname}
-          avatar={student.avatar}
-          accessoryId={student.equippedAccessory}
-          xp={student.xp}
-          points={student.points}
-          streakCount={student.streakCount}
-        />
-        <button onClick={logout} className="mr-4 text-xs text-ink/40 underline">
-          나가기
-        </button>
+      <div style={getRoomBackgroundStyle(room)} className="rounded-b-3xl">
+        <div className="flex items-center justify-between">
+          <XPHeader
+            nickname={student.nickname}
+            avatar={student.avatar}
+            accessoryId={student.equippedAccessory}
+            xp={student.xp}
+            points={student.points}
+            streakCount={student.streakCount}
+          />
+          <button onClick={logout} className="mr-4 text-xs text-ink/40 underline">
+            나가기
+          </button>
+        </div>
+        {ownedFurniture.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-2 px-4 pb-3 text-2xl">
+            {ownedFurniture.map((f) => (
+              <span key={f.id} title={f.name}>
+                {f.emoji}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {isDemo && (

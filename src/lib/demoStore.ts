@@ -40,6 +40,7 @@ function createDemoStudent(): Student {
     roomColor: null,
     teacherMessage: null,
     lastChatLog: null,
+    formalMistakeCount: 0,
     createdAt: Date.now(),
   };
 }

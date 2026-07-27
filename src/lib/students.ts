@@ -65,6 +65,7 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     roomColor: (data.roomColor as string) ?? null,
     teacherMessage: (data.teacherMessage as Student["teacherMessage"]) ?? null,
     lastChatLog: (data.lastChatLog as Student["lastChatLog"]) ?? null,
+    formalMistakeCount: (data.formalMistakeCount as number) ?? 0,
     createdAt: (data.createdAt as number) ?? Date.now(),
   };
 }
@@ -96,6 +97,7 @@ export async function createStudent(params: { classId: string; nickname: string;
     roomColor: null,
     teacherMessage: null,
     lastChatLog: null,
+    formalMistakeCount: 0,
     createdAt: Date.now(),
   });
   return toStudent(docRef.id, { classId: params.classId, pinCode, nickname: params.nickname, grade: params.grade });
@@ -192,6 +194,16 @@ export async function selectRoomColor(studentId: string, colorId: string) {
     return;
   }
   await updateDoc(doc(db, "students", studentId), { roomColor: colorId });
+}
+
+// Counts an answer that was correct in meaning but not polite enough during
+// 자기설계학습 with a 선생님 partner — feeds the AI 추천학습 recommendation.
+export async function recordFormalMistake(studentId: string) {
+  if (isDemoId(studentId)) {
+    updateDemoStudent((s) => ({ ...s, formalMistakeCount: s.formalMistakeCount + 1 }));
+    return;
+  }
+  await updateDoc(doc(db, "students", studentId), { formalMistakeCount: increment(1) });
 }
 
 export async function setDailyMissions(studentId: string, dateStr: string, optionIds: string[]) {

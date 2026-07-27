@@ -8,7 +8,7 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { accessories } from "@/lib/accessories";
 import { getOwnedFurniture } from "@/lib/furniture";
-import { getRoomColor } from "@/lib/roomColors";
+import { getRoomColor, getRoomBackgroundStyle } from "@/lib/roomColors";
 import { levelFromXp } from "@/lib/xp";
 
 export default function ClosetPage() {
@@ -37,7 +37,10 @@ export default function ClosetPage() {
       </Link>
       <h1 className="text-center font-display text-2xl">🏠 내 방</h1>
 
-      <div className={`relative flex min-h-56 flex-col items-center justify-between overflow-hidden rounded-3xl border-2 border-duo-gray bg-gradient-to-br ${room.gradient} p-4`}>
+      <div
+        style={getRoomBackgroundStyle(room)}
+        className="relative flex min-h-56 flex-col items-center justify-between overflow-hidden rounded-3xl border-2 border-duo-gray p-4"
+      >
         <p className="self-end text-xs font-bold text-ink/50">Lv.{level} {student.nickname}</p>
         <Avatar emoji={student.avatar} accessoryId={student.equippedAccessory} size="lg" />
         <div className="flex w-full flex-wrap items-end justify-center gap-3 pb-1 text-3xl">
