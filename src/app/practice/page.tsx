@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/common/Card";
+import { TTSButton } from "@/components/learn/TTSButton";
+import { NativeText } from "@/components/common/NativeText";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { setDailyMissions, completeMission, undoMission } from "@/lib/students";
 import { levelFromXp, todayStr } from "@/lib/xp";
@@ -65,7 +67,7 @@ export default function PracticePage() {
         ← 돌아가기
       </Link>
       <h1 className="text-center font-display text-2xl">🌟 오늘의 실천 미션</h1>
-      <p className="text-center text-sm text-ink/50">{t("practiceIntro", student.nativeLanguage)}</p>
+      <p className="text-center text-sm text-ink/50"><NativeText text={t("practiceIntro", student.nativeLanguage)} lang={student.nativeLanguage} /></p>
       <p className="text-center text-xs text-ink/40">
         미션 1개 완료할 때마다 +{PRACTICE_REWARD} 포인트 &amp; XP · 5개 성공하면 레벨 1개 상승!
         (지금까지 {student.practiceSuccessCount}개 성공)
@@ -102,14 +104,23 @@ export default function PracticePage() {
 
                 {isOpen && (
                   <div className="mt-3 flex flex-col gap-2 rounded-xl bg-duo-blue/10 p-3">
-                    <p className="text-sm text-ink">{m.translations[student.nativeLanguage ?? "en"]}</p>
+                    <p className="text-sm text-ink">
+                      <NativeText text={m.translations[student.nativeLanguage ?? "en"]} lang={student.nativeLanguage} />
+                    </p>
                     {examples.length > 0 && (
                       <>
-                        <p className="mt-1 text-xs font-bold text-duo-blue-dark">{t("practiceExampleLabel", student.nativeLanguage)}</p>
+                        <p className="mt-1 text-xs font-bold text-duo-blue-dark">
+                          <NativeText text={t("practiceExampleLabel", student.nativeLanguage)} lang={student.nativeLanguage} />
+                        </p>
                         {examples.map((ex) => (
                           <div key={ex.id} className="text-sm">
-                            <p className="font-bold text-ink">{ex.emoji} {ex.ko}</p>
-                            <p className="text-xs text-ink/50">{ex.translations[student.nativeLanguage ?? "en"]}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="font-bold text-ink">{ex.emoji} {ex.ko}</p>
+                              <TTSButton text={ex.ko} size="sm" />
+                            </div>
+                            <p className="text-xs text-ink/50">
+                              <NativeText text={ex.translations[student.nativeLanguage ?? "en"]} lang={student.nativeLanguage} />
+                            </p>
                           </div>
                         ))}
                       </>

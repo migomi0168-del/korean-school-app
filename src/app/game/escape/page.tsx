@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { sections } from "@/lib/content";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { SectionScene } from "@/components/game/SectionScene";
+import { getNativeLabel } from "@/lib/labelTranslations";
+import { NativeText } from "@/components/common/NativeText";
 
 export default function EscapeSelectPage() {
   const { student, loading } = useStudentSession();
@@ -31,7 +33,14 @@ export default function EscapeSelectPage() {
             <Link key={s.id} href={`/game/escape/${s.id}`} className="relative">
               <SectionScene background={s.background} emoji={s.emoji} />
               <div className="mt-2 flex items-center justify-between px-1">
-                <p className="font-display text-lg">{s.name}</p>
+                <div>
+                  <p className="font-display text-lg">{s.name}</p>
+                  {getNativeLabel(s.name, student.nativeLanguage) && (
+                    <p className="text-xs text-ink/40">
+                      <NativeText text={getNativeLabel(s.name, student.nativeLanguage) ?? ""} lang={student.nativeLanguage} />
+                    </p>
+                  )}
+                </div>
                 <span className="text-sm">{cleared ? "✅ 클리어" : "▶️ 도전하기"}</span>
               </div>
             </Link>

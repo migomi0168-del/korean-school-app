@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/common/Button";
 import { ProgressBar } from "@/components/common/ProgressBar";
+import { NativeText } from "@/components/common/NativeText";
 import { MicButton } from "@/components/learn/MicButton";
 import { words } from "@/lib/content";
 import { isWordCorrect } from "@/lib/grading";
@@ -129,7 +130,7 @@ export default function BombGamePage() {
         </Link>
         <div className="text-6xl">💣</div>
         <h1 className="font-display text-2xl">단어 폭탄 게임</h1>
-        <p className="text-sm text-ink/50">{t("bombWatchHint", nativeLanguage)}</p>
+        <p className="text-sm text-ink/50"><NativeText text={t("bombWatchHint", nativeLanguage)} lang={nativeLanguage} /></p>
         <div className="flex flex-col gap-3 w-full">
           <p className="font-display text-lg">속도 난이도</p>
           {[1, 3, 5].map((s) => (
@@ -191,7 +192,7 @@ export default function BombGamePage() {
           >
             <div className="text-4xl">💣</div>
             <div className="rounded-xl bg-white/90 px-3 py-1 text-sm font-bold">
-              {word.translations[nativeLanguage]}
+              <NativeText text={word.translations[nativeLanguage]} lang={nativeLanguage} />
             </div>
           </div>
         ) : result === "cleared" ? (

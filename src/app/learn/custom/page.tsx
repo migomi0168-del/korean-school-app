@@ -23,6 +23,8 @@ import { addXp, recordWrongPhrase, recordFormalMistake, completeTeacherAssignmen
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { filterByDifficulty } from "@/lib/difficulty";
+import { getNativeLabel } from "@/lib/labelTranslations";
+import { NativeText } from "@/components/common/NativeText";
 import type { Difficulty, Phrase } from "@/types";
 
 const QUESTION_COUNT = 6;
@@ -111,6 +113,11 @@ function CustomLearnContent() {
                 }`}
               >
                 {s.emoji} {s.name}
+                {getNativeLabel(s.name, student.nativeLanguage) && (
+                  <span className="block text-xs font-normal text-ink/40">
+                    <NativeText text={getNativeLabel(s.name, student.nativeLanguage) ?? ""} lang={student.nativeLanguage} />
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -126,6 +133,11 @@ function CustomLearnContent() {
               }`}
             >
               🧑‍🏫 선생님 (존댓말 연습)
+              {getNativeLabel("선생님", student.nativeLanguage) && (
+                <span className="block text-xs font-normal text-ink/40">
+                  <NativeText text={getNativeLabel("선생님", student.nativeLanguage) ?? ""} lang={student.nativeLanguage} />
+                </span>
+              )}
             </button>
             <button
               onClick={() => setPartner("또래 친구")}
@@ -134,6 +146,11 @@ function CustomLearnContent() {
               }`}
             >
               🧒 또래 친구
+              {getNativeLabel("또래 친구", student.nativeLanguage) && (
+                <span className="block text-xs font-normal text-ink/40">
+                  <NativeText text={getNativeLabel("또래 친구", student.nativeLanguage) ?? ""} lang={student.nativeLanguage} />
+                </span>
+              )}
             </button>
           </div>
           {partner === "선생님" && (
@@ -231,7 +248,7 @@ function CustomLearnContent() {
       <Card className="flex flex-col items-center gap-3 py-8 text-center">
         <ContextTag categoryId={q.section} />
         <div className="text-5xl">{q.emoji}</div>
-        <p className="text-xl font-bold text-duo-blue-dark">{q.translations[nativeLanguage]}</p>
+        <p className="text-xl font-bold text-duo-blue-dark"><NativeText text={q.translations[nativeLanguage]} lang={nativeLanguage} /></p>
         <p className="text-xs text-ink/40">
           {isFormalMode ? "선생님께 존댓말로 말해보세요" : "한국어 문장으로 입력하거나 마이크를 누르세요"}
         </p>

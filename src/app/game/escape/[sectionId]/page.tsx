@@ -17,6 +17,7 @@ import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { filterByDifficulty } from "@/lib/difficulty";
 import { t } from "@/lib/i18n";
+import { NativeText } from "@/components/common/NativeText";
 
 type Phase = "answering" | "close" | "correct" | "wrong";
 
@@ -143,8 +144,8 @@ export default function EscapeSectionPage({ params }: { params: Promise<{ sectio
 
       <Card className="flex flex-col items-center gap-3 py-6 text-center">
         <div className="text-4xl">{door.emoji}</div>
-        <p className="text-xl font-bold text-duo-blue-dark">{door.translations[nativeLanguage]}</p>
-        <p className="text-xs text-ink/40">{t("typeDoorHint", nativeLanguage)}</p>
+        <p className="text-xl font-bold text-duo-blue-dark"><NativeText text={door.translations[nativeLanguage]} lang={nativeLanguage} /></p>
+        <p className="text-xs text-ink/40"><NativeText text={t("typeDoorHint", nativeLanguage)} lang={nativeLanguage} /></p>
       </Card>
 
       {phase === "answering" && (

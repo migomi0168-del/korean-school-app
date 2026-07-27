@@ -16,6 +16,7 @@ import { addXp, recordWrongPhrase, completeTeacherAssignment } from "@/lib/stude
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { filterByDifficulty } from "@/lib/difficulty";
+import { NativeText } from "@/components/common/NativeText";
 import { t } from "@/lib/i18n";
 import type { Phrase } from "@/types";
 
@@ -142,8 +143,8 @@ function SentenceLearnContent() {
       <Card className="flex flex-col items-center gap-3 py-8 text-center">
         <ContextTag categoryId={q.section} />
         <div className="text-5xl">{q.emoji}</div>
-        <p className="text-xl font-bold text-duo-blue-dark">{q.translations[nativeLanguage]}</p>
-        <p className="text-xs text-ink/40">{t("typeSentenceHint", nativeLanguage)}</p>
+        <p className="text-xl font-bold text-duo-blue-dark"><NativeText text={q.translations[nativeLanguage]} lang={nativeLanguage} /></p>
+        <p className="text-xs text-ink/40"><NativeText text={t("typeSentenceHint", nativeLanguage)} lang={nativeLanguage} /></p>
       </Card>
 
       {phase === "answering" && (

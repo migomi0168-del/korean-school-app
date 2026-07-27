@@ -24,6 +24,7 @@ export default function ClassmatesPage() {
   const { student, loading, isDemo } = useStudentSession();
   const router = useRouter();
   const [classmates, setClassmates] = useState<Student[]>([]);
+  const [allStudents, setAllStudents] = useState<Student[]>([]);
   const [target, setTarget] = useState<Student | null>(null);
   const [customText, setCustomText] = useState("");
   const [error, setError] = useState("");
@@ -33,6 +34,7 @@ export default function ClassmatesPage() {
   useEffect(() => {
     if (!student) return;
     const unsubscribe = subscribeToClassStudents(student.classId, (all) => {
+      setAllStudents(all);
       setClassmates(all.filter((s) => s.id !== student.id));
     });
     return unsubscribe;
@@ -45,6 +47,11 @@ export default function ClassmatesPage() {
   }
 
   const today = todayStr();
+  const studiedToday = allStudents.filter((s) => s.studyDate === today && s.studyMinutesToday > 0);
+  const topStudentId =
+    studiedToday.length > 0
+      ? studiedToday.reduce((max, s) => (s.studyMinutesToday > max.studyMinutesToday ? s : max)).id
+      : null;
 
   async function handleSend(text: string) {
     if (!target || !student) return;
@@ -92,9 +99,12 @@ export default function ClassmatesPage() {
               <Card key={c.id} className="flex items-center gap-3">
                 <Avatar emoji={c.avatar} accessoryId={c.equippedAccessory} size="sm" />
                 <div className="flex-1">
-                  <p className="font-display text-lg">{c.nickname}</p>
+                  <p className="font-display text-lg">
+                    {c.nickname} {c.id === topStudentId && <span title="오늘의 열심왕">🏆</span>}
+                  </p>
                   <p className="text-xs text-ink/50">
                     {attended ? "🟢 오늘 출석함" : "⚪ 오늘 미출석"} · ⏱️ 오늘 {minutes}분 공부
+                    {c.id === topStudentId && <span className="font-bold text-duo-yellow-dark"> · 오늘의 열심왕 🏆</span>}
                   </p>
                 </div>
                 <button

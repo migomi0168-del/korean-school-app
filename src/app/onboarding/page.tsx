@@ -12,6 +12,7 @@ import { LANGUAGES } from "@/lib/languages";
 import { isPhraseCorrect } from "@/lib/grading";
 import { getDiagnosticPhrases, tierFromScore } from "@/lib/difficulty";
 import { t } from "@/lib/i18n";
+import { NativeText } from "@/components/common/NativeText";
 import type { NativeLanguage } from "@/types";
 
 export default function OnboardingPage() {
@@ -159,15 +160,17 @@ export default function OnboardingPage() {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6">
         <div className="text-center">
-          <h1 className="font-display text-2xl">{t("diagnosticTitle", nativeLanguage)}</h1>
+          <h1 className="font-display text-2xl"><NativeText text={t("diagnosticTitle", nativeLanguage)} lang={nativeLanguage} /></h1>
           <p className="mt-1 text-sm text-ink/60">
-            {t("diagnosticSubtext", nativeLanguage)} ({qIndex + 1}/{diagnosticQuestions.length})
+            <NativeText text={t("diagnosticSubtext", nativeLanguage)} lang={nativeLanguage} /> ({qIndex + 1}/{diagnosticQuestions.length})
           </p>
         </div>
 
         <Card className="flex w-full flex-col items-center gap-3 py-8 text-center">
           <div className="text-5xl">{q.emoji}</div>
-          <p className="text-xl font-bold text-duo-blue-dark">{nativeLanguage ? q.translations[nativeLanguage] : q.translations.en}</p>
+          <p className="text-xl font-bold text-duo-blue-dark">
+            <NativeText text={nativeLanguage ? q.translations[nativeLanguage] : q.translations.en} lang={nativeLanguage} />
+          </p>
         </Card>
 
         <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3">

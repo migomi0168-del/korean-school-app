@@ -10,13 +10,15 @@ import { TTSButton } from "@/components/learn/TTSButton";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { t } from "@/lib/i18n";
-import { getLanguage, STT_LANG } from "@/lib/languages";
+import { STT_LANG } from "@/lib/languages";
+import { getNativeLabel } from "@/lib/labelTranslations";
+import { NativeText } from "@/components/common/NativeText";
 
 interface Message {
   role: "user" | "ai";
   text: string;
   correction?: string | null;
-  translated?: boolean;
+  koreanTranslation?: string | null;
 }
 
 const PARTNERS = ["친구", "선생님", "기타"] as const;
@@ -42,7 +44,6 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const [voiceLang, setVoiceLang] = useState<"ko" | "native">("ko");
 
   if (loading) return null;
   if (!student) {
@@ -94,9 +95,20 @@ export default function ChatPage() {
         }),
       });
       const data = await res.json();
-      const finalMessages: Message[] = data.error
-        ? [...nextMessages, { role: "ai", text: "미안, 지금은 대답하기 어려워. 다시 말해줄래?" }]
-        : [...nextMessages, { role: "ai", text: data.reply, correction: data.correction, translated: data.translated }];
+      let finalMessages: Message[];
+      if (data.error) {
+        finalMessages = [...nextMessages, { role: "ai", text: "미안, 지금은 대답하기 어려워. 다시 말해줄래?" }];
+      } else if (data.translated && data.correction) {
+        // The student wrote in their native language — attach the Korean
+        // translation to their own bubble instead of the AI's reply, since
+        // it's "here's what YOU said in Korean", not feedback on the AI.
+        const withTranslation = nextMessages.map((m, i) =>
+          i === nextMessages.length - 1 ? { ...m, koreanTranslation: data.correction as string } : m
+        );
+        finalMessages = [...withTranslation, { role: "ai", text: data.reply }];
+      } else {
+        finalMessages = [...nextMessages, { role: "ai", text: data.reply, correction: data.correction ?? null }];
+      }
       setMessages(finalMessages);
       saveChatLog(finalMessages);
     } catch {
@@ -128,6 +140,11 @@ export default function ChatPage() {
                 }`}
               >
                 {p === "친구" ? "🧒 친구" : p === "선생님" ? "🧑‍🏫 선생님" : "✏️ 기타 (직접 입력)"}
+                {getNativeLabel(p, student.nativeLanguage) && (
+                  <span className="block text-xs font-normal text-ink/40">
+                    <NativeText text={getNativeLabel(p, student.nativeLanguage) ?? ""} lang={student.nativeLanguage} />
+                  </span>
+                )}
               </button>
             ))}
             {partner === "기타" && (
@@ -153,6 +170,11 @@ export default function ChatPage() {
                 }`}
               >
                 {l}
+                {getNativeLabel(l, student.nativeLanguage) && (
+                  <span className="block text-xs font-normal text-ink/40">
+                    <NativeText text={getNativeLabel(l, student.nativeLanguage) ?? ""} lang={student.nativeLanguage} />
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -197,10 +219,19 @@ export default function ChatPage() {
               </div>
               {m.role === "ai" && <TTSButton text={m.text} size="sm" />}
             </div>
-            {m.correction && (
+            {m.role === "ai" && m.correction && (
               <div className="mt-1 max-w-[80%] rounded-xl bg-duo-yellow/20 px-3 py-1 text-xs text-duo-yellow-dark">
-                {m.translated ? "🌐" : "💡"} {t(m.translated ? "translatedLabel" : "correctionLabel", student.nativeLanguage)}{" "}
+                💡 <NativeText text={t("correctionLabel", student.nativeLanguage)} lang={student.nativeLanguage} />{" "}
                 <span className="font-bold">{m.correction}</span>
+              </div>
+            )}
+            {m.role === "user" && m.koreanTranslation && (
+              <div className="mt-1 flex max-w-[80%] items-center gap-2 rounded-xl bg-duo-blue/10 px-3 py-1 text-xs text-duo-blue-dark">
+                <span>
+                  🌐 <NativeText text={t("koreanTranslationLabel", student.nativeLanguage)} lang={student.nativeLanguage} />{" "}
+                  <span className="font-bold">{m.koreanTranslation}</span>
+                </span>
+                <TTSButton text={m.koreanTranslation} size="sm" />
               </div>
             )}
           </div>
@@ -208,40 +239,17 @@ export default function ChatPage() {
         {sending && <p className="text-sm text-ink/40">AI가 답장 쓰는 중...</p>}
       </div>
 
-      {student.nativeLanguage && (
-        <div className="flex flex-wrap gap-2 text-xs">
-          <button
-            type="button"
-            onClick={() => setVoiceLang("ko")}
-            className={`shrink-0 rounded-full border-2 px-3 py-1 font-bold ${
-              voiceLang === "ko" ? "border-duo-green bg-duo-green/10 text-duo-green-dark" : "border-duo-gray text-ink/40"
-            }`}
-          >
-            🇰🇷 한국어로 말하기
-          </button>
-          <button
-            type="button"
-            onClick={() => setVoiceLang("native")}
-            className={`shrink-0 rounded-full border-2 px-3 py-1 font-bold ${
-              voiceLang === "native" ? "border-duo-green bg-duo-green/10 text-duo-green-dark" : "border-duo-gray text-ink/40"
-            }`}
-          >
-            {getLanguage(student.nativeLanguage)?.emoji} 모국어로 말하기
-          </button>
-        </div>
-      )}
-
       <form onSubmit={handleSend} className="flex min-w-0 gap-2">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="한국어 또는 모국어로 입력..."
+          placeholder={t("chatInputPlaceholder", student.nativeLanguage)}
           className="min-w-0 flex-1 rounded-2xl border-2 border-duo-gray px-3 py-3 outline-none focus:border-duo-green"
         />
         <MicButton
           onResult={setInput}
           disabled={sending}
-          lang={voiceLang === "native" && student.nativeLanguage ? STT_LANG[student.nativeLanguage] : "ko-KR"}
+          lang={student.nativeLanguage ? STT_LANG[student.nativeLanguage] : "ko-KR"}
         />
         <Button type="submit" fullWidth={false} disabled={sending || !input.trim()} className="shrink-0 px-4">
           전송
