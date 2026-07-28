@@ -40,7 +40,14 @@ export default function LoginPage() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6">
       <div className="text-center">
-        <div className="text-6xl">🏫</div>
+        <div className="relative mx-auto h-28 w-64">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-6xl">🏫</div>
+          <div className="scene-bob absolute left-1 top-0 text-4xl">🦊</div>
+          <div className="scene-drift absolute right-2 top-1 text-4xl" style={{ animationDelay: "0.4s" }}>🐰</div>
+          <div className="scene-bob absolute bottom-0 left-4 text-4xl" style={{ animationDelay: "0.8s" }}>🐼</div>
+          <div className="scene-drift absolute bottom-1 right-0 text-4xl" style={{ animationDelay: "1.2s" }}>🐧</div>
+          <div className="scene-bob absolute -bottom-3 left-1/2 -translate-x-1/2 text-3xl" style={{ animationDelay: "1.6s" }}>🦁</div>
+        </div>
         <h1 className="mt-2 font-display text-2xl text-duo-green-dark">학교생활 언어 마스터</h1>
         <p className="mt-1 text-sm text-ink/60">선생님이 알려준 번호 6자리를 입력하세요</p>
       </div>

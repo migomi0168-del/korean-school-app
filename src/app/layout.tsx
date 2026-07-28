@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Gugi, Noto_Sans_KR } from "next/font/google";
+import { Jua, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { StudentSessionProvider } from "@/hooks/useStudentSession";
 import { TeacherAuthProvider } from "@/hooks/useTeacherAuth";
 import { HomeButton } from "@/components/common/HomeButton";
 import { StudyTimeTracker } from "@/components/home/StudyTimeTracker";
 
-const displayFont = Gugi({
+const displayFont = Jua({
   variable: "--font-display",
   subsets: ["latin"],
   weight: "400",
