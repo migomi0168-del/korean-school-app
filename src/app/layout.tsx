@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Jua, Noto_Sans_KR } from "next/font/google";
+import { Gugi, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { StudentSessionProvider } from "@/hooks/useStudentSession";
 import { TeacherAuthProvider } from "@/hooks/useTeacherAuth";
 import { HomeButton } from "@/components/common/HomeButton";
 import { StudyTimeTracker } from "@/components/home/StudyTimeTracker";
 
-const jua = Jua({
+const displayFont = Gugi({
   variable: "--font-display",
   subsets: ["latin"],
   weight: "400",
@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${jua.variable} ${notoSansKr.variable} h-full`}>
+    <html lang="ko" className={`${displayFont.variable} ${notoSansKr.variable} h-full`}>
       <body className="min-h-full flex flex-col overflow-x-hidden bg-cream text-ink font-body">
         <TeacherAuthProvider>
           <StudentSessionProvider>
