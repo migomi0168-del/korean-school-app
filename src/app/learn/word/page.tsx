@@ -10,7 +10,7 @@ import { TTSButton } from "@/components/learn/TTSButton";
 import { ContextTag } from "@/components/learn/ContextTag";
 import { MicButton } from "@/components/learn/MicButton";
 import { words } from "@/lib/content";
-import { isWordCorrect } from "@/lib/grading";
+import { isWordAnswerCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
@@ -80,7 +80,7 @@ export default function WordLearnPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitted || !student) return;
-    const ok = isWordCorrect(input, q.word.ko);
+    const ok = isWordAnswerCorrect(input, q.word);
     setCorrect(ok);
     setSubmitted(true);
     // Write immediately (not batched at session end) so nothing is lost if

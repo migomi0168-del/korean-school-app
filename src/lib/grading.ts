@@ -1,4 +1,4 @@
-import type { Phrase } from "@/types";
+import type { Phrase, Word } from "@/types";
 
 function normalize(str: string) {
   return str
@@ -40,6 +40,13 @@ function bestSimilarity(input: string, answer: string) {
 
 export function isWordCorrect(input: string, answer: string) {
   return normalize(input) === normalize(answer);
+}
+
+// Words can have alternate accepted spellings (e.g. "반찬"/"밑반찬"), unlike
+// the base isWordCorrect() which only checks a single exact string.
+export function isWordAnswerCorrect(input: string, word: Pick<Word, "ko" | "alternates">) {
+  const candidates = [word.ko, ...(word.alternates ?? [])];
+  return candidates.some((c) => isWordCorrect(input, c));
 }
 
 export function isSentenceCorrect(input: string, answer: string, threshold = 0.8) {

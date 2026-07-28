@@ -28,7 +28,7 @@
     "translations": { "zh": "营养午餐", "en": "School meal", "vi": "Bữa ăn học đường", "ja": "給食[きゅうしょく]" },
     "templateKo": "급식 시간이에요.",
     "templateTranslations": { "zh": "到了营养午餐时间。", "en": "It's school meal time.", "vi": "Đến giờ ăn bữa ăn học đường rồi.", "ja": "給食[きゅうしょく]の時間[じかん]です。" } },
-  { "id": "w-sidedish", "ko": "반찬", "reading": "banchan", "emoji": "🥗", "category": "cafeteria", "difficulty": "normal",
+  { "id": "w-sidedish", "ko": "반찬", "alternates": ["밑반찬"], "reading": "banchan", "emoji": "🥗", "category": "cafeteria", "difficulty": "normal",
     "translations": { "zh": "小菜", "en": "Side dish", "vi": "Món ăn kèm", "ja": "おかず" },
     "templateKo": "이 반찬 맛있어요.",
     "templateTranslations": { "zh": "这个小菜很好吃。", "en": "This side dish is delicious.", "vi": "Món ăn kèm này ngon quá.", "ja": "このおかずはおいしいです。" } },

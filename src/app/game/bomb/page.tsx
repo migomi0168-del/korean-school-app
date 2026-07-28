@@ -8,7 +8,7 @@ import { ProgressBar } from "@/components/common/ProgressBar";
 import { NativeText } from "@/components/common/NativeText";
 import { MicButton } from "@/components/learn/MicButton";
 import { words } from "@/lib/content";
-import { isWordCorrect } from "@/lib/grading";
+import { isWordAnswerCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
@@ -103,7 +103,7 @@ export default function BombGamePage() {
     setInput(value);
     if (result !== "falling" || !student) return;
     const word = roundWords[round];
-    if (isWordCorrect(value, word.ko)) {
+    if (isWordAnswerCorrect(value, word)) {
       playCorrectSound();
       setResult("cleared");
       setScore((s) => s + 1);

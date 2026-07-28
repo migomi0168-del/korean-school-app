@@ -10,7 +10,7 @@ import { TTSButton } from "@/components/learn/TTSButton";
 import { ContextTag } from "@/components/learn/ContextTag";
 import { MicButton } from "@/components/learn/MicButton";
 import { getWord } from "@/lib/content";
-import { isWordCorrect } from "@/lib/grading";
+import { isWordAnswerCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { addXp, clearWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
@@ -56,7 +56,7 @@ export default function ReviewWordPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitted || !student) return;
-    const ok = isWordCorrect(input, q.ko);
+    const ok = isWordAnswerCorrect(input, q);
     setCorrect(ok);
     setSubmitted(true);
     if (ok) {

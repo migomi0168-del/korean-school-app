@@ -12,7 +12,7 @@ import { MicButton } from "@/components/learn/MicButton";
 import { phrases, getPhrasesForSection } from "@/lib/content";
 import { gradePhrase, isPhraseCorrect } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { addXp, recordWrongPhrase, completeTeacherAssignment } from "@/lib/students";
+import { addXp, recordWrongPhrase, clearWrongPhrase, completeTeacherAssignment } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { filterByDifficulty } from "@/lib/difficulty";
@@ -78,7 +78,10 @@ function SentenceLearnContent() {
     playCorrectSound();
     setPhase("correct");
     setSessionXp((x) => x + XP_REWARD.phraseCorrect);
-    pendingWriteRef.current = addXp(student.id, XP_REWARD.phraseCorrect);
+    pendingWriteRef.current = Promise.all([
+      addXp(student.id, XP_REWARD.phraseCorrect),
+      clearWrongPhrase(student.id, q.id),
+    ]);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -92,6 +95,11 @@ function SentenceLearnContent() {
     } else if (verdict === "close") {
       setPhase("close");
       setRetryInput("");
+      // Record now, not only on a hard "wrong" — otherwise a student who
+      // never nails the exact retry (and just leaves) never gets this
+      // phrase flagged for 복습모드, even though they clearly struggled.
+      // grantCredit() above clears it again if the retry does succeed.
+      pendingWriteRef.current = recordWrongPhrase(student.id, q.id);
     } else {
       playWrongSound();
       setPhase("wrong");

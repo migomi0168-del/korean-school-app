@@ -76,6 +76,7 @@ export interface ClassRoom {
 export interface Word {
   id: string;
   ko: string;
+  alternates?: string[];
   reading: string;
   emoji: string;
   category: string;
