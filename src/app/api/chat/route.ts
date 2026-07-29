@@ -47,45 +47,65 @@ export async function POST(req: NextRequest) {
     parts: [{ text: m.text }],
   }));
 
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents,
-          systemInstruction: { parts: [{ text: buildSystemInstruction(partner, location) }] },
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: "OBJECT",
-              properties: {
-                reply: { type: "STRING" },
-                correction: { type: "STRING", nullable: true },
-                translated: { type: "BOOLEAN" },
+  // A roleplay prompt combined with strict JSON output occasionally produces
+  // a response that's a non-200, or valid-looking text that isn't valid
+  // JSON — both are usually transient, so retry once before surfacing an
+  // error bubble to the student.
+  let lastError: string | null = null;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents,
+            systemInstruction: { parts: [{ text: buildSystemInstruction(partner, location) }] },
+            generationConfig: {
+              responseMimeType: "application/json",
+              responseSchema: {
+                type: "OBJECT",
+                properties: {
+                  reply: { type: "STRING" },
+                  correction: { type: "STRING", nullable: true },
+                  translated: { type: "BOOLEAN" },
+                },
+                required: ["reply"],
               },
-              required: ["reply"],
             },
-          },
-        }),
+          }),
+        }
+      );
+
+      if (res.status === 429) {
+        return NextResponse.json({ error: "AI 사용량이 많아서 지금은 답할 수 없어요.", rateLimited: true }, { status: 200 });
       }
-    );
+      if (!res.ok) {
+        lastError = `Gemini ${res.status}: ${await res.text()}`;
+        throw new Error(lastError);
+      }
 
-    if (!res.ok) {
-      const errText = await res.text();
-      return NextResponse.json({ error: "AI 응답에 문제가 있어요.", detail: errText }, { status: 502 });
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+      if (!text.trim()) {
+        lastError = "empty response";
+        throw new Error(lastError);
+      }
+      const parsed = JSON.parse(text);
+      if (!parsed.reply) {
+        lastError = "missing reply field";
+        throw new Error(lastError);
+      }
+      return NextResponse.json({
+        reply: parsed.reply,
+        correction: parsed.correction ?? null,
+        translated: Boolean(parsed.translated),
+      });
+    } catch (e) {
+      lastError = lastError ?? (e instanceof Error ? e.message : "unknown error");
+      if (attempt === 0) await new Promise((r) => setTimeout(r, 400));
     }
-
-    const data = await res.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
-    const parsed = JSON.parse(text);
-    return NextResponse.json({
-      reply: parsed.reply ?? "...",
-      correction: parsed.correction ?? null,
-      translated: Boolean(parsed.translated),
-    });
-  } catch {
-    return NextResponse.json({ error: "AI 서버 연결에 실패했어요." }, { status: 500 });
   }
+  return NextResponse.json({ error: "AI 응답에 문제가 있어요.", detail: lastError }, { status: 502 });
 }

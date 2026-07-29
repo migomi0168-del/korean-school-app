@@ -37,6 +37,17 @@ export function needsAttention(student: Student): boolean {
   return student.wrongWordIds.length + student.wrongPhraseIds.length >= 8;
 }
 
+// AI 학습 피드백/평가는 되도록 항상 시도하되, 정말 아무 학습 흔적도 없는
+// (진단조차 안 한) 학생만 API 호출 없이 "더 학습해볼까요?" 안내로 대체한다.
+export function hasEnoughDataForFeedback(student: Student): boolean {
+  return (
+    student.proficiencyTier !== null ||
+    student.xp > 0 ||
+    student.wrongWordIds.length > 0 ||
+    student.wrongPhraseIds.length > 0
+  );
+}
+
 export type Recommendation = { type: "category"; categoryId: string } | { type: "formal" } | null;
 
 // AI 추천학습: picks between "practice your weakest location" and "practice

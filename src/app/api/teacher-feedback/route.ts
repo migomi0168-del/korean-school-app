@@ -36,25 +36,30 @@ export async function POST(req: NextRequest) {
 자주 틀리는 문장: ${wrongPhrases.length ? wrongPhrases.join(", ") : "없음"}
 가장 약한 상황 영역: ${weakestCategoryName ?? "뚜렷한 약점 없음"}`;
 
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
-        }),
-      }
-    );
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+          }),
+        }
+      );
 
-    if (!res.ok) return NextResponse.json({ feedback: "" }, { status: 200 });
+      if (res.status === 429) return NextResponse.json({ feedback: "", rateLimited: true }, { status: 200 });
+      if (!res.ok) throw new Error(`Gemini ${res.status}`);
 
-    const data = await res.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-    return NextResponse.json({ feedback: text.trim() });
-  } catch {
-    return NextResponse.json({ feedback: "" }, { status: 200 });
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+      if (!text.trim()) throw new Error("empty response");
+      return NextResponse.json({ feedback: text.trim() });
+    } catch {
+      if (attempt === 0) await new Promise((r) => setTimeout(r, 400));
+    }
   }
+  return NextResponse.json({ feedback: "" }, { status: 200 });
 }

@@ -11,7 +11,7 @@ import { useStudentSession } from "@/hooks/useStudentSession";
 import { updateStudent } from "@/lib/students";
 import { levelFromXp, todayStr } from "@/lib/xp";
 import { LANGUAGES } from "@/lib/languages";
-import { getWeakestCategory } from "@/lib/weakness";
+import { getWeakestCategory, hasEnoughDataForFeedback } from "@/lib/weakness";
 import type { NativeLanguage } from "@/types";
 
 export default function MyPage() {
@@ -20,6 +20,8 @@ export default function MyPage() {
   const [editingLang, setEditingLang] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [loadingFeedback, setLoadingFeedback] = useState(false);
+  const [feedbackFailed, setFeedbackFailed] = useState(false);
+  const [feedbackRateLimited, setFeedbackRateLimited] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
 
   if (loading) return null;
@@ -34,6 +36,8 @@ export default function MyPage() {
 
   async function handleGetFeedback() {
     if (!student) return;
+    setFeedbackFailed(false);
+    setFeedbackRateLimited(false);
     setLoadingFeedback(true);
     const res = await fetch("/api/feedback", {
       method: "POST",
@@ -48,8 +52,14 @@ export default function MyPage() {
       }),
     });
     const data = await res.json();
-    setFeedback(data.feedback || "...");
     setLoadingFeedback(false);
+    if (data.feedback) {
+      setFeedback(data.feedback);
+    } else if (data.rateLimited) {
+      setFeedbackRateLimited(true);
+    } else {
+      setFeedbackFailed(true);
+    }
   }
 
   function handleChangeLanguage(code: NativeLanguage) {
@@ -132,11 +142,7 @@ export default function MyPage() {
 
       <Card>
         <p className="mb-2 font-display text-lg">🧠 AI 학습 피드백</p>
-        {!feedback ? (
-          <Button onClick={handleGetFeedback} disabled={loadingFeedback} variant="blue">
-            {loadingFeedback ? "분석 중..." : "피드백 받기"}
-          </Button>
-        ) : (
+        {feedback ? (
           <div className="flex flex-col gap-3">
             <p className="rounded-xl bg-duo-blue/10 p-3 text-sm leading-relaxed text-ink">{feedback}</p>
             {weakestCategory && (
@@ -145,6 +151,26 @@ export default function MyPage() {
               </Link>
             )}
           </div>
+        ) : !hasEnoughDataForFeedback(student) ? (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-ink/60">아직 평가하기엔 학습 기록이 부족해요. 조금 더 학습해볼까요?</p>
+            <Link href="/learn">
+              <Button variant="blue">학습하러 가기</Button>
+            </Link>
+          </div>
+        ) : feedbackRateLimited ? (
+          <p className="text-sm text-duo-red">AI 사용량이 많아서 지금은 안 돼요. 나중에 다시 시도해주세요.</p>
+        ) : feedbackFailed ? (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-duo-red">지금은 평가를 불러오지 못했어요.</p>
+            <Button onClick={handleGetFeedback} disabled={loadingFeedback} variant="blue">
+              {loadingFeedback ? "분석 중..." : "다시 시도"}
+            </Button>
+          </div>
+        ) : (
+          <Button onClick={handleGetFeedback} disabled={loadingFeedback} variant="blue">
+            {loadingFeedback ? "분석 중..." : "피드백 받기"}
+          </Button>
         )}
       </Card>
 

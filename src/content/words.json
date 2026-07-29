@@ -1,222 +1,1127 @@
 [
-  { "id": "w-teacher", "ko": "선생님", "reading": "seonsaengnim", "emoji": "🧑‍🏫", "category": "class", "difficulty": "easy",
-    "translations": { "zh": "老师", "en": "Teacher", "vi": "Giáo viên", "ja": "先生[せんせい]" },
+  {
+    "id": "w-teacher",
+    "ko": "선생님",
+    "reading": "seonsaengnim",
+    "emoji": "🧑‍🏫",
+    "category": "class",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "老师",
+      "en": "Teacher",
+      "vi": "Giáo viên",
+      "ja": "先生[せんせい]"
+    },
     "templateKo": "우리 선생님은 친절해요.",
-    "templateTranslations": { "zh": "我们的老师很亲切。", "en": "Our teacher is kind.", "vi": "Cô giáo của em rất tốt bụng.", "ja": "私[わたし]たちの先生[せんせい]は親切[しんせつ]です。" } },
-  { "id": "w-chair", "ko": "의자", "reading": "uija", "emoji": "🪑", "category": "class", "difficulty": "easy",
-    "translations": { "zh": "椅子", "en": "Chair", "vi": "Cái ghế", "ja": "椅子[いす]" },
+    "templateTranslations": {
+      "zh": "我们的老师很亲切。",
+      "en": "Our teacher is kind.",
+      "vi": "Cô giáo của em rất tốt bụng.",
+      "ja": "私[わたし]たちの先生[せんせい]は親切[しんせつ]です。"
+    }
+  },
+  {
+    "id": "w-chair",
+    "ko": "의자",
+    "reading": "uija",
+    "emoji": "🪑",
+    "category": "class",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "椅子",
+      "en": "Chair",
+      "vi": "Cái ghế",
+      "ja": "椅子[いす]"
+    },
     "templateKo": "저는 의자에 앉아요.",
-    "templateTranslations": { "zh": "我坐在椅子上。", "en": "I sit on the chair.", "vi": "Em ngồi trên ghế.", "ja": "私[わたし]は椅子[いす]に座[すわ]ります。" } },
-  { "id": "w-board", "ko": "칠판", "reading": "chilpan", "emoji": "⬛", "category": "class", "difficulty": "easy",
-    "translations": { "zh": "黑板", "en": "Blackboard", "vi": "Bảng đen", "ja": "黒板[こくばん]" },
+    "templateTranslations": {
+      "zh": "我坐在椅子上。",
+      "en": "I sit on the chair.",
+      "vi": "Em ngồi trên ghế.",
+      "ja": "私[わたし]は椅子[いす]に座[すわ]ります。"
+    },
+    "alternates": [
+      "자리"
+    ]
+  },
+  {
+    "id": "w-board",
+    "ko": "칠판",
+    "reading": "chilpan",
+    "emoji": "⬛",
+    "category": "class",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "黑板",
+      "en": "Blackboard",
+      "vi": "Bảng đen",
+      "ja": "黒板[こくばん]"
+    },
     "templateKo": "칠판을 보세요.",
-    "templateTranslations": { "zh": "请看黑板。", "en": "Please look at the blackboard.", "vi": "Hãy nhìn lên bảng.", "ja": "黒板[こくばん]を見[み]てください。" } },
-  { "id": "w-pencilcase", "ko": "필통", "reading": "piltong", "emoji": "✏️", "category": "class", "difficulty": "normal",
-    "translations": { "zh": "铅笔盒", "en": "Pencil case", "vi": "Hộp bút", "ja": "筆箱[ふでばこ]" },
+    "templateTranslations": {
+      "zh": "请看黑板。",
+      "en": "Please look at the blackboard.",
+      "vi": "Hãy nhìn lên bảng.",
+      "ja": "黒板[こくばん]を見[み]てください。"
+    }
+  },
+  {
+    "id": "w-pencilcase",
+    "ko": "필통",
+    "reading": "piltong",
+    "emoji": "✏️",
+    "category": "class",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "铅笔盒",
+      "en": "Pencil case",
+      "vi": "Hộp bút",
+      "ja": "筆箱[ふでばこ]"
+    },
     "templateKo": "필통 안에 연필이 있어요.",
-    "templateTranslations": { "zh": "铅笔盒里有铅笔。", "en": "There is a pencil in the pencil case.", "vi": "Trong hộp bút có bút chì.", "ja": "筆箱[ふでばこ]の中[なか]に鉛筆[えんぴつ]があります。" } },
-  { "id": "w-homework", "ko": "숙제", "reading": "sukje", "emoji": "📝", "category": "class", "difficulty": "normal",
-    "translations": { "zh": "作业", "en": "Homework", "vi": "Bài tập về nhà", "ja": "宿題[しゅくだい]" },
+    "templateTranslations": {
+      "zh": "铅笔盒里有铅笔。",
+      "en": "There is a pencil in the pencil case.",
+      "vi": "Trong hộp bút có bút chì.",
+      "ja": "筆箱[ふでばこ]の中[なか]に鉛筆[えんぴつ]があります。"
+    }
+  },
+  {
+    "id": "w-homework",
+    "ko": "숙제",
+    "reading": "sukje",
+    "emoji": "📝",
+    "category": "class",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "作业",
+      "en": "Homework",
+      "vi": "Bài tập về nhà",
+      "ja": "宿題[しゅくだい]"
+    },
     "templateKo": "오늘 숙제가 많아요.",
-    "templateTranslations": { "zh": "今天作业很多。", "en": "There's a lot of homework today.", "vi": "Hôm nay bài tập về nhà nhiều lắm.", "ja": "今日[きょう]は宿題[しゅくだい]が多[おお]いです。" } },
-  { "id": "w-exam", "ko": "시험", "reading": "siheom", "emoji": "📝", "category": "class", "difficulty": "hard",
-    "translations": { "zh": "考试", "en": "Exam", "vi": "Kỳ thi", "ja": "試験[しけん]" },
+    "templateTranslations": {
+      "zh": "今天作业很多。",
+      "en": "There's a lot of homework today.",
+      "vi": "Hôm nay bài tập về nhà nhiều lắm.",
+      "ja": "今日[きょう]は宿題[しゅくだい]が多[おお]いです。"
+    }
+  },
+  {
+    "id": "w-exam",
+    "ko": "시험",
+    "reading": "siheom",
+    "emoji": "📝",
+    "category": "class",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "考试",
+      "en": "Exam",
+      "vi": "Kỳ thi",
+      "ja": "試験[しけん]"
+    },
     "templateKo": "다음 주에 시험이 있어요.",
-    "templateTranslations": { "zh": "下周有考试。", "en": "There's an exam next week.", "vi": "Tuần sau có kỳ thi.", "ja": "来週[らいしゅう]試験[しけん]があります。" } },
-
-  { "id": "w-meal", "ko": "급식", "reading": "geupsik", "emoji": "🍱", "category": "cafeteria", "difficulty": "easy",
-    "translations": { "zh": "营养午餐", "en": "School meal", "vi": "Bữa ăn học đường", "ja": "給食[きゅうしょく]" },
+    "templateTranslations": {
+      "zh": "下周有考试。",
+      "en": "There's an exam next week.",
+      "vi": "Tuần sau có kỳ thi.",
+      "ja": "来週[らいしゅう]試験[しけん]があります。"
+    }
+  },
+  {
+    "id": "w-meal",
+    "ko": "급식",
+    "reading": "geupsik",
+    "emoji": "🍱",
+    "category": "cafeteria",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "营养午餐",
+      "en": "School meal",
+      "vi": "Bữa ăn học đường",
+      "ja": "給食[きゅうしょく]"
+    },
     "templateKo": "급식 시간이에요.",
-    "templateTranslations": { "zh": "到了营养午餐时间。", "en": "It's school meal time.", "vi": "Đến giờ ăn bữa ăn học đường rồi.", "ja": "給食[きゅうしょく]の時間[じかん]です。" } },
-  { "id": "w-sidedish", "ko": "반찬", "alternates": ["밑반찬"], "reading": "banchan", "emoji": "🥗", "category": "cafeteria", "difficulty": "normal",
-    "translations": { "zh": "小菜", "en": "Side dish", "vi": "Món ăn kèm", "ja": "おかず" },
+    "templateTranslations": {
+      "zh": "到了营养午餐时间。",
+      "en": "It's school meal time.",
+      "vi": "Đến giờ ăn bữa ăn học đường rồi.",
+      "ja": "給食[きゅうしょく]の時間[じかん]です。"
+    }
+  },
+  {
+    "id": "w-sidedish",
+    "ko": "반찬",
+    "alternates": [
+      "밑반찬"
+    ],
+    "reading": "banchan",
+    "emoji": "🥗",
+    "category": "cafeteria",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "小菜",
+      "en": "Side dish",
+      "vi": "Món ăn kèm",
+      "ja": "おかず"
+    },
     "templateKo": "이 반찬 맛있어요.",
-    "templateTranslations": { "zh": "这个小菜很好吃。", "en": "This side dish is delicious.", "vi": "Món ăn kèm này ngon quá.", "ja": "このおかずはおいしいです。" } },
-  { "id": "w-tray", "ko": "식판", "reading": "sikpan", "emoji": "🍽️", "category": "cafeteria", "difficulty": "normal",
-    "translations": { "zh": "餐盘", "en": "Meal tray", "vi": "Khay ăn", "ja": "給食[きゅうしょく]トレー" },
+    "templateTranslations": {
+      "zh": "这个小菜很好吃。",
+      "en": "This side dish is delicious.",
+      "vi": "Món ăn kèm này ngon quá.",
+      "ja": "このおかずはおいしいです。"
+    }
+  },
+  {
+    "id": "w-tray",
+    "ko": "식판",
+    "reading": "sikpan",
+    "emoji": "🍽️",
+    "category": "cafeteria",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "餐盘",
+      "en": "Meal tray",
+      "vi": "Khay ăn",
+      "ja": "給食[きゅうしょく]トレー"
+    },
     "templateKo": "식판을 들고 가세요.",
-    "templateTranslations": { "zh": "请拿着餐盘。", "en": "Please take your meal tray.", "vi": "Hãy cầm khay ăn đi.", "ja": "給食[きゅうしょく]トレーを持[も]って行[い]ってください。" } },
-  { "id": "w-chopsticks", "ko": "젓가락", "reading": "jeotgarak", "emoji": "🥢", "category": "cafeteria", "difficulty": "normal",
-    "translations": { "zh": "筷子", "en": "Chopsticks", "vi": "Đũa", "ja": "箸[はし]" },
+    "templateTranslations": {
+      "zh": "请拿着餐盘。",
+      "en": "Please take your meal tray.",
+      "vi": "Hãy cầm khay ăn đi.",
+      "ja": "給食[きゅうしょく]トレーを持[も]って行[い]ってください。"
+    }
+  },
+  {
+    "id": "w-chopsticks",
+    "ko": "젓가락",
+    "reading": "jeotgarak",
+    "emoji": "🥢",
+    "category": "cafeteria",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "筷子",
+      "en": "Chopsticks",
+      "vi": "Đũa",
+      "ja": "箸[はし]"
+    },
     "templateKo": "젓가락으로 먹어요.",
-    "templateTranslations": { "zh": "用筷子吃饭。", "en": "I eat with chopsticks.", "vi": "Em ăn bằng đũa.", "ja": "箸[はし]で食[た]べます。" } },
-  { "id": "w-water", "ko": "물", "reading": "mul", "emoji": "💧", "category": "cafeteria", "difficulty": "easy",
-    "translations": { "zh": "水", "en": "Water", "vi": "Nước", "ja": "水[みず]" },
+    "templateTranslations": {
+      "zh": "用筷子吃饭。",
+      "en": "I eat with chopsticks.",
+      "vi": "Em ăn bằng đũa.",
+      "ja": "箸[はし]で食[た]べます。"
+    }
+  },
+  {
+    "id": "w-water",
+    "ko": "물",
+    "reading": "mul",
+    "emoji": "💧",
+    "category": "cafeteria",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "水",
+      "en": "Water",
+      "vi": "Nước",
+      "ja": "水[みず]"
+    },
     "templateKo": "물 한 잔 주세요.",
-    "templateTranslations": { "zh": "请给我一杯水。", "en": "Please give me a glass of water.", "vi": "Cho em xin một cốc nước.", "ja": "水[みず]を一杯[いっぱい]ください。" } },
-  { "id": "w-allergy", "ko": "알레르기", "reading": "allereugi", "emoji": "🤧", "category": "cafeteria", "difficulty": "hard",
-    "translations": { "zh": "过敏", "en": "Allergy", "vi": "Dị ứng", "ja": "アレルギー" },
+    "templateTranslations": {
+      "zh": "请给我一杯水。",
+      "en": "Please give me a glass of water.",
+      "vi": "Cho em xin một cốc nước.",
+      "ja": "水[みず]を一杯[いっぱい]ください。"
+    }
+  },
+  {
+    "id": "w-allergy",
+    "ko": "알레르기",
+    "reading": "allereugi",
+    "emoji": "🤧",
+    "category": "cafeteria",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "过敏",
+      "en": "Allergy",
+      "vi": "Dị ứng",
+      "ja": "アレルギー"
+    },
     "templateKo": "저는 새우 알레르기가 있어요.",
-    "templateTranslations": { "zh": "我对虾过敏。", "en": "I have a shrimp allergy.", "vi": "Em bị dị ứng với tôm.", "ja": "私[わたし]はエビアレルギーがあります。" } },
-
-  { "id": "w-nurseroom", "ko": "보건실", "reading": "bogeonsil", "emoji": "🏥", "category": "nurse", "difficulty": "easy",
-    "translations": { "zh": "保健室", "en": "Nurse's office", "vi": "Phòng y tế", "ja": "保健室[ほけんしつ]" },
+    "templateTranslations": {
+      "zh": "我对虾过敏。",
+      "en": "I have a shrimp allergy.",
+      "vi": "Em bị dị ứng với tôm.",
+      "ja": "私[わたし]はエビアレルギーがあります。"
+    }
+  },
+  {
+    "id": "w-nurseroom",
+    "ko": "보건실",
+    "reading": "bogeonsil",
+    "emoji": "🏥",
+    "category": "nurse",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "保健室",
+      "en": "Nurse's office",
+      "vi": "Phòng y tế",
+      "ja": "保健室[ほけんしつ]"
+    },
     "templateKo": "보건실은 1층에 있어요.",
-    "templateTranslations": { "zh": "保健室在一楼。", "en": "The nurse's office is on the 1st floor.", "vi": "Phòng y tế ở tầng một.", "ja": "保健室[ほけんしつ]は1階[いっかい]にあります。" } },
-  { "id": "w-stomach", "ko": "배", "reading": "bae", "emoji": "🤢", "category": "nurse", "difficulty": "easy",
-    "translations": { "zh": "肚子", "en": "Stomach", "vi": "Bụng", "ja": "お腹[なか]" },
+    "templateTranslations": {
+      "zh": "保健室在一楼。",
+      "en": "The nurse's office is on the 1st floor.",
+      "vi": "Phòng y tế ở tầng một.",
+      "ja": "保健室[ほけんしつ]は1階[いっかい]にあります。"
+    }
+  },
+  {
+    "id": "w-stomach",
+    "ko": "배",
+    "reading": "bae",
+    "emoji": "🤢",
+    "category": "nurse",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "肚子",
+      "en": "Stomach",
+      "vi": "Bụng",
+      "ja": "お腹[なか]"
+    },
     "templateKo": "배가 아파서 힘들어요.",
-    "templateTranslations": { "zh": "肚子疼很难受。", "en": "My stomach hurts and it's tough.", "vi": "Bụng em đau nên khó chịu.", "ja": "お腹[なか]が痛[いた]くてつらいです。" } },
-  { "id": "w-head", "ko": "머리", "reading": "meori", "emoji": "🤕", "category": "nurse", "difficulty": "easy",
-    "translations": { "zh": "头", "en": "Head", "vi": "Đầu", "ja": "頭[あたま]" },
+    "templateTranslations": {
+      "zh": "肚子疼很难受。",
+      "en": "My stomach hurts and it's tough.",
+      "vi": "Bụng em đau nên khó chịu.",
+      "ja": "お腹[なか]が痛[いた]くてつらいです。"
+    }
+  },
+  {
+    "id": "w-head",
+    "ko": "머리",
+    "reading": "meori",
+    "emoji": "🤕",
+    "category": "nurse",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "头",
+      "en": "Head",
+      "vi": "Đầu",
+      "ja": "頭[あたま]"
+    },
     "templateKo": "머리가 아파요.",
-    "templateTranslations": { "zh": "我头疼。", "en": "My head hurts.", "vi": "Con bị đau đầu.", "ja": "頭[あたま]が痛[いた]いです。" } },
-  { "id": "w-medicine", "ko": "약", "reading": "yak", "emoji": "💊", "category": "nurse", "difficulty": "normal",
-    "translations": { "zh": "药", "en": "Medicine", "vi": "Thuốc", "ja": "薬[くすり]" },
+    "templateTranslations": {
+      "zh": "我头疼。",
+      "en": "My head hurts.",
+      "vi": "Con bị đau đầu.",
+      "ja": "頭[あたま]が痛[いた]いです。"
+    }
+  },
+  {
+    "id": "w-medicine",
+    "ko": "약",
+    "reading": "yak",
+    "emoji": "💊",
+    "category": "nurse",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "药",
+      "en": "Medicine",
+      "vi": "Thuốc",
+      "ja": "薬[くすり]"
+    },
     "templateKo": "약을 먹어야 해요.",
-    "templateTranslations": { "zh": "得吃药了。", "en": "I need to take medicine.", "vi": "Em cần uống thuốc.", "ja": "薬[くすり]を飲[の]まなければなりません。" } },
-  { "id": "w-temperature", "ko": "체온", "reading": "cheon", "emoji": "🌡️", "category": "nurse", "difficulty": "hard",
-    "translations": { "zh": "体温", "en": "Body temperature", "vi": "Thân nhiệt", "ja": "体温[たいおん]" },
+    "templateTranslations": {
+      "zh": "得吃药了。",
+      "en": "I need to take medicine.",
+      "vi": "Em cần uống thuốc.",
+      "ja": "薬[くすり]を飲[の]まなければなりません。"
+    }
+  },
+  {
+    "id": "w-temperature",
+    "ko": "체온",
+    "reading": "cheon",
+    "emoji": "🌡️",
+    "category": "nurse",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "体温",
+      "en": "Body temperature",
+      "vi": "Thân nhiệt",
+      "ja": "体温[たいおん]"
+    },
     "templateKo": "체온을 재볼게요.",
-    "templateTranslations": { "zh": "我来量一下体温。", "en": "Let me check your temperature.", "vi": "Để cô đo thân nhiệt cho con.", "ja": "体温[たいおん]を測[はか]りますね。" } },
-
-  { "id": "w-name", "ko": "이름", "reading": "ireum", "emoji": "🏷️", "category": "greeting", "difficulty": "easy",
-    "translations": { "zh": "名字", "en": "Name", "vi": "Tên", "ja": "名前[なまえ]" },
+    "templateTranslations": {
+      "zh": "我来量一下体温。",
+      "en": "Let me check your temperature.",
+      "vi": "Để cô đo thân nhiệt cho con.",
+      "ja": "体温[たいおん]を測[はか]りますね。"
+    }
+  },
+  {
+    "id": "w-name",
+    "ko": "이름",
+    "reading": "ireum",
+    "emoji": "🏷️",
+    "category": "greeting",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "名字",
+      "en": "Name",
+      "vi": "Tên",
+      "ja": "名前[なまえ]"
+    },
     "templateKo": "제 이름은 지우예요.",
-    "templateTranslations": { "zh": "我的名字是智友。", "en": "My name is Jiu.", "vi": "Tên em là Jiu.", "ja": "私[わたし]の名前[なまえ]はジウです。" } },
-  { "id": "w-friend", "ko": "친구", "reading": "chingu", "emoji": "🧑‍🤝‍🧑", "category": "greeting", "difficulty": "easy",
-    "translations": { "zh": "朋友", "en": "Friend", "vi": "Bạn", "ja": "友達[ともだち]" },
+    "templateTranslations": {
+      "zh": "我的名字是智友。",
+      "en": "My name is Jiu.",
+      "vi": "Tên em là Jiu.",
+      "ja": "私[わたし]の名前[なまえ]はジウです。"
+    }
+  },
+  {
+    "id": "w-friend",
+    "ko": "친구",
+    "reading": "chingu",
+    "emoji": "🧑‍🤝‍🧑",
+    "category": "greeting",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "朋友",
+      "en": "Friend",
+      "vi": "Bạn",
+      "ja": "友達[ともだち]"
+    },
     "templateKo": "저 친구는 제 짝이에요.",
-    "templateTranslations": { "zh": "那个朋友是我的同桌。", "en": "That friend is my desk partner.", "vi": "Người bạn đó là bạn cùng bàn của em.", "ja": "あの友達[ともだち]は私[わたし]の隣[となり]の席[せき]です。" } },
-  { "id": "w-greeting", "ko": "인사", "reading": "insa", "emoji": "🙇", "category": "greeting", "difficulty": "normal",
-    "translations": { "zh": "打招呼", "en": "Greeting", "vi": "Lời chào", "ja": "あいさつ" },
+    "templateTranslations": {
+      "zh": "那个朋友是我的同桌。",
+      "en": "That friend is my desk partner.",
+      "vi": "Người bạn đó là bạn cùng bàn của em.",
+      "ja": "あの友達[ともだち]は私[わたし]の隣[となり]の席[せき]です。"
+    }
+  },
+  {
+    "id": "w-greeting",
+    "ko": "인사",
+    "reading": "insa",
+    "emoji": "🙇",
+    "category": "greeting",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "打招呼",
+      "en": "Greeting",
+      "vi": "Lời chào",
+      "ja": "あいさつ"
+    },
     "templateKo": "선생님께 인사를 했어요.",
-    "templateTranslations": { "zh": "我向老师打了招呼。", "en": "I greeted the teacher.", "vi": "Em đã chào thầy cô.", "ja": "先生[せんせい]にあいさつをしました。" } },
-  { "id": "w-introduce", "ko": "소개", "reading": "sogae", "emoji": "🎤", "category": "greeting", "difficulty": "normal",
-    "translations": { "zh": "介绍", "en": "Introduction", "vi": "Giới thiệu", "ja": "紹介[しょうかい]" },
+    "templateTranslations": {
+      "zh": "我向老师打了招呼。",
+      "en": "I greeted the teacher.",
+      "vi": "Em đã chào thầy cô.",
+      "ja": "先生[せんせい]にあいさつをしました。"
+    }
+  },
+  {
+    "id": "w-introduce",
+    "ko": "소개",
+    "reading": "sogae",
+    "emoji": "🎤",
+    "category": "greeting",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "介绍",
+      "en": "Introduction",
+      "vi": "Giới thiệu",
+      "ja": "紹介[しょうかい]"
+    },
     "templateKo": "제 소개를 할게요.",
-    "templateTranslations": { "zh": "我来介绍一下自己。", "en": "Let me introduce myself.", "vi": "Em xin tự giới thiệu.", "ja": "自己紹介[じこしょうかい]をします。" } },
-  { "id": "w-honorific", "ko": "존댓말", "reading": "jondaenmal", "emoji": "🙏", "category": "greeting", "difficulty": "hard",
-    "translations": { "zh": "敬语", "en": "Polite speech", "vi": "Kính ngữ", "ja": "敬語[けいご]" },
+    "templateTranslations": {
+      "zh": "我来介绍一下自己。",
+      "en": "Let me introduce myself.",
+      "vi": "Em xin tự giới thiệu.",
+      "ja": "自己紹介[じこしょうかい]をします。"
+    }
+  },
+  {
+    "id": "w-honorific",
+    "ko": "존댓말",
+    "reading": "jondaenmal",
+    "emoji": "🙏",
+    "category": "greeting",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "敬语",
+      "en": "Polite speech",
+      "vi": "Kính ngữ",
+      "ja": "敬語[けいご]"
+    },
     "templateKo": "선생님께는 존댓말을 써야 해요.",
-    "templateTranslations": { "zh": "对老师要用敬语。", "en": "You should use polite speech with your teacher.", "vi": "Phải dùng kính ngữ với thầy cô.", "ja": "先生[せんせい]には敬語[けいご]を使[つか]わなければなりません。" } },
-  { "id": "w-casualspeech", "ko": "반말", "reading": "banmal", "emoji": "😅", "category": "greeting", "difficulty": "hard",
-    "translations": { "zh": "半语（非敬语）", "en": "Casual speech", "vi": "Lời nói suồng sã", "ja": "タメ口[ぐち]" },
+    "templateTranslations": {
+      "zh": "对老师要用敬语。",
+      "en": "You should use polite speech with your teacher.",
+      "vi": "Phải dùng kính ngữ với thầy cô.",
+      "ja": "先生[せんせい]には敬語[けいご]を使[つか]わなければなりません。"
+    }
+  },
+  {
+    "id": "w-casualspeech",
+    "ko": "반말",
+    "reading": "banmal",
+    "emoji": "😅",
+    "category": "greeting",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "半语（非敬语）",
+      "en": "Casual speech",
+      "vi": "Lời nói suồng sã",
+      "ja": "タメ口[ぐち]"
+    },
     "templateKo": "친구끼리는 반말을 써도 돼요.",
-    "templateTranslations": { "zh": "朋友之间可以用半语。", "en": "You can use casual speech with friends.", "vi": "Giữa bạn bè có thể dùng lời nói suồng sã.", "ja": "友達同士[ともだちどうし]はタメ口[ぐち]を使[つか]ってもいいです。" } },
-
-  { "id": "w-playground", "ko": "놀이터", "reading": "nolliteo", "emoji": "🛝", "category": "break", "difficulty": "easy",
-    "translations": { "zh": "游乐场", "en": "Playground", "vi": "Sân chơi", "ja": "遊[あそ]び場[ば]" },
+    "templateTranslations": {
+      "zh": "朋友之间可以用半语。",
+      "en": "You can use casual speech with friends.",
+      "vi": "Giữa bạn bè có thể dùng lời nói suồng sã.",
+      "ja": "友達同士[ともだちどうし]はタメ口[ぐち]を使[つか]ってもいいです。"
+    }
+  },
+  {
+    "id": "w-playground",
+    "ko": "놀이터",
+    "reading": "nolliteo",
+    "emoji": "🛝",
+    "category": "break",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "游乐场",
+      "en": "Playground",
+      "vi": "Sân chơi",
+      "ja": "遊[あそ]び場[ば]"
+    },
     "templateKo": "놀이터에서 놀아요.",
-    "templateTranslations": { "zh": "在游乐场玩。", "en": "I play at the playground.", "vi": "Em chơi ở sân chơi.", "ja": "遊[あそ]び場[ば]で遊[あそ]びます。" } },
-  { "id": "w-ball", "ko": "공", "reading": "gong", "emoji": "⚽", "category": "break", "difficulty": "easy",
-    "translations": { "zh": "球", "en": "Ball", "vi": "Quả bóng", "ja": "ボール" },
+    "templateTranslations": {
+      "zh": "在游乐场玩。",
+      "en": "I play at the playground.",
+      "vi": "Em chơi ở sân chơi.",
+      "ja": "遊[あそ]び場[ば]で遊[あそ]びます。"
+    },
+    "alternates": [
+      "운동장"
+    ]
+  },
+  {
+    "id": "w-ball",
+    "ko": "공",
+    "reading": "gong",
+    "emoji": "⚽",
+    "category": "break",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "球",
+      "en": "Ball",
+      "vi": "Quả bóng",
+      "ja": "ボール"
+    },
     "templateKo": "공을 가지고 놀아요.",
-    "templateTranslations": { "zh": "拿球玩。", "en": "I play with a ball.", "vi": "Em chơi với quả bóng.", "ja": "ボールで遊[あそ]びます。" } },
-  { "id": "w-bicycle", "ko": "자전거", "reading": "jajeongeo", "emoji": "🚲", "category": "break", "difficulty": "normal",
-    "translations": { "zh": "自行车", "en": "Bicycle", "vi": "Xe đạp", "ja": "自転車[じてんしゃ]" },
+    "templateTranslations": {
+      "zh": "拿球玩。",
+      "en": "I play with a ball.",
+      "vi": "Em chơi với quả bóng.",
+      "ja": "ボールで遊[あそ]びます。"
+    }
+  },
+  {
+    "id": "w-bicycle",
+    "ko": "자전거",
+    "reading": "jajeongeo",
+    "emoji": "🚲",
+    "category": "break",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "自行车",
+      "en": "Bicycle",
+      "vi": "Xe đạp",
+      "ja": "自転車[じてんしゃ]"
+    },
     "templateKo": "저는 자전거를 타요.",
-    "templateTranslations": { "zh": "我骑自行车。", "en": "I ride a bicycle.", "vi": "Em đi xe đạp.", "ja": "私[わたし]は自転車[じてんしゃ]に乗[の]ります。" } },
-  { "id": "w-tag", "ko": "술래잡기", "reading": "sullaejapgi", "emoji": "🏃‍♂️", "category": "break", "difficulty": "normal",
-    "translations": { "zh": "捉迷藏/鬼抓人", "en": "Tag (game)", "vi": "Trò đuổi bắt", "ja": "鬼[おに]ごっこ" },
+    "templateTranslations": {
+      "zh": "我骑自行车。",
+      "en": "I ride a bicycle.",
+      "vi": "Em đi xe đạp.",
+      "ja": "私[わたし]は自転車[じてんしゃ]に乗[の]ります。"
+    }
+  },
+  {
+    "id": "w-tag",
+    "ko": "술래잡기",
+    "reading": "sullaejapgi",
+    "emoji": "🏃‍♂️",
+    "category": "break",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "捉迷藏/鬼抓人",
+      "en": "Tag (game)",
+      "vi": "Trò đuổi bắt",
+      "ja": "鬼[おに]ごっこ"
+    },
     "templateKo": "우리 술래잡기 하자.",
-    "templateTranslations": { "zh": "我们玩捉人游戏吧。", "en": "Let's play tag.", "vi": "Chúng ta chơi trò đuổi bắt đi.", "ja": "鬼[おに]ごっこをしよう。" } },
-  { "id": "w-rule", "ko": "규칙", "reading": "gyuchik", "emoji": "📏", "category": "break", "difficulty": "hard",
-    "translations": { "zh": "规则", "en": "Rule", "vi": "Quy tắc", "ja": "ルール" },
+    "templateTranslations": {
+      "zh": "我们玩捉人游戏吧。",
+      "en": "Let's play tag.",
+      "vi": "Chúng ta chơi trò đuổi bắt đi.",
+      "ja": "鬼[おに]ごっこをしよう。"
+    }
+  },
+  {
+    "id": "w-rule",
+    "ko": "규칙",
+    "reading": "gyuchik",
+    "emoji": "📏",
+    "category": "break",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "规则",
+      "en": "Rule",
+      "vi": "Quy tắc",
+      "ja": "ルール"
+    },
     "templateKo": "놀이 규칙을 지켜요.",
-    "templateTranslations": { "zh": "要遵守游戏规则。", "en": "Follow the game rules.", "vi": "Hãy tuân theo quy tắc trò chơi.", "ja": "遊[あそ]びのルールを守[まも]ります。" } },
-  { "id": "w-cooperation", "ko": "협동", "reading": "hyeopdong", "emoji": "🤝", "category": "break", "difficulty": "hard",
-    "translations": { "zh": "合作", "en": "Cooperation", "vi": "Hợp tác", "ja": "協力[きょうりょく]" },
+    "templateTranslations": {
+      "zh": "要遵守游戏规则。",
+      "en": "Follow the game rules.",
+      "vi": "Hãy tuân theo quy tắc trò chơi.",
+      "ja": "遊[あそ]びのルールを守[まも]ります。"
+    }
+  },
+  {
+    "id": "w-cooperation",
+    "ko": "협동",
+    "reading": "hyeopdong",
+    "emoji": "🤝",
+    "category": "break",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "合作",
+      "en": "Cooperation",
+      "vi": "Hợp tác",
+      "ja": "協力[きょうりょく]"
+    },
     "templateKo": "우리는 협동해서 놀아요.",
-    "templateTranslations": { "zh": "我们合作玩耍。", "en": "We play together cooperatively.", "vi": "Chúng em hợp tác khi chơi.", "ja": "私[わたし]たちは協力[きょうりょく]して遊[あそ]びます。" } },
-
-  { "id": "w-book", "ko": "책", "reading": "chaek", "emoji": "📖", "category": "library", "difficulty": "easy",
-    "translations": { "zh": "书", "en": "Book", "vi": "Sách", "ja": "本[ほん]" },
+    "templateTranslations": {
+      "zh": "我们合作玩耍。",
+      "en": "We play together cooperatively.",
+      "vi": "Chúng em hợp tác khi chơi.",
+      "ja": "私[わたし]たちは協力[きょうりょく]して遊[あそ]びます。"
+    }
+  },
+  {
+    "id": "w-book",
+    "ko": "책",
+    "reading": "chaek",
+    "emoji": "📖",
+    "category": "library",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "书",
+      "en": "Book",
+      "vi": "Sách",
+      "ja": "本[ほん]"
+    },
     "templateKo": "저는 책을 좋아해요.",
-    "templateTranslations": { "zh": "我喜欢书。", "en": "I like books.", "vi": "Em thích sách.", "ja": "私[わたし]は本[ほん]が好[す]きです。" } },
-  { "id": "w-library", "ko": "도서관", "reading": "doseogwan", "emoji": "📚", "category": "library", "difficulty": "easy",
-    "translations": { "zh": "图书馆", "en": "Library", "vi": "Thư viện", "ja": "図書館[としょかん]" },
+    "templateTranslations": {
+      "zh": "我喜欢书。",
+      "en": "I like books.",
+      "vi": "Em thích sách.",
+      "ja": "私[わたし]は本[ほん]が好[す]きです。"
+    }
+  },
+  {
+    "id": "w-library",
+    "ko": "도서관",
+    "reading": "doseogwan",
+    "emoji": "📚",
+    "category": "library",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "图书馆",
+      "en": "Library",
+      "vi": "Thư viện",
+      "ja": "図書館[としょかん]"
+    },
     "templateKo": "도서관에 책이 많아요.",
-    "templateTranslations": { "zh": "图书馆里有很多书。", "en": "There are many books in the library.", "vi": "Trong thư viện có nhiều sách.", "ja": "図書館[としょかん]には本[ほん]がたくさんあります。" } },
-  { "id": "w-checkout", "ko": "대출", "reading": "daechul", "emoji": "🔖", "category": "library", "difficulty": "normal",
-    "translations": { "zh": "借阅", "en": "Checking out", "vi": "Mượn sách", "ja": "貸[か]し出[だ]し" },
+    "templateTranslations": {
+      "zh": "图书馆里有很多书。",
+      "en": "There are many books in the library.",
+      "vi": "Trong thư viện có nhiều sách.",
+      "ja": "図書館[としょかん]には本[ほん]がたくさんあります。"
+    }
+  },
+  {
+    "id": "w-checkout",
+    "ko": "대출",
+    "reading": "daechul",
+    "emoji": "🔖",
+    "category": "library",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "借阅",
+      "en": "Checking out",
+      "vi": "Mượn sách",
+      "ja": "貸[か]し出[だ]し"
+    },
     "templateKo": "책을 대출했어요.",
-    "templateTranslations": { "zh": "我借了书。", "en": "I checked out a book.", "vi": "Em đã mượn sách.", "ja": "本[ほん]を借[か]りました。" } },
-  { "id": "w-return", "ko": "반납", "reading": "bannap", "emoji": "↩️", "category": "library", "difficulty": "normal",
-    "translations": { "zh": "归还", "en": "Returning", "vi": "Trả sách", "ja": "返却[へんきゃく]" },
+    "templateTranslations": {
+      "zh": "我借了书。",
+      "en": "I checked out a book.",
+      "vi": "Em đã mượn sách.",
+      "ja": "本[ほん]を借[か]りました。"
+    }
+  },
+  {
+    "id": "w-return",
+    "ko": "반납",
+    "reading": "bannap",
+    "emoji": "↩️",
+    "category": "library",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "归还",
+      "en": "Returning",
+      "vi": "Trả sách",
+      "ja": "返却[へんきゃく]"
+    },
     "templateKo": "내일까지 반납해야 해요.",
-    "templateTranslations": { "zh": "必须在明天之前还回去。", "en": "I have to return it by tomorrow.", "vi": "Em phải trả sách trước ngày mai.", "ja": "明日[あした]までに返[かえ]さなければなりません。" } },
-  { "id": "w-librarian", "ko": "사서", "reading": "saseo", "emoji": "🧑‍💼", "category": "library", "difficulty": "hard",
-    "translations": { "zh": "图书管理员", "en": "Librarian", "vi": "Thủ thư", "ja": "司書[ししょ]" },
+    "templateTranslations": {
+      "zh": "必须在明天之前还回去。",
+      "en": "I have to return it by tomorrow.",
+      "vi": "Em phải trả sách trước ngày mai.",
+      "ja": "明日[あした]までに返[かえ]さなければなりません。"
+    }
+  },
+  {
+    "id": "w-librarian",
+    "ko": "사서",
+    "reading": "saseo",
+    "emoji": "🧑‍💼",
+    "category": "library",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "图书管理员",
+      "en": "Librarian",
+      "vi": "Thủ thư",
+      "ja": "司書[ししょ]"
+    },
     "templateKo": "사서 선생님께 여쭤봤어요.",
-    "templateTranslations": { "zh": "我问了图书管理员老师。", "en": "I asked the librarian.", "vi": "Em đã hỏi cô thủ thư.", "ja": "司書[ししょ]の先生[せんせい]に聞[き]きました。" } },
-  { "id": "w-reading", "ko": "독서", "reading": "dokseo", "emoji": "👓", "category": "library", "difficulty": "hard",
-    "translations": { "zh": "读书", "en": "Reading", "vi": "Việc đọc sách", "ja": "読書[どくしょ]" },
+    "templateTranslations": {
+      "zh": "我问了图书管理员老师。",
+      "en": "I asked the librarian.",
+      "vi": "Em đã hỏi cô thủ thư.",
+      "ja": "司書[ししょ]の先生[せんせい]に聞[き]きました。"
+    }
+  },
+  {
+    "id": "w-reading",
+    "ko": "독서",
+    "reading": "dokseo",
+    "emoji": "👓",
+    "category": "library",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "读书",
+      "en": "Reading",
+      "vi": "Việc đọc sách",
+      "ja": "読書[どくしょ]"
+    },
     "templateKo": "독서는 재미있어요.",
-    "templateTranslations": { "zh": "读书很有趣。", "en": "Reading is fun.", "vi": "Đọc sách rất thú vị.", "ja": "読書[どくしょ]は楽[たの]しいです。" } },
-
-  { "id": "w-paint", "ko": "물감", "reading": "mulgam", "emoji": "🎨", "category": "specialroom", "difficulty": "easy",
-    "translations": { "zh": "颜料", "en": "Paint", "vi": "Màu vẽ", "ja": "絵[え]の具[ぐ]" },
+    "templateTranslations": {
+      "zh": "读书很有趣。",
+      "en": "Reading is fun.",
+      "vi": "Đọc sách rất thú vị.",
+      "ja": "読書[どくしょ]は楽[たの]しいです。"
+    }
+  },
+  {
+    "id": "w-paint",
+    "ko": "물감",
+    "reading": "mulgam",
+    "emoji": "🎨",
+    "category": "specialroom",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "颜料",
+      "en": "Paint",
+      "vi": "Màu vẽ",
+      "ja": "絵[え]の具[ぐ]"
+    },
     "templateKo": "물감으로 그림을 그려요.",
-    "templateTranslations": { "zh": "用颜料画画。", "en": "I paint with paint.", "vi": "Em vẽ tranh bằng màu vẽ.", "ja": "絵[え]の具[ぐ]で絵[え]を描[か]きます。" } },
-  { "id": "w-peuniform", "ko": "체육복", "reading": "cheyukbok", "emoji": "👕", "category": "specialroom", "difficulty": "easy",
-    "translations": { "zh": "体育服", "en": "PE uniform", "vi": "Đồ thể dục", "ja": "体操服[たいそうふく]" },
+    "templateTranslations": {
+      "zh": "用颜料画画。",
+      "en": "I paint with paint.",
+      "vi": "Em vẽ tranh bằng màu vẽ.",
+      "ja": "絵[え]の具[ぐ]で絵[え]を描[か]きます。"
+    }
+  },
+  {
+    "id": "w-peuniform",
+    "ko": "체육복",
+    "reading": "cheyukbok",
+    "emoji": "👕",
+    "category": "specialroom",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "体育服",
+      "en": "PE uniform",
+      "vi": "Đồ thể dục",
+      "ja": "体操服[たいそうふく]"
+    },
     "templateKo": "체육복을 입고 뛰어요.",
-    "templateTranslations": { "zh": "穿着体育服跑步。", "en": "I run wearing my PE uniform.", "vi": "Em mặc đồ thể dục để chạy.", "ja": "体操服[たいそうふく]を着[き]て走[はし]ります。" } },
-  { "id": "w-brush", "ko": "붓", "reading": "but", "emoji": "🖌️", "category": "specialroom", "difficulty": "normal",
-    "translations": { "zh": "画笔", "en": "Brush", "vi": "Cọ vẽ", "ja": "筆[ふで]" },
+    "templateTranslations": {
+      "zh": "穿着体育服跑步。",
+      "en": "I run wearing my PE uniform.",
+      "vi": "Em mặc đồ thể dục để chạy.",
+      "ja": "体操服[たいそうふく]を着[き]て走[はし]ります。"
+    },
+    "alternates": [
+      "운동복"
+    ]
+  },
+  {
+    "id": "w-brush",
+    "ko": "붓",
+    "reading": "but",
+    "emoji": "🖌️",
+    "category": "specialroom",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "画笔",
+      "en": "Brush",
+      "vi": "Cọ vẽ",
+      "ja": "筆[ふで]"
+    },
     "templateKo": "붓으로 색칠해요.",
-    "templateTranslations": { "zh": "用画笔上色。", "en": "I color with a brush.", "vi": "Em tô màu bằng cọ vẽ.", "ja": "筆[ふで]で色[いろ]を塗[ぬ]ります。" } },
-  { "id": "w-jumprope", "ko": "줄넘기", "reading": "julneomgi", "emoji": "🪢", "category": "specialroom", "difficulty": "normal",
-    "translations": { "zh": "跳绳", "en": "Jump rope", "vi": "Nhảy dây", "ja": "縄跳[なわと]び" },
+    "templateTranslations": {
+      "zh": "用画笔上色。",
+      "en": "I color with a brush.",
+      "vi": "Em tô màu bằng cọ vẽ.",
+      "ja": "筆[ふで]で色[いろ]を塗[ぬ]ります。"
+    }
+  },
+  {
+    "id": "w-jumprope",
+    "ko": "줄넘기",
+    "reading": "julneomgi",
+    "emoji": "🪢",
+    "category": "specialroom",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "跳绳",
+      "en": "Jump rope",
+      "vi": "Nhảy dây",
+      "ja": "縄跳[なわと]び"
+    },
     "templateKo": "줄넘기를 100번 했어요.",
-    "templateTranslations": { "zh": "我跳绳跳了100次。", "en": "I jumped rope 100 times.", "vi": "Em đã nhảy dây 100 lần.", "ja": "縄跳[なわと]びを100回[かい]しました。" } },
-  { "id": "w-recorder", "ko": "리코더", "reading": "rikodeo", "emoji": "🪈", "category": "specialroom", "difficulty": "hard",
-    "translations": { "zh": "竖笛", "en": "Recorder", "vi": "Sáo recorder", "ja": "リコーダー" },
+    "templateTranslations": {
+      "zh": "我跳绳跳了100次。",
+      "en": "I jumped rope 100 times.",
+      "vi": "Em đã nhảy dây 100 lần.",
+      "ja": "縄跳[なわと]びを100回[かい]しました。"
+    }
+  },
+  {
+    "id": "w-recorder",
+    "ko": "리코더",
+    "reading": "rikodeo",
+    "emoji": "🪈",
+    "category": "specialroom",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "竖笛",
+      "en": "Recorder",
+      "vi": "Sáo recorder",
+      "ja": "リコーダー"
+    },
     "templateKo": "리코더를 불어요.",
-    "templateTranslations": { "zh": "吹竖笛。", "en": "I play the recorder.", "vi": "Em thổi sáo recorder.", "ja": "リコーダーを吹[ふ]きます。" } },
-  { "id": "w-sheetmusic", "ko": "악보", "reading": "akbo", "emoji": "🎼", "category": "specialroom", "difficulty": "hard",
-    "translations": { "zh": "乐谱", "en": "Sheet music", "vi": "Bản nhạc", "ja": "楽譜[がくふ]" },
+    "templateTranslations": {
+      "zh": "吹竖笛。",
+      "en": "I play the recorder.",
+      "vi": "Em thổi sáo recorder.",
+      "ja": "リコーダーを吹[ふ]きます。"
+    }
+  },
+  {
+    "id": "w-sheetmusic",
+    "ko": "악보",
+    "reading": "akbo",
+    "emoji": "🎼",
+    "category": "specialroom",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "乐谱",
+      "en": "Sheet music",
+      "vi": "Bản nhạc",
+      "ja": "楽譜[がくふ]"
+    },
     "templateKo": "악보를 보고 연주해요.",
-    "templateTranslations": { "zh": "看着乐谱演奏。", "en": "I play while looking at the sheet music.", "vi": "Em nhìn bản nhạc để chơi đàn.", "ja": "楽譜[がくふ]を見[み]て演奏[えんそう]します。" } },
-
-  { "id": "w-umbrella", "ko": "우산", "reading": "usan", "emoji": "☂️", "category": "routine", "difficulty": "easy",
-    "translations": { "zh": "雨伞", "en": "Umbrella", "vi": "Ô (dù)", "ja": "傘[かさ]" },
+    "templateTranslations": {
+      "zh": "看着乐谱演奏。",
+      "en": "I play while looking at the sheet music.",
+      "vi": "Em nhìn bản nhạc để chơi đàn.",
+      "ja": "楽譜[がくふ]を見[み]て演奏[えんそう]します。"
+    }
+  },
+  {
+    "id": "w-umbrella",
+    "ko": "우산",
+    "reading": "usan",
+    "emoji": "☂️",
+    "category": "routine",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "雨伞",
+      "en": "Umbrella",
+      "vi": "Ô (dù)",
+      "ja": "傘[かさ]"
+    },
     "templateKo": "비가 와서 우산을 썼어요.",
-    "templateTranslations": { "zh": "因为下雨所以打了伞。", "en": "It rained, so I used an umbrella.", "vi": "Vì trời mưa nên em đã dùng ô.", "ja": "雨[あめ]が降[ふ]ったので傘[かさ]をさしました。" } },
-  { "id": "w-noticebook", "ko": "알림장", "reading": "allimjang", "emoji": "📔", "category": "routine", "difficulty": "easy",
-    "translations": { "zh": "通知本", "en": "Notice notebook", "vi": "Sổ thông báo", "ja": "連絡帳[れんらくちょう]" },
+    "templateTranslations": {
+      "zh": "因为下雨所以打了伞。",
+      "en": "It rained, so I used an umbrella.",
+      "vi": "Vì trời mưa nên em đã dùng ô.",
+      "ja": "雨[あめ]が降[ふ]ったので傘[かさ]をさしました。"
+    }
+  },
+  {
+    "id": "w-noticebook",
+    "ko": "알림장",
+    "reading": "allimjang",
+    "emoji": "📔",
+    "category": "routine",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "通知本",
+      "en": "Notice notebook",
+      "vi": "Sổ thông báo",
+      "ja": "連絡帳[れんらくちょう]"
+    },
     "templateKo": "알림장에 적어주세요.",
-    "templateTranslations": { "zh": "请写在通知本上。", "en": "Please write it in the notice notebook.", "vi": "Xin hãy ghi vào sổ thông báo.", "ja": "連絡帳[れんらくちょう]に書[か]いてください。" } },
-  { "id": "w-late", "ko": "지각", "reading": "jigak", "emoji": "⏰", "category": "routine", "difficulty": "normal",
-    "translations": { "zh": "迟到", "en": "Being late", "vi": "Đi muộn", "ja": "遅刻[ちこく]" },
+    "templateTranslations": {
+      "zh": "请写在通知本上。",
+      "en": "Please write it in the notice notebook.",
+      "vi": "Xin hãy ghi vào sổ thông báo.",
+      "ja": "連絡帳[れんらくちょう]に書[か]いてください。"
+    }
+  },
+  {
+    "id": "w-late",
+    "ko": "지각",
+    "reading": "jigak",
+    "emoji": "⏰",
+    "category": "routine",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "迟到",
+      "en": "Being late",
+      "vi": "Đi muộn",
+      "ja": "遅刻[ちこく]"
+    },
     "templateKo": "오늘 지각했어요.",
-    "templateTranslations": { "zh": "我今天迟到了。", "en": "I was late today.", "vi": "Hôm nay em đã đến muộn.", "ja": "今日[きょう]遅刻[ちこく]しました。" } },
-  { "id": "w-supplies", "ko": "준비물", "reading": "junbimul", "emoji": "🎒", "category": "routine", "difficulty": "normal",
-    "translations": { "zh": "要带的东西", "en": "Supplies", "vi": "Đồ dùng cần chuẩn bị", "ja": "持[も]ち物[もの]" },
+    "templateTranslations": {
+      "zh": "我今天迟到了。",
+      "en": "I was late today.",
+      "vi": "Hôm nay em đã đến muộn.",
+      "ja": "今日[きょう]遅刻[ちこく]しました。"
+    }
+  },
+  {
+    "id": "w-supplies",
+    "ko": "준비물",
+    "reading": "junbimul",
+    "emoji": "🎒",
+    "category": "routine",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "要带的东西",
+      "en": "Supplies",
+      "vi": "Đồ dùng cần chuẩn bị",
+      "ja": "持[も]ち物[もの]"
+    },
     "templateKo": "내일 준비물을 챙겨요.",
-    "templateTranslations": { "zh": "明天要准备好要带的东西。", "en": "I'll get tomorrow's supplies ready.", "vi": "Em chuẩn bị đồ dùng cho ngày mai.", "ja": "明日[あした]の持[も]ち物[もの]を準備[じゅんび]します。" } },
-  { "id": "w-absence", "ko": "결석", "reading": "gyeolseok", "emoji": "🤒", "category": "routine", "difficulty": "hard",
-    "translations": { "zh": "缺席", "en": "Absence", "vi": "Vắng học", "ja": "欠席[けっせき]" },
+    "templateTranslations": {
+      "zh": "明天要准备好要带的东西。",
+      "en": "I'll get tomorrow's supplies ready.",
+      "vi": "Em chuẩn bị đồ dùng cho ngày mai.",
+      "ja": "明日[あした]の持[も]ち物[もの]を準備[じゅんび]します。"
+    }
+  },
+  {
+    "id": "w-absence",
+    "ko": "결석",
+    "reading": "gyeolseok",
+    "emoji": "🤒",
+    "category": "routine",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "缺席",
+      "en": "Absence",
+      "vi": "Vắng học",
+      "ja": "欠席[けっせき]"
+    },
     "templateKo": "감기 때문에 결석했어요.",
-    "templateTranslations": { "zh": "因为感冒请假了。", "en": "I was absent because of a cold.", "vi": "Em đã nghỉ học vì bị cảm.", "ja": "風邪[かぜ]のため欠席[けっせき]しました。" } },
-  { "id": "w-notice", "ko": "가정통신문", "reading": "gajeongtongsinmun", "emoji": "✉️", "category": "routine", "difficulty": "hard",
-    "translations": { "zh": "家长通知单", "en": "School notice", "vi": "Thư thông báo", "ja": "家庭通信文[かていつうしんぶん]" },
+    "templateTranslations": {
+      "zh": "因为感冒请假了。",
+      "en": "I was absent because of a cold.",
+      "vi": "Em đã nghỉ học vì bị cảm.",
+      "ja": "風邪[かぜ]のため欠席[けっせき]しました。"
+    }
+  },
+  {
+    "id": "w-notice",
+    "ko": "가정통신문",
+    "reading": "gajeongtongsinmun",
+    "emoji": "✉️",
+    "category": "routine",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "家长通知单",
+      "en": "School notice",
+      "vi": "Thư thông báo",
+      "ja": "家庭通信文[かていつうしんぶん]"
+    },
     "templateKo": "가정통신문을 나눠줬어요.",
-    "templateTranslations": { "zh": "发了家长通知单。", "en": "The notice was handed out.", "vi": "Thư thông báo đã được phát.", "ja": "家庭通信文[かていつうしんぶん]が配[くば]られました。" } },
-
-  { "id": "w-misunderstanding", "ko": "오해", "reading": "ohae", "emoji": "💭", "category": "conflict", "difficulty": "easy",
-    "translations": { "zh": "误会", "en": "Misunderstanding", "vi": "Hiểu lầm", "ja": "誤解[ごかい]" },
+    "templateTranslations": {
+      "zh": "发了家长通知单。",
+      "en": "The notice was handed out.",
+      "vi": "Thư thông báo đã được phát.",
+      "ja": "家庭通信文[かていつうしんぶん]が配[くば]られました。"
+    }
+  },
+  {
+    "id": "w-misunderstanding",
+    "ko": "오해",
+    "reading": "ohae",
+    "emoji": "💭",
+    "category": "conflict",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "误会",
+      "en": "Misunderstanding",
+      "vi": "Hiểu lầm",
+      "ja": "誤解[ごかい]"
+    },
     "templateKo": "오해가 생겼어요.",
-    "templateTranslations": { "zh": "产生了误会。", "en": "A misunderstanding happened.", "vi": "Đã có sự hiểu lầm.", "ja": "誤解[ごかい]が生[う]まれました。" } },
-  { "id": "w-sorryword", "ko": "미안", "reading": "mian", "emoji": "😔", "category": "conflict", "difficulty": "easy",
-    "translations": { "zh": "抱歉", "en": "Sorry (feeling)", "vi": "Áy náy", "ja": "ごめん" },
+    "templateTranslations": {
+      "zh": "产生了误会。",
+      "en": "A misunderstanding happened.",
+      "vi": "Đã có sự hiểu lầm.",
+      "ja": "誤解[ごかい]が生[う]まれました。"
+    }
+  },
+  {
+    "id": "w-sorryword",
+    "ko": "미안",
+    "reading": "mian",
+    "emoji": "😔",
+    "category": "conflict",
+    "difficulty": "easy",
+    "translations": {
+      "zh": "抱歉",
+      "en": "Sorry (feeling)",
+      "vi": "Áy náy",
+      "ja": "ごめん"
+    },
     "templateKo": "미안한 마음이 들어요.",
-    "templateTranslations": { "zh": "心里感到抱歉。", "en": "I feel sorry.", "vi": "Em cảm thấy áy náy.", "ja": "申[もう]し訳[わけ]ない気持[きも]ちになります。" } },
-  { "id": "w-reconcile", "ko": "화해", "reading": "hwahae", "emoji": "🤝", "category": "conflict", "difficulty": "normal",
-    "translations": { "zh": "和好", "en": "Reconciliation", "vi": "Làm hòa", "ja": "仲直[なかなお]り" },
+    "templateTranslations": {
+      "zh": "心里感到抱歉。",
+      "en": "I feel sorry.",
+      "vi": "Em cảm thấy áy náy.",
+      "ja": "申[もう]し訳[わけ]ない気持[きも]ちになります。"
+    }
+  },
+  {
+    "id": "w-reconcile",
+    "ko": "화해",
+    "reading": "hwahae",
+    "emoji": "🤝",
+    "category": "conflict",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "和好",
+      "en": "Reconciliation",
+      "vi": "Làm hòa",
+      "ja": "仲直[なかなお]り"
+    },
     "templateKo": "친구랑 화해했어요.",
-    "templateTranslations": { "zh": "和朋友和好了。", "en": "I made up with my friend.", "vi": "Em đã làm hòa với bạn.", "ja": "友達[ともだち]と仲直[なかなお]りしました。" } },
-  { "id": "w-quarrel", "ko": "다툼", "reading": "datum", "emoji": "😠", "category": "conflict", "difficulty": "normal",
-    "translations": { "zh": "争吵", "en": "Quarrel", "vi": "Cãi nhau", "ja": "けんか" },
+    "templateTranslations": {
+      "zh": "和朋友和好了。",
+      "en": "I made up with my friend.",
+      "vi": "Em đã làm hòa với bạn.",
+      "ja": "友達[ともだち]と仲直[なかなお]りしました。"
+    }
+  },
+  {
+    "id": "w-quarrel",
+    "ko": "다툼",
+    "reading": "datum",
+    "emoji": "😠",
+    "category": "conflict",
+    "difficulty": "normal",
+    "translations": {
+      "zh": "争吵",
+      "en": "Quarrel",
+      "vi": "Cãi nhau",
+      "ja": "けんか"
+    },
     "templateKo": "작은 다툼이 있었어요.",
-    "templateTranslations": { "zh": "发生了小争吵。", "en": "There was a small quarrel.", "vi": "Đã có một trận cãi nhau nhỏ.", "ja": "小[ちい]さなけんかがありました。" } },
-  { "id": "w-apology", "ko": "사과", "reading": "sagwa", "emoji": "🙇‍♂️", "category": "conflict", "difficulty": "hard",
-    "translations": { "zh": "道歉", "en": "Apology", "vi": "Lời xin lỗi", "ja": "謝罪[しゃざい]" },
+    "templateTranslations": {
+      "zh": "发生了小争吵。",
+      "en": "There was a small quarrel.",
+      "vi": "Đã có một trận cãi nhau nhỏ.",
+      "ja": "小[ちい]さなけんかがありました。"
+    }
+  },
+  {
+    "id": "w-apology",
+    "ko": "사과",
+    "reading": "sagwa",
+    "emoji": "🙇‍♂️",
+    "category": "conflict",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "道歉",
+      "en": "Apology",
+      "vi": "Lời xin lỗi",
+      "ja": "謝罪[しゃざい]"
+    },
     "templateKo": "사과를 받았어요.",
-    "templateTranslations": { "zh": "收到了道歉。", "en": "I received an apology.", "vi": "Em đã nhận được lời xin lỗi.", "ja": "謝罪[しゃざい]を受[う]けました。" } },
-  { "id": "w-upset", "ko": "속상함", "reading": "soksangham", "emoji": "😢", "category": "conflict", "difficulty": "hard",
-    "translations": { "zh": "伤心", "en": "Being upset", "vi": "Nỗi buồn", "ja": "つらい気持[きも]ち" },
+    "templateTranslations": {
+      "zh": "收到了道歉。",
+      "en": "I received an apology.",
+      "vi": "Em đã nhận được lời xin lỗi.",
+      "ja": "謝罪[しゃざい]を受[う]けました。"
+    }
+  },
+  {
+    "id": "w-upset",
+    "ko": "속상함",
+    "reading": "soksangham",
+    "emoji": "😢",
+    "category": "conflict",
+    "difficulty": "hard",
+    "translations": {
+      "zh": "伤心",
+      "en": "Being upset",
+      "vi": "Nỗi buồn",
+      "ja": "つらい気持[きも]ち"
+    },
     "templateKo": "속상함을 느꼈어요.",
-    "templateTranslations": { "zh": "感到很伤心。", "en": "I felt upset.", "vi": "Em đã cảm thấy buồn.", "ja": "つらい気持[きも]ちになりました。" } }
+    "templateTranslations": {
+      "zh": "感到很伤心。",
+      "en": "I felt upset.",
+      "vi": "Em đã cảm thấy buồn.",
+      "ja": "つらい気持[きも]ちになりました。"
+    }
+  }
 ]

@@ -96,7 +96,9 @@ export default function ChatPage() {
       });
       const data = await res.json();
       let finalMessages: Message[];
-      if (data.error) {
+      if (data.rateLimited) {
+        finalMessages = [...nextMessages, { role: "ai", text: "(오늘 AI 대화 사용량이 다 찼어요. 나중에 다시 시도해주세요.)" }];
+      } else if (data.error) {
         finalMessages = [...nextMessages, { role: "ai", text: "미안, 지금은 대답하기 어려워. 다시 말해줄래?" }];
       } else if (data.translated && data.correction) {
         // The student wrote in their native language — attach the Korean

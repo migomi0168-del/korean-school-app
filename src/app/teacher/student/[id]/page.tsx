@@ -9,7 +9,7 @@ import { Avatar } from "@/components/common/Avatar";
 import { useTeacherAuth } from "@/hooks/useTeacherAuth";
 import { subscribeToStudent, subscribeToClassStudents, sendTeacherMessage, clearTeacherAssignment, resetStudentPin } from "@/lib/students";
 import { getWord, getPhrase, getSection, sections } from "@/lib/content";
-import { getWeakestCategory } from "@/lib/weakness";
+import { getWeakestCategory, hasEnoughDataForFeedback } from "@/lib/weakness";
 import { levelFromXp, todayStr } from "@/lib/xp";
 import type { NativeLanguage, Student } from "@/types";
 
@@ -31,6 +31,8 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
   const [newPin, setNewPin] = useState<string | null>(null);
   const [aiEvaluation, setAiEvaluation] = useState<string | null>(null);
   const [loadingEvaluation, setLoadingEvaluation] = useState(false);
+  const [evaluationFailed, setEvaluationFailed] = useState(false);
+  const [evaluationRateLimited, setEvaluationRateLimited] = useState(false);
 
   useEffect(() => {
     const unsubscribe = subscribeToStudent(id, setStudent);
@@ -54,6 +56,8 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
 
   async function handleGetEvaluation() {
     if (!student || loadingEvaluation) return;
+    setEvaluationFailed(false);
+    setEvaluationRateLimited(false);
     setLoadingEvaluation(true);
     const weakestCategory = getWeakestCategory(student);
     const res = await fetch("/api/teacher-feedback", {
@@ -73,8 +77,14 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
       }),
     });
     const data = await res.json();
-    setAiEvaluation(data.feedback || "평가를 불러오지 못했어요. 잠시 후 다시 시도해주세요.");
     setLoadingEvaluation(false);
+    if (data.feedback) {
+      setAiEvaluation(data.feedback);
+    } else if (data.rateLimited) {
+      setEvaluationRateLimited(true);
+    } else {
+      setEvaluationFailed(true);
+    }
   }
 
   async function handleSendMessage() {
@@ -181,12 +191,24 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
         <p className="mb-2 font-display text-lg">🧠 AI 학생 평가</p>
         {aiEvaluation ? (
           <p className="mb-3 whitespace-pre-line text-sm leading-relaxed text-ink">{aiEvaluation}</p>
+        ) : student && !hasEnoughDataForFeedback(student) ? (
+          <p className="mb-3 text-xs text-ink/50">아직 평가할 만큼 학습 기록이 쌓이지 않았어요. 학생에게 학습을 배정해볼까요?</p>
+        ) : evaluationRateLimited ? (
+          <p className="mb-3 text-xs text-duo-red">AI 사용량이 많아서 지금은 안 돼요. 나중에 다시 시도해주세요.</p>
+        ) : evaluationFailed ? (
+          <p className="mb-3 text-xs text-duo-red">지금은 평가를 불러오지 못했어요. 다시 시도해주세요.</p>
         ) : (
           <p className="mb-3 text-xs text-ink/50">학습 기록을 바탕으로 AI가 이 학생에 대한 평가와 다음 지도 방향을 제안해줘요.</p>
         )}
-        <Button onClick={handleGetEvaluation} disabled={loadingEvaluation} variant="pink">
-          {loadingEvaluation ? "평가 생성 중..." : aiEvaluation ? "다시 평가받기" : "AI 평가 받기"}
-        </Button>
+        {student && !hasEnoughDataForFeedback(student) ? (
+          <Link href="/teacher/dashboard">
+            <Button variant="blue">학습 배정하러 가기</Button>
+          </Link>
+        ) : (
+          <Button onClick={handleGetEvaluation} disabled={loadingEvaluation} variant="pink">
+            {loadingEvaluation ? "평가 생성 중..." : aiEvaluation ? "다시 평가받기" : "AI 평가 받기"}
+          </Button>
+        )}
       </Card>
 
       {student.teacherAssignment && (

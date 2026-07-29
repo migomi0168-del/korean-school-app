@@ -91,6 +91,9 @@ export type GradeVerdict = "correct" | "close" | "wrong";
 // before granting credit, rather than auto-accepting any paraphrase.
 export async function gradePhrase(input: string, phrase: Phrase): Promise<GradeVerdict> {
   if (isPhraseCorrect(input, phrase)) return "correct";
+  // A blank submission is never "close" — skip the AI call entirely so an
+  // empty-input mis-tap doesn't burn API quota for nothing.
+  if (!input.trim()) return "wrong";
   try {
     const res = await fetch("/api/grade", {
       method: "POST",
