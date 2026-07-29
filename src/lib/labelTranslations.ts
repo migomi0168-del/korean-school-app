@@ -19,6 +19,14 @@ const LABEL_TRANSLATIONS: Record<string, Record<NativeLanguage, string>> = {
   교실: { zh: "教室", en: "Classroom", vi: "Lớp học", ja: "教室[きょうしつ]" },
   "복도 또는 운동장": { zh: "走廊或操场", en: "Hallway or playground", vi: "Hành lang hoặc sân chơi", ja: "廊下[ろうか]または運動場[うんどうじょう]" },
   "또래 친구": { zh: "同龄朋友", en: "Peer friend", vi: "Bạn cùng lứa", ja: "同[おな]い年[どし]の友達[ともだち]" },
+  "AI 진단에 따라 학습을 진행할까요?": {
+    zh: "要根据AI诊断结果开始学习吗？",
+    en: "Shall we start learning based on this AI diagnosis?",
+    vi: "Chúng ta bắt đầu học theo chẩn đoán của AI nhé?",
+    ja: "AI診断[しんだん]に基[もと]づいて学習[がくしゅう]を始[はじ]めますか？",
+  },
+  "네, 시작할게요": { zh: "好，开始吧", en: "Yes, let's start", vi: "Vâng, bắt đầu nhé", ja: "はい、始[はじ]めます" },
+  "아니요, 다음에 할게요": { zh: "不，下次再做", en: "No, maybe later", vi: "Không, để lần sau", ja: "いいえ、また今度[こんど]にします" },
 };
 
 export function getNativeLabel(ko: string, lang: NativeLanguage | null | undefined): string | null {

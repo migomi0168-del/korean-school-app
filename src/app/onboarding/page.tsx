@@ -10,10 +10,10 @@ import { updateStudent } from "@/lib/students";
 import { useStudentSession } from "@/hooks/useStudentSession";
 import { LANGUAGES } from "@/lib/languages";
 import { isPhraseCorrect } from "@/lib/grading";
-import { getDiagnosticPhrases, tierFromScore } from "@/lib/difficulty";
+import { getDiagnosticPhrases, tierFromScore, DIFFICULTY_LABEL } from "@/lib/difficulty";
 import { t } from "@/lib/i18n";
 import { NativeText } from "@/components/common/NativeText";
-import type { NativeLanguage } from "@/types";
+import type { Difficulty, NativeLanguage } from "@/types";
 
 export default function OnboardingPage() {
   const { student, refresh, loading } = useStudentSession();
@@ -24,6 +24,7 @@ export default function OnboardingPage() {
   const [qIndex, setQIndex] = useState(0);
   const [qInput, setQInput] = useState("");
   const [correctCount, setCorrectCount] = useState(0);
+  const [resultTier, setResultTier] = useState<Difficulty | null>(null);
   const router = useRouter();
 
   const diagnosticQuestions = getDiagnosticPhrases();
@@ -71,7 +72,8 @@ export default function OnboardingPage() {
     if (!student) return;
     setSaving(true);
     const tier = tierFromScore(finalCorrect, diagnosticQuestions.length);
-    await updateStudent(student.id, { proficiencyTier: tier });
+    setResultTier(tier);
+    await updateStudent(student.id, { proficiencyTier: tier, diagnosticCorrect: finalCorrect });
     await refresh();
     setSaving(false);
     setStep("done");
@@ -200,7 +202,12 @@ export default function OnboardingPage() {
       <div className="text-6xl">🎉</div>
       <div className="text-center">
         <h1 className="font-display text-2xl">준비 완료!</h1>
-        <p className="mt-1 text-sm text-ink/60">학생 수준에 맞게 문제를 준비했어요. 학습하면서 계속 조절될 거예요.</p>
+        {resultTier && (
+          <p className="mt-2 font-display text-lg text-duo-blue-dark">
+            진단 결과: {DIFFICULTY_LABEL[resultTier]} 단계 (정답 {correctCount}/{diagnosticQuestions.length})
+          </p>
+        )}
+        <p className="mt-1 text-sm text-ink/60">이 수준에 맞는 단어와 문장부터 시작하고, 학습하면서 계속 조절될 거예요.</p>
       </div>
       <Button onClick={() => router.push("/home")}>시작하기</Button>
     </div>

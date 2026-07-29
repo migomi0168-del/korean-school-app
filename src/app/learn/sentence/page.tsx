@@ -16,6 +16,7 @@ import { addXp, recordWrongPhrase, clearWrongPhrase, completeTeacherAssignment }
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { filterByDifficulty } from "@/lib/difficulty";
+import { getSurvivalPhrases, needsSurvivalPriority } from "@/lib/survival";
 import { NativeText } from "@/components/common/NativeText";
 import { t } from "@/lib/i18n";
 import type { Phrase } from "@/types";
@@ -52,11 +53,17 @@ function SentenceLearnContent() {
   const pendingWriteRef = useRef<Promise<unknown>>(Promise.resolve());
 
   if (student && startXpRef.current === null) startXpRef.current = student.xp;
+  const useSurvival = !!student && !category && needsSurvivalPriority(student);
   if (student && questionsRef.current === null) {
-    const basePool = category ? getPhrasesForSection(category) : phrases;
-    const pool = filterByDifficulty(basePool, student.proficiencyTier ?? "normal", category ? 2 : 4);
-    const count = category ? Math.min(5, pool.length) : QUESTION_COUNT;
-    questionsRef.current = shuffle(pool).slice(0, count);
+    if (useSurvival) {
+      const survivalPool = getSurvivalPhrases();
+      questionsRef.current = shuffle(survivalPool).slice(0, Math.min(QUESTION_COUNT, survivalPool.length));
+    } else {
+      const basePool = category ? getPhrasesForSection(category) : phrases;
+      const pool = filterByDifficulty(basePool, student.proficiencyTier ?? "normal", category ? 2 : 4);
+      const count = category ? Math.min(5, pool.length) : QUESTION_COUNT;
+      questionsRef.current = shuffle(pool).slice(0, count);
+    }
   }
 
   if (loading || !questionsRef.current) return null;
@@ -145,6 +152,9 @@ function SentenceLearnContent() {
         <p className="text-center text-xs font-bold text-duo-pink-dark">
           {searchParams.get("fromAssignment") === "1" ? "📌 선생님이 배정한 학습" : "🎯 AI 추천 학습 — 약점 집중 연습"}
         </p>
+      )}
+      {useSurvival && (
+        <p className="text-center text-xs font-bold text-duo-green-dark">🆘 지금은 생존 표현 위주로 연습해요</p>
       )}
       <ProgressBar value={((index + 1) / questions.length) * 100} colorClass="bg-duo-pink" />
 

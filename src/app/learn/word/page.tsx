@@ -16,6 +16,7 @@ import { addXp, recordWrongWord } from "@/lib/students";
 import { XP_REWARD, levelFromXp } from "@/lib/xp";
 import { playCorrectSound, playWrongSound } from "@/lib/sfx";
 import { filterByDifficulty } from "@/lib/difficulty";
+import { getSurvivalWords, needsSurvivalPriority } from "@/lib/survival";
 import { t } from "@/lib/i18n";
 import { NativeText } from "@/components/common/NativeText";
 import type { Word } from "@/types";
@@ -53,7 +54,8 @@ export default function WordLearnPage() {
 
   if (student && startXpRef.current === null) startXpRef.current = student.xp;
   if (student && questionsRef.current === null) {
-    questionsRef.current = buildQuestions(filterByDifficulty(words, student.proficiencyTier ?? "normal"));
+    const pool = needsSurvivalPriority(student) ? getSurvivalWords() : filterByDifficulty(words, student.proficiencyTier ?? "normal");
+    questionsRef.current = buildQuestions(pool);
   }
 
   const qPreview = questionsRef.current?.[index];
@@ -116,6 +118,9 @@ export default function WordLearnPage() {
       <Link href="/learn" className="text-sm text-ink/40">
         ← 그만하기
       </Link>
+      {needsSurvivalPriority(student) && (
+        <p className="text-center text-xs font-bold text-duo-green-dark">🆘 지금은 생존 단어 위주로 연습해요</p>
+      )}
       <ProgressBar value={((index + 1) / questions.length) * 100} colorClass="bg-duo-blue" />
 
       <Card className="flex flex-col items-center gap-4 py-8 text-center">

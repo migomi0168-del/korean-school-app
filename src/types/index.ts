@@ -62,6 +62,7 @@ export interface Student {
   peerMessages: PeerMessage[];
   lastSeenPeerMessageAt: number;
   proficiencyTier: Difficulty | null;
+  diagnosticCorrect: number | null;
   teacherAssignment: TeacherAssignment | null;
   createdAt: number;
 }

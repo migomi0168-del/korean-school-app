@@ -71,6 +71,7 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     peerMessages: (data.peerMessages as Student["peerMessages"]) ?? [],
     lastSeenPeerMessageAt: (data.lastSeenPeerMessageAt as number) ?? 0,
     proficiencyTier: (data.proficiencyTier as Student["proficiencyTier"]) ?? null,
+    diagnosticCorrect: (data.diagnosticCorrect as number) ?? null,
     teacherAssignment: (data.teacherAssignment as Student["teacherAssignment"]) ?? null,
     createdAt: (data.createdAt as number) ?? Date.now(),
   };
@@ -109,6 +110,7 @@ export async function createStudent(params: { classId: string; nickname: string;
     peerMessages: [],
     lastSeenPeerMessageAt: 0,
     proficiencyTier: null,
+    diagnosticCorrect: null,
     teacherAssignment: null,
     createdAt: Date.now(),
   });

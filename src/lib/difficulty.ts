@@ -30,9 +30,15 @@ export function getDiagnosticPhrases() {
   return DIAGNOSTIC_PHRASE_IDS.map((id) => getPhrase(id)).filter((p): p is NonNullable<typeof p> => p !== null);
 }
 
+// The diagnostic asks the student to type a full Korean phrase from scratch
+// (production, not multiple-choice), so even a couple of lucky/partial
+// answers shouldn't be read as "normal" ability — thresholds are deliberately
+// conservative. "hard" specifically requires >=80% correct, since some
+// content (rarely-used vocabulary, two-sentence phrases) is gated on that
+// same 80% bar elsewhere.
 export function tierFromScore(correct: number, total: number): Difficulty {
   const ratio = total > 0 ? correct / total : 0;
-  if (ratio <= 0.3) return "easy";
-  if (ratio <= 0.7) return "normal";
+  if (ratio < 0.5) return "easy";
+  if (ratio < 0.8) return "normal";
   return "hard";
 }
