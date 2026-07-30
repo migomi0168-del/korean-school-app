@@ -162,18 +162,11 @@ export default function HomePage() {
           </Link>
         ))}
         <Link
-          href="/shop"
-          className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
-        >
-          <div className="text-3xl">🛍️</div>
-          <p className="font-display text-lg">꾸미기 상점</p>
-        </Link>
-        <Link
           href="/closet"
-          className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
+          className="col-span-2 flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
         >
-          <div className="text-3xl">✨</div>
-          <p className="font-display text-lg">꾸미기</p>
+          <div className="text-3xl">🛍️✨</div>
+          <p className="font-display text-lg">꾸미기 상점</p>
         </Link>
         <Link
           href="/mypage"
@@ -184,7 +177,7 @@ export default function HomePage() {
         </Link>
         <Link
           href="/classmates"
-          className="col-span-2 flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
+          className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-duo-gray p-5 text-center text-ink/40"
         >
           <div className="text-3xl">👥</div>
           <p className="font-display text-lg">반 친구들</p>
