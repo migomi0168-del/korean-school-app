@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const MODEL = "gemini-flash-latest";
+// Pinned to a specific stable version, not the "-latest" alias — this route
+// fires on nearly every non-exact answer, so it's the heaviest consumer of
+// the daily quota; "-latest" can silently hot-swap to a much stingier model.
+const MODEL = "gemini-3.5-flash";
 
 const SYSTEM_INSTRUCTION = `너는 초등학생 한국어 학습 앱의 채점 도우미야.
 학생이 입력한 한국어 문장이 정답(또는 정답의 다른 표현들)과 의미/맥락이 통하면 정답으로 인정해.

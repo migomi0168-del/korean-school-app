@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const MODEL = "gemini-flash-latest";
+// Pinned to a specific stable version, not the "-latest" alias — see chat/route.ts.
+const MODEL = "gemini-3.5-flash";
 
 const SYSTEM_INSTRUCTION = `너는 다문화 배경 초등학생의 한국어 학습을 관리하는 담임 선생님을 돕는 보조야.
 아래 학생 데이터를 보고, 선생님에게 보여줄 짧은 학생 평가를 한국어로 3~4문장 작성해줘.

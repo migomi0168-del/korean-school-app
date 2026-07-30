@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const MODEL = "gemini-flash-latest";
+// Pinned to a specific stable version, not the "-latest" alias — that alias
+// silently hot-swaps to whatever model Google ships next, which can (and did)
+// land on a much stingier free-tier quota overnight with no code change here.
+const MODEL = "gemini-3.5-flash";
 
 const BASE_SYSTEM_INSTRUCTION = `너는 초등학생의 한국어 회화 연습 상대야. 실제 사람처럼 행동해.
 답변(reply)은 항상 한국어로, 초등학생이 이해하기 쉬운 짧고 쉬운 문장 1~2개로 해.

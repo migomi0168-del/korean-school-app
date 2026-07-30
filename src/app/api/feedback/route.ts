@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const MODEL = "gemini-flash-latest";
+// Pinned to a specific stable version, not the "-latest" alias — see chat/route.ts.
+const MODEL = "gemini-3.5-flash";
 
 const LANG_NAME: Record<string, string> = {
   zh: "Chinese (中文)",
