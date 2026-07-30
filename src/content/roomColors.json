@@ -1,12 +1,12 @@
 [
   { "id": "sky", "name": "하늘색", "price": 0, "pattern": "solid", "colors": ["#e0f2fe", "#bfdbfe"] },
-  { "id": "peach", "name": "복숭아색", "price": 20, "pattern": "solid", "colors": ["#ffedd5", "#fbcfe8"] },
-  { "id": "mint", "name": "민트색", "price": 20, "pattern": "solid", "colors": ["#d1fae5", "#99f6e4"] },
-  { "id": "lavender", "name": "라벤더색", "price": 30, "pattern": "solid", "colors": ["#ede9fe", "#c7d2fe"] },
-  { "id": "lemon", "name": "레몬색", "price": 30, "pattern": "solid", "colors": ["#fef9c3", "#d9f99d"] },
-  { "id": "sunset", "name": "노을색", "price": 50, "pattern": "solid", "colors": ["#fecdd3", "#fdba74"] },
-  { "id": "stripe-blue", "name": "파란 줄무늬", "price": 35, "pattern": "stripes", "colors": ["#dbeafe", "#93c5fd"] },
-  { "id": "stripe-pink", "name": "핑크 줄무늬", "price": 35, "pattern": "stripes", "colors": ["#fce7f3", "#f9a8d4"] },
-  { "id": "dot-yellow", "name": "노란 도트", "price": 40, "pattern": "dots", "colors": ["#fef9c3", "#fde047"] },
-  { "id": "dot-mint", "name": "초록 도트", "price": 40, "pattern": "dots", "colors": ["#d1fae5", "#34d399"] }
+  { "id": "peach", "name": "복숭아색", "price": 40, "pattern": "solid", "colors": ["#ffedd5", "#fbcfe8"] },
+  { "id": "mint", "name": "민트색", "price": 40, "pattern": "solid", "colors": ["#d1fae5", "#99f6e4"] },
+  { "id": "lavender", "name": "라벤더색", "price": 60, "pattern": "solid", "colors": ["#ede9fe", "#c7d2fe"] },
+  { "id": "lemon", "name": "레몬색", "price": 60, "pattern": "solid", "colors": ["#fef9c3", "#d9f99d"] },
+  { "id": "sunset", "name": "노을색", "price": 100, "pattern": "solid", "colors": ["#fecdd3", "#fdba74"] },
+  { "id": "stripe-blue", "name": "파란 줄무늬", "price": 70, "pattern": "stripes", "colors": ["#dbeafe", "#93c5fd"] },
+  { "id": "stripe-pink", "name": "핑크 줄무늬", "price": 70, "pattern": "stripes", "colors": ["#fce7f3", "#f9a8d4"] },
+  { "id": "dot-yellow", "name": "노란 도트", "price": 80, "pattern": "dots", "colors": ["#fef9c3", "#fde047"] },
+  { "id": "dot-mint", "name": "초록 도트", "price": 80, "pattern": "dots", "colors": ["#d1fae5", "#34d399"] }
 ]

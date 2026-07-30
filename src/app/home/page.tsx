@@ -87,7 +87,7 @@ export default function HomePage() {
             <p className="text-sm text-ink">{student.teacherAssignment.label}</p>
           </div>
           <Link
-            href={getAssignmentHref(student.teacherAssignment.situationId, "/home")}
+            href={getAssignmentHref(student.teacherAssignment.situationId, "/home", student.teacherAssignment.count ?? 5)}
             className="shrink-0 rounded-xl bg-duo-blue px-3 py-2 text-xs font-bold text-white"
           >
             지금 풀기

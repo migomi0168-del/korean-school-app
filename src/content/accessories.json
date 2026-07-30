@@ -1,9 +1,9 @@
 [
-  { "id": "hat", "emoji": "🎩", "name": "모자", "price": 50, "position": "top" },
-  { "id": "sunglasses", "emoji": "🕶️", "name": "선글라스", "price": 60, "position": "center" },
-  { "id": "bow", "emoji": "🎀", "name": "리본", "price": 50, "position": "bottom" },
-  { "id": "scarf", "emoji": "🧣", "name": "목도리", "price": 70, "position": "bottom" },
-  { "id": "gem", "emoji": "💎", "name": "보석", "price": 90, "position": "corner" },
-  { "id": "star", "emoji": "⭐", "name": "별 배지", "price": 80, "position": "corner" },
-  { "id": "crown", "emoji": "👑", "name": "왕관", "price": 150, "position": "top" }
+  { "id": "hat", "emoji": "🎩", "name": "모자", "price": 100, "position": "top" },
+  { "id": "sunglasses", "emoji": "🕶️", "name": "선글라스", "price": 120, "position": "center" },
+  { "id": "bow", "emoji": "🎀", "name": "리본", "price": 100, "position": "bottom" },
+  { "id": "scarf", "emoji": "🧣", "name": "목도리", "price": 140, "position": "bottom" },
+  { "id": "gem", "emoji": "💎", "name": "보석", "price": 180, "position": "corner" },
+  { "id": "star", "emoji": "⭐", "name": "별 배지", "price": 160, "position": "corner" },
+  { "id": "crown", "emoji": "👑", "name": "왕관", "price": 300, "position": "top" }
 ]

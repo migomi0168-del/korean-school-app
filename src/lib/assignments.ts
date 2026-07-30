@@ -11,9 +11,9 @@ export const ASSIGNMENT_OPTIONS: AssignmentOption[] = [
 ];
 
 // Where "지금 풀기" on the student's assignment banner should send them.
-export function getAssignmentHref(situationId: string, next: string) {
+export function getAssignmentHref(situationId: string, next: string, count: number) {
   if (situationId === "formal") {
-    return `/learn/custom?auto=formal&next=${encodeURIComponent(next)}&fromAssignment=1`;
+    return `/learn/custom?auto=formal&next=${encodeURIComponent(next)}&fromAssignment=1&count=${count}`;
   }
-  return `/learn/sentence?category=${situationId}&next=${encodeURIComponent(next)}&fromAssignment=1`;
+  return `/learn/sentence?category=${situationId}&next=${encodeURIComponent(next)}&fromAssignment=1&count=${count}`;
 }

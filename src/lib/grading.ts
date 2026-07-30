@@ -81,6 +81,16 @@ export function getFormalForm(phrase: Phrase) {
   return candidates.find(isFormalKorean) ?? phrase.ko;
 }
 
+// True only if the phrase actually has a polite-register form somewhere in
+// its answer set. Peer-only phrases ("같이 놀자!", vocatives like "친구야!")
+// have none — getFormalForm() would silently fall back to the casual text,
+// which then gets shown/required as if it were the polite answer. Callers
+// building a 존댓말 (formal) practice pool should filter on this first so
+// those phrases never enter formal-mode rotation in the first place.
+export function hasFormalForm(phrase: Pick<Phrase, "ko" | "alternates">) {
+  return [phrase.ko, ...(phrase.alternates ?? [])].some(isFormalKorean);
+}
+
 export type GradeVerdict = "correct" | "close" | "wrong";
 
 // Fast local check first for an exact/near-exact match (instant credit).

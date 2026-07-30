@@ -29,6 +29,7 @@ export default function TeacherDashboardPage() {
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [assignSituation, setAssignSituation] = useState<string | null>(null);
+  const [assignCount, setAssignCount] = useState(5);
   const [assigning, setAssigning] = useState(false);
   const [assignedToast, setAssignedToast] = useState(false);
 
@@ -75,7 +76,7 @@ export default function TeacherDashboardPage() {
     const option = ASSIGNMENT_OPTIONS.find((o) => o.id === assignSituation);
     if (!option) return;
     setAssigning(true);
-    await assignTeacherContent(Array.from(selectedIds), option.id, option.label);
+    await assignTeacherContent(Array.from(selectedIds), option.id, option.label, Math.max(1, assignCount));
     setAssigning(false);
     setSelectedIds(new Set());
     setAssignSituation(null);
@@ -148,6 +149,18 @@ export default function TeacherDashboardPage() {
               {o.label}
             </button>
           ))}
+        </div>
+        <div className="mb-3 flex items-center gap-2">
+          <label className="text-sm font-bold text-ink/60">문제 개수</label>
+          <input
+            type="number"
+            min={1}
+            value={assignCount === 0 ? "" : assignCount}
+            onChange={(e) => setAssignCount(e.target.value === "" ? 0 : Math.max(1, Number(e.target.value)))}
+            placeholder="5"
+            className="w-20 rounded-xl border-2 border-duo-gray px-3 py-1 text-sm outline-none focus:border-duo-blue"
+          />
+          <span className="text-sm text-ink/40">문제</span>
         </div>
         <Button onClick={handleAssign} disabled={!assignSituation || selectedIds.size === 0 || assigning} variant="blue">
           {assigning ? "배정 중..." : `선택한 ${selectedIds.size}명에게 배정하기`}

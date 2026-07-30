@@ -40,6 +40,8 @@ function SentenceLearnContent() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
   const next = searchParams.get("next") ?? "/learn";
+  const fromAssignment = searchParams.get("fromAssignment") === "1";
+  const assignedCount = Number(searchParams.get("count")) || 5;
 
   const questionsRef = useRef<Phrase[] | null>(null);
   const [index, setIndex] = useState(0);
@@ -61,7 +63,7 @@ function SentenceLearnContent() {
     } else {
       const basePool = category ? getPhrasesForSection(category) : phrases;
       const pool = filterByDifficulty(basePool, student.proficiencyTier ?? "normal", category ? 2 : 4);
-      const count = category ? Math.min(5, pool.length) : QUESTION_COUNT;
+      const count = category ? Math.min(fromAssignment ? assignedCount : 5, pool.length) : QUESTION_COUNT;
       questionsRef.current = shuffle(pool).slice(0, count);
     }
   }
@@ -133,8 +135,8 @@ function SentenceLearnContent() {
     }
     setSaving(true);
     await pendingWriteRef.current;
-    if (searchParams.get("fromAssignment") === "1" && student) {
-      await completeTeacherAssignment(student.id);
+    if (fromAssignment && student) {
+      await Promise.all([completeTeacherAssignment(student.id), addXp(student.id, XP_REWARD.assignmentComplete)]);
     }
     const prevLevel = levelFromXp(startXpRef.current ?? 0);
     const newLevel = levelFromXp((startXpRef.current ?? 0) + sessionXp);
@@ -150,9 +152,10 @@ function SentenceLearnContent() {
       </Link>
       {category && (
         <p className="text-center text-xs font-bold text-duo-pink-dark">
-          {searchParams.get("fromAssignment") === "1" ? "📌 선생님이 배정한 학습" : "🎯 AI 추천 학습 — 약점 집중 연습"}
+          {fromAssignment ? "📌 선생님이 배정한 학습" : "🎯 AI 추천 학습 — 약점 집중 연습"}
         </p>
       )}
+      {fromAssignment && <p className="text-center text-xs text-ink/50">{index + 1}/{questions.length}문제</p>}
       {useSurvival && (
         <p className="text-center text-xs font-bold text-duo-green-dark">🆘 지금은 생존 표현 위주로 연습해요</p>
       )}

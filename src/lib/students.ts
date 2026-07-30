@@ -295,8 +295,8 @@ export async function resetStudentPin(studentId: string): Promise<string> {
 
 // Lets a teacher push "today's focus" to one or more students at once,
 // instead of only ever relying on each student's own auto-picked weak spot.
-export async function assignTeacherContent(studentIds: string[], situationId: string, label: string) {
-  const assignment = { situationId, label, assignedAt: Date.now(), completed: false };
+export async function assignTeacherContent(studentIds: string[], situationId: string, label: string, count: number) {
+  const assignment = { situationId, label, assignedAt: Date.now(), completed: false, count };
   await Promise.all(
     studentIds.map((id) => updateDoc(doc(db, "students", id), { teacherAssignment: assignment }))
   );

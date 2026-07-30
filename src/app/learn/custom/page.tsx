@@ -16,6 +16,7 @@ import {
   isPhraseCorrect,
   isFormalKorean,
   getFormalForm,
+  hasFormalForm,
   similarity,
 } from "@/lib/grading";
 import { useStudentSession } from "@/hooks/useStudentSession";
@@ -40,11 +41,17 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function buildPool(situationId: string, tier: Difficulty): Phrase[] {
+function buildPool(situationId: string, tier: Difficulty, formalOnly: boolean, count: number): Phrase[] {
   const basePool = situationId === "all" ? phrases : getPhrasesForSection(situationId);
-  const pool = filterByDifficulty(basePool, tier, situationId === "all" ? 4 : 2);
-  const count = Math.min(QUESTION_COUNT, pool.length);
-  return shuffle(pool).slice(0, count);
+  const tierPool = filterByDifficulty(basePool, tier, situationId === "all" ? 4 : 2);
+  const eligiblePool = formalOnly ? tierPool.filter(hasFormalForm) : tierPool;
+  // Some situations (쉬는시간, 친구 갈등) are entirely peer-register phrases —
+  // filtering those down for 존댓말 practice can leave nothing usable, so
+  // fall back to every formal-capable phrase across all situations instead
+  // of stranding the student with an empty/near-empty pool.
+  const finalPool = formalOnly && eligiblePool.length < 2 ? phrases.filter(hasFormalForm) : eligiblePool;
+  const n = Math.min(count, finalPool.length);
+  return shuffle(finalPool).slice(0, n);
 }
 
 function CustomLearnContent() {
@@ -53,6 +60,8 @@ function CustomLearnContent() {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/learn";
   const auto = searchParams.get("auto") === "formal";
+  const fromAssignment = searchParams.get("fromAssignment") === "1";
+  const assignedCount = Number(searchParams.get("count")) || QUESTION_COUNT;
 
   const [situation, setSituation] = useState<string | null>(auto ? "all" : null);
   const [partner, setPartner] = useState<Partner | null>(auto ? "선생님" : null);
@@ -71,7 +80,7 @@ function CustomLearnContent() {
 
   if (student && startXpRef.current === null) startXpRef.current = student.xp;
   if (student && auto && poolRef.current === null) {
-    poolRef.current = buildPool("all", student.proficiencyTier ?? "normal");
+    poolRef.current = buildPool("all", student.proficiencyTier ?? "normal", true, fromAssignment ? assignedCount : QUESTION_COUNT);
   }
 
   if (loading) return null;
@@ -88,7 +97,12 @@ function CustomLearnContent() {
 
   function handleStart() {
     if (!situation || !partner || !student) return;
-    poolRef.current = buildPool(situation, student.proficiencyTier ?? "normal");
+    poolRef.current = buildPool(
+      situation,
+      student.proficiencyTier ?? "normal",
+      partner === "선생님",
+      fromAssignment ? assignedCount : QUESTION_COUNT
+    );
     setStarted(true);
   }
 
@@ -232,8 +246,8 @@ function CustomLearnContent() {
     }
     setSaving(true);
     await pendingWriteRef.current;
-    if (searchParams.get("fromAssignment") === "1" && student) {
-      await completeTeacherAssignment(student.id);
+    if (fromAssignment && student) {
+      await Promise.all([completeTeacherAssignment(student.id), addXp(student.id, XP_REWARD.assignmentComplete)]);
     }
     const prevLevel = levelFromXp(startXpRef.current ?? 0);
     const newLevel = levelFromXp((startXpRef.current ?? 0) + sessionXp);
@@ -246,9 +260,10 @@ function CustomLearnContent() {
         ← 그만하기
       </Link>
       <p className="text-center text-xs font-bold text-duo-pink-dark">
-        🧭 {getSection(situation ?? "")?.name ?? "다양한 상황"} · {partner}
+        {fromAssignment ? "📌 선생님이 배정한 학습" : `🧭 ${getSection(situation ?? "")?.name ?? "다양한 상황"} · ${partner}`}
         {isFormalMode && " (존댓말 연습)"}
       </p>
+      {fromAssignment && <p className="text-center text-xs text-ink/50">{index + 1}/{pool.length}문제</p>}
       <ProgressBar value={((index + 1) / pool.length) * 100} colorClass="bg-duo-pink" />
 
       <Card className="flex flex-col items-center gap-3 py-8 text-center">

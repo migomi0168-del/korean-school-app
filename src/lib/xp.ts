@@ -20,6 +20,7 @@ export const XP_REWARD = {
   situationSort: 6,
   practiceMode: 15,
   survivalPhrase: 5,
+  assignmentComplete: 10,
 } as const;
 
 export function todayStr() {

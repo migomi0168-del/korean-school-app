@@ -28,6 +28,7 @@ export interface TeacherAssignment {
   label: string;
   assignedAt: number;
   completed: boolean;
+  count: number;
 }
 
 export interface Student {
