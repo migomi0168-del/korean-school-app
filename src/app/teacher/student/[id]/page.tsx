@@ -308,6 +308,7 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
             min={0}
             value={bonusPoints}
             onChange={(e) => setBonusPoints(Math.max(0, Number(e.target.value)))}
+            onFocus={(e) => e.target.select()}
             className="w-24 rounded-xl border-2 border-duo-gray px-3 py-1 text-sm outline-none focus:border-duo-green"
           />
           <span className="text-sm text-ink/40">P (선택)</span>
