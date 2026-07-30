@@ -72,11 +72,11 @@ export default function TeacherDashboardPage() {
   }
 
   async function handleAssign() {
-    if (!assignSituation || selectedIds.size === 0) return;
+    if (!assignSituation || selectedIds.size === 0 || assignCount === 0) return;
     const option = ASSIGNMENT_OPTIONS.find((o) => o.id === assignSituation);
     if (!option) return;
     setAssigning(true);
-    await assignTeacherContent(Array.from(selectedIds), option.id, option.label, Math.max(1, assignCount));
+    await assignTeacherContent(Array.from(selectedIds), option.id, option.label, assignCount);
     setAssigning(false);
     setSelectedIds(new Set());
     setAssignSituation(null);
@@ -152,17 +152,27 @@ export default function TeacherDashboardPage() {
         </div>
         <div className="mb-3 flex items-center gap-2">
           <label className="text-sm font-bold text-ink/60">문제 개수</label>
-          <input
-            type="number"
-            min={1}
-            value={assignCount === 0 ? "" : assignCount}
-            onChange={(e) => setAssignCount(e.target.value === "" ? 0 : Math.max(1, Number(e.target.value)))}
-            placeholder="5"
+          <select
+            value={assignCount}
+            onChange={(e) => setAssignCount(Number(e.target.value))}
             className="w-20 rounded-xl border-2 border-duo-gray px-3 py-1 text-sm outline-none focus:border-duo-blue"
-          />
+          >
+            {Array.from({ length: 11 }, (_, n) => n).map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </select>
           <span className="text-sm text-ink/40">문제</span>
         </div>
-        <Button onClick={handleAssign} disabled={!assignSituation || selectedIds.size === 0 || assigning} variant="blue">
+        {assignCount === 0 && (
+          <p className="mb-3 text-xs font-bold text-duo-red">문제 개수를 1개 이상 선택해주세요.</p>
+        )}
+        <Button
+          onClick={handleAssign}
+          disabled={!assignSituation || selectedIds.size === 0 || assignCount === 0 || assigning}
+          variant="blue"
+        >
           {assigning ? "배정 중..." : `선택한 ${selectedIds.size}명에게 배정하기`}
         </Button>
       </Card>
