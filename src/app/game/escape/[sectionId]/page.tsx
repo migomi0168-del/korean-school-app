@@ -21,13 +21,30 @@ import { NativeText } from "@/components/common/NativeText";
 
 type Phase = "answering" | "close" | "correct" | "wrong";
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function EscapeSectionPage({ params }: { params: Promise<{ sectionId: string }> }) {
   const { sectionId } = use(params);
   const { student, loading } = useStudentSession();
   const router = useRouter();
 
   const section = getSection(sectionId);
-  const doors = filterByDifficulty(getPhrasesForSection(sectionId), student?.proficiencyTier ?? "normal", 2);
+  // Shuffled once per room visit (not recomputed on every render, or the
+  // door order would shift underneath the player mid-room and desync from
+  // `index`); doorsRef persists across a full re-render but this page is a
+  // distinct route per sectionId, so each fresh room visit gets a fresh mount.
+  const doorsRef = useRef<ReturnType<typeof getPhrasesForSection> | null>(null);
+  if (doorsRef.current === null) {
+    doorsRef.current = shuffle(filterByDifficulty(getPhrasesForSection(sectionId), student?.proficiencyTier ?? "normal", 2));
+  }
+  const doors = doorsRef.current;
 
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");

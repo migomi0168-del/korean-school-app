@@ -51,6 +51,7 @@ export interface Student {
   practiceOptionIds: string[];
   practiceSuccessCount: number;
   equippedAccessory: string | null;
+  equippedBadges: string[];
   ownedAccessories: string[];
   ownedFurniture: string[];
   ownedRoomColors: string[];
@@ -108,12 +109,18 @@ export interface Section {
 
 export type AccessoryPosition = "top" | "center" | "bottom" | "corner";
 
+export type AccessoryCategory = "avatar" | "badge";
+
 export interface Accessory {
   id: string;
   emoji: string;
   name: string;
   price: number;
   position: AccessoryPosition;
+  // "avatar" items render on the character and occupy the single
+  // equippedAccessory slot; "badge" items (medals/gems) render in the room
+  // display case instead and can be equipped many at once (equippedBadges).
+  category: AccessoryCategory;
 }
 
 export interface Furniture {

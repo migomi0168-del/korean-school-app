@@ -34,6 +34,7 @@ function createDemoStudent(): Student {
     practiceOptionIds: [],
     practiceSuccessCount: 0,
     equippedAccessory: null,
+    equippedBadges: [],
     ownedAccessories: [],
     ownedFurniture: [],
     ownedRoomColors: [],

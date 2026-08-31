@@ -104,6 +104,28 @@ export default function ScrambleGamePage() {
     setLevelRange({ prev: prevLevel, next: newLevel });
   }
 
+  // Re-navigating to this same route doesn't remount the component, so
+  // roundsRef would otherwise keep the old rounds forever — rebuild the pool
+  // and reset every piece of round state explicitly instead.
+  function handleRestart() {
+    if (!student) return;
+    const blockEligible = phrases.filter((p) => p.ko.split(" ").filter(Boolean).length >= 3);
+    const pool = filterByDifficulty(blockEligible, student.proficiencyTier ?? "normal");
+    const newRounds = buildRounds(pool, TOTAL_ROUNDS);
+    roundsRef.current = newRounds;
+    startXpRef.current = student.xp;
+    setIndex(0);
+    setTray(newRounds[0].tray);
+    setPlaced([]);
+    setAnswer(null);
+    setScore(0);
+    setSessionXp(0);
+    setSaving(false);
+    setLeveledUp(false);
+    setLevelRange({ prev: 0, next: 0 });
+    setPhase("playing");
+  }
+
   function goToNextRound(currentIndex: number) {
     if (currentIndex + 1 >= TOTAL_ROUNDS) {
       finishGame();
@@ -157,7 +179,7 @@ export default function ScrambleGamePage() {
         {leveledUp && <p className="font-display text-xl text-duo-yellow-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{sessionXp} XP</p>
         <p className="text-lg font-bold text-duo-yellow-dark">+{sessionXp} 포인트 💰</p>
-        <Button onClick={() => router.push("/game/scramble")} disabled={saving}>
+        <Button onClick={handleRestart} disabled={saving}>
           다시 하기
         </Button>
         <Link href="/game" className="text-sm text-ink/40 underline">

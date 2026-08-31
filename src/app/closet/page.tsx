@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Card } from "@/components/common/Card";
 import { Avatar } from "@/components/common/Avatar";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { updateStudent } from "@/lib/students";
-import { accessories } from "@/lib/accessories";
+import { updateStudent, toggleEquippedBadge } from "@/lib/students";
+import { avatarAccessories, badgeAccessories, getEquippedBadges } from "@/lib/accessories";
 import { getOwnedFurniture } from "@/lib/furniture";
 import { getRoomColor, getRoomBackgroundStyle } from "@/lib/roomColors";
 import { levelFromXp } from "@/lib/xp";
@@ -24,6 +24,7 @@ export default function ClosetPage() {
   const level = levelFromXp(student.xp);
   const room = getRoomColor(student.roomColor);
   const ownedFurniture = getOwnedFurniture(student.ownedFurniture);
+  const equippedBadges = getEquippedBadges(student.equippedBadges);
 
   function handleEquip(id: string | null) {
     if (!student) return;
@@ -41,6 +42,15 @@ export default function ClosetPage() {
         style={getRoomBackgroundStyle(room)}
         className="relative flex min-h-56 flex-col items-center justify-between overflow-hidden rounded-3xl border-2 border-duo-gray p-4"
       >
+        {equippedBadges.length > 0 && (
+          <div className="flex w-full flex-wrap items-center justify-center gap-2 pb-1 text-2xl">
+            {equippedBadges.map((b) => (
+              <span key={b.id} title={b.name}>
+                {b.emoji}
+              </span>
+            ))}
+          </div>
+        )}
         <p className="self-end text-xs font-bold text-ink/50">Lv.{level} {student.nickname}</p>
         <Avatar emoji={student.avatar} accessoryId={student.equippedAccessory} size="lg" />
         <div className="flex w-full flex-wrap items-end justify-center gap-3 pb-1 text-3xl">
@@ -68,13 +78,41 @@ export default function ClosetPage() {
             🚫
             <span className="text-[10px] font-bold text-ink/50">없음</span>
           </button>
-          {accessories.map((a) => {
+          {avatarAccessories.map((a) => {
             const owned = student.ownedAccessories.includes(a.id);
             const equipped = student.equippedAccessory === a.id;
             return (
               <button
                 key={a.id}
                 onClick={() => owned && handleEquip(a.id)}
+                disabled={!owned}
+                className={`flex h-16 flex-col items-center justify-center gap-1 rounded-2xl border-2 text-xl ${
+                  equipped
+                    ? "border-duo-green bg-duo-green/10"
+                    : owned
+                      ? "border-duo-gray bg-white"
+                      : "border-duo-gray bg-duo-gray/20 opacity-50"
+                }`}
+              >
+                {owned ? a.emoji : "🔒"}
+                <span className="text-[10px] font-bold text-ink/50">{owned ? a.name : `${a.price}P`}</span>
+              </button>
+            );
+          })}
+        </div>
+      </Card>
+
+      <Card>
+        <p className="mb-1 font-display text-lg">🏅 메달·보석 진열장</p>
+        <p className="mb-3 text-xs text-ink/40">여러 개를 동시에 진열할 수 있어요</p>
+        <div className="grid grid-cols-4 gap-3">
+          {badgeAccessories.map((a) => {
+            const owned = student.ownedAccessories.includes(a.id);
+            const equipped = student.equippedBadges.includes(a.id);
+            return (
+              <button
+                key={a.id}
+                onClick={() => owned && toggleEquippedBadge(student.id, a.id, student.equippedBadges)}
                 disabled={!owned}
                 className={`flex h-16 flex-col items-center justify-center gap-1 rounded-2xl border-2 text-xl ${
                   equipped

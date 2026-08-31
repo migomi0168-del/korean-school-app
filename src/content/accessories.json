@@ -1,9 +1,45 @@
 [
-  { "id": "hat", "emoji": "🎩", "name": "모자", "price": 100, "position": "top" },
-  { "id": "sunglasses", "emoji": "🕶️", "name": "선글라스", "price": 120, "position": "center" },
-  { "id": "bow", "emoji": "🎀", "name": "리본", "price": 100, "position": "bottom" },
-  { "id": "scarf", "emoji": "🧣", "name": "목도리", "price": 140, "position": "bottom" },
-  { "id": "gem", "emoji": "💎", "name": "보석", "price": 180, "position": "corner" },
-  { "id": "star", "emoji": "⭐", "name": "별 배지", "price": 160, "position": "corner" },
-  { "id": "crown", "emoji": "👑", "name": "왕관", "price": 300, "position": "top" }
+  { "id": "hat", "emoji": "🎩", "name": "모자", "price": 200, "position": "top", "category": "avatar" },
+  { "id": "sunglasses", "emoji": "🕶️", "name": "선글라스", "price": 240, "position": "center", "category": "avatar" },
+  { "id": "bow", "emoji": "🎀", "name": "리본", "price": 200, "position": "bottom", "category": "avatar" },
+  { "id": "scarf", "emoji": "🧣", "name": "목도리", "price": 280, "position": "bottom", "category": "avatar" },
+  { "id": "crown", "emoji": "👑", "name": "왕관", "price": 600, "position": "top", "category": "avatar" },
+
+  { "id": "wand-red", "emoji": "🪄", "name": "빨간 지팡이", "price": 150, "position": "corner", "category": "avatar" },
+  { "id": "wand-blue", "emoji": "🪄", "name": "파란 지팡이", "price": 150, "position": "corner", "category": "avatar" },
+  { "id": "wand-green", "emoji": "🪄", "name": "초록 지팡이", "price": 150, "position": "corner", "category": "avatar" },
+  { "id": "wand-star", "emoji": "🪄", "name": "별무늬 지팡이", "price": 220, "position": "corner", "category": "avatar" },
+  { "id": "wand-dot", "emoji": "🪄", "name": "물방울무늬 지팡이", "price": 220, "position": "corner", "category": "avatar" },
+  { "id": "wand-wood", "emoji": "🪄", "name": "나무 지팡이", "price": 180, "position": "corner", "category": "avatar" },
+  { "id": "wand-crystal", "emoji": "🪄", "name": "수정 지팡이", "price": 380, "position": "corner", "category": "avatar" },
+  { "id": "wand-sparkle", "emoji": "🪄", "name": "반짝이 지팡이", "price": 450, "position": "corner", "category": "avatar" },
+
+  { "id": "ribbon-red", "emoji": "🎀", "name": "빨간 리본", "price": 150, "position": "top", "category": "avatar" },
+  { "id": "ribbon-pink", "emoji": "🎀", "name": "분홍 리본", "price": 150, "position": "top", "category": "avatar" },
+  { "id": "ribbon-yellow", "emoji": "🎀", "name": "노란 리본", "price": 150, "position": "top", "category": "avatar" },
+  { "id": "ribbon-blue", "emoji": "🎀", "name": "파란 리본", "price": 150, "position": "top", "category": "avatar" },
+  { "id": "ribbon-dot", "emoji": "🎀", "name": "물방울 리본", "price": 200, "position": "top", "category": "avatar" },
+  { "id": "ribbon-star", "emoji": "🎀", "name": "별무늬 리본", "price": 200, "position": "top", "category": "avatar" },
+  { "id": "ribbon-check", "emoji": "🎀", "name": "체크무늬 리본", "price": 200, "position": "top", "category": "avatar" },
+  { "id": "ribbon-lace", "emoji": "🎀", "name": "레이스 리본", "price": 320, "position": "top", "category": "avatar" },
+
+  { "id": "sunglasses-heart", "emoji": "😎", "name": "하트 선글라스", "price": 220, "position": "center", "category": "avatar" },
+  { "id": "sunglasses-star", "emoji": "😎", "name": "별모양 선글라스", "price": 220, "position": "center", "category": "avatar" },
+  { "id": "sunglasses-round", "emoji": "🕶️", "name": "동그란 선글라스", "price": 180, "position": "center", "category": "avatar" },
+  { "id": "sunglasses-square", "emoji": "🕶️", "name": "사각 선글라스", "price": 180, "position": "center", "category": "avatar" },
+  { "id": "sunglasses-red", "emoji": "🕶️", "name": "빨간 선글라스", "price": 200, "position": "center", "category": "avatar" },
+  { "id": "sunglasses-yellow", "emoji": "🕶️", "name": "노란 선글라스", "price": 200, "position": "center", "category": "avatar" },
+  { "id": "sunglasses-clear", "emoji": "🥽", "name": "투명 선글라스", "price": 260, "position": "center", "category": "avatar" },
+
+  { "id": "star", "emoji": "⭐", "name": "별 배지", "price": 320, "position": "corner", "category": "badge" },
+  { "id": "gem", "emoji": "💎", "name": "보석", "price": 360, "position": "corner", "category": "badge" },
+
+  { "id": "medal-gold", "emoji": "🥇", "name": "금메달", "price": 500, "position": "corner", "category": "badge" },
+  { "id": "medal-silver", "emoji": "🥈", "name": "은메달", "price": 400, "position": "corner", "category": "badge" },
+  { "id": "medal-bronze", "emoji": "🥉", "name": "동메달", "price": 300, "position": "corner", "category": "badge" },
+
+  { "id": "gem-emerald", "emoji": "💚", "name": "에메랄드", "price": 450, "position": "corner", "category": "badge" },
+  { "id": "gem-ruby", "emoji": "❤️", "name": "루비", "price": 450, "position": "corner", "category": "badge" },
+  { "id": "gem-diamond", "emoji": "🔷", "name": "다이아몬드", "price": 700, "position": "corner", "category": "badge" },
+  { "id": "gem-pearl", "emoji": "🤍", "name": "진주", "price": 380, "position": "corner", "category": "badge" }
 ]

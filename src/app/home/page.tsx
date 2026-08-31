@@ -10,6 +10,7 @@ import { XP_REWARD, todayStr, yesterdayStr } from "@/lib/xp";
 import { getEncouragementMessage } from "@/lib/encouragement";
 import { getRoomColor, getRoomBackgroundStyle } from "@/lib/roomColors";
 import { getOwnedFurniture } from "@/lib/furniture";
+import { getEquippedBadges } from "@/lib/accessories";
 import { getAssignmentHref } from "@/lib/assignments";
 
 const MODES = [
@@ -51,11 +52,21 @@ export default function HomePage() {
 
   const room = getRoomColor(student.roomColor);
   const ownedFurniture = getOwnedFurniture(student.ownedFurniture);
+  const equippedBadges = getEquippedBadges(student.equippedBadges);
   const newPeerMessages = student.peerMessages.filter((m) => m.sentAt > student.lastSeenPeerMessageAt);
 
   return (
     <div className="flex flex-1 flex-col">
       <div style={getRoomBackgroundStyle(room)} className="rounded-b-3xl">
+        {equippedBadges.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-2 px-4 pt-2 text-xl">
+            {equippedBadges.map((b) => (
+              <span key={b.id} title={b.name}>
+                {b.emoji}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <XPHeader
             nickname={student.nickname}

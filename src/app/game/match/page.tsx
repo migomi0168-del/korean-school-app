@@ -88,6 +88,25 @@ export default function MatchGamePage() {
     setLeveledUp(newLevel > prevLevel);
   }
 
+  // Re-navigating to this same route doesn't remount the component, so
+  // cardsRef would otherwise keep the old board forever — rebuild it and
+  // reset every piece of round state explicitly instead.
+  function handleRestart() {
+    if (!student) return;
+    const pool = filterByDifficulty(words, student.proficiencyTier ?? "normal");
+    cardsRef.current = buildCards(pool, PAIR_COUNT);
+    startXpRef.current = student.xp;
+    setFlipped([]);
+    setMatchedPairIds([]);
+    setWrongPairFlash([]);
+    setMoves(0);
+    setSessionXp(0);
+    setSaving(false);
+    setLeveledUp(false);
+    busyRef.current = false;
+    setPhase("playing");
+  }
+
   function handleTapCard(card: MatchCard) {
     if (!student || busyRef.current) return;
     if (flipped.includes(card.id) || matchedPairIds.includes(card.pairId)) return;
@@ -135,7 +154,7 @@ export default function MatchGamePage() {
         {leveledUp && <p className="font-display text-xl text-duo-yellow-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{sessionXp} XP</p>
         <p className="text-lg font-bold text-duo-yellow-dark">+{sessionXp} 포인트 💰</p>
-        <Button onClick={() => router.push("/game/match")} disabled={saving}>
+        <Button onClick={handleRestart} disabled={saving}>
           다시 하기
         </Button>
         <Link href="/game" className="text-sm text-ink/40 underline">

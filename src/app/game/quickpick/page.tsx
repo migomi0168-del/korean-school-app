@@ -87,6 +87,25 @@ export default function QuickPickGamePage() {
     setLevelRange({ prev: prevLevel, next: newLevel });
   }
 
+  // Re-navigating to this same route doesn't remount the component (Next.js
+  // reuses it), so roundsRef would otherwise keep the old rounds forever —
+  // rebuild the pool and reset every piece of round state explicitly instead.
+  function handleRestart() {
+    if (!student) return;
+    const pool = filterByDifficulty(words, student.proficiencyTier ?? "normal");
+    roundsRef.current = buildRounds(pool, TOTAL_ROUNDS);
+    startXpRef.current = student.xp;
+    setIndex(0);
+    setAnswer(null);
+    setSelectedId(null);
+    setScore(0);
+    setSessionXp(0);
+    setSaving(false);
+    setLeveledUp(false);
+    setLevelRange({ prev: 0, next: 0 });
+    setPhase("playing");
+  }
+
   function handleSelect(option: Word) {
     if (answer || !student) return;
     const round = rounds[index];
@@ -122,7 +141,7 @@ export default function QuickPickGamePage() {
         {leveledUp && <p className="font-display text-xl text-duo-yellow-dark">레벨 업! 🏆</p>}
         <p className="text-lg font-bold text-duo-green-dark">+{sessionXp} XP</p>
         <p className="text-lg font-bold text-duo-yellow-dark">+{sessionXp} 포인트 💰</p>
-        <Button onClick={() => router.push("/game/quickpick")} disabled={saving}>
+        <Button onClick={handleRestart} disabled={saving}>
           다시 하기
         </Button>
         <Link href="/game" className="text-sm text-ink/40 underline">

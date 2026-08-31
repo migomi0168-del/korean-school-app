@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/common/Card";
 import { useStudentSession } from "@/hooks/useStudentSession";
-import { accessories } from "@/lib/accessories";
+import { avatarAccessories, badgeAccessories } from "@/lib/accessories";
 import { furniture } from "@/lib/furniture";
 import { roomColors, getRoomBackgroundStyle } from "@/lib/roomColors";
-import { buyAccessory, buyFurniture, buyRoomColor, selectRoomColor, updateStudent } from "@/lib/students";
+import { buyAccessory, buyFurniture, buyRoomColor, selectRoomColor, toggleEquippedBadge, updateStudent } from "@/lib/students";
 
 type Tab = "accessory" | "furniture" | "color";
 
@@ -60,44 +60,87 @@ export default function ShopPage() {
       </div>
 
       {tab === "accessory" && (
-        <Card>
-          <div className="grid grid-cols-2 gap-3">
-            {accessories.map((a) => {
-              const owned = student.ownedAccessories.includes(a.id);
-              const equipped = student.equippedAccessory === a.id;
-              const canAfford = student.points >= a.price;
-              return (
-                <div key={a.id} className="flex flex-col items-center gap-2 rounded-2xl border-2 border-duo-gray p-3 text-center">
-                  <span className="text-4xl">{a.emoji}</span>
-                  <span className="text-sm font-bold">{a.name}</span>
-                  {owned ? (
-                    <button
-                      onClick={() =>
-                        run(a.id, () => updateStudent(student.id, { equippedAccessory: equipped ? null : a.id }))
-                      }
-                      disabled={busy === a.id}
-                      className={`w-full rounded-xl px-3 py-2 text-xs font-bold ${
-                        equipped ? "bg-duo-green text-white" : "bg-duo-gray/30 text-ink"
-                      }`}
-                    >
-                      {equipped ? "장착됨 ✅" : "장착하기"}
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => run(a.id, () => buyAccessory(student.id, a.id, a.price))}
-                      disabled={!canAfford || busy === a.id}
-                      className={`w-full rounded-xl px-3 py-2 text-xs font-bold ${
-                        canAfford ? "bg-duo-yellow text-ink" : "bg-duo-gray/30 text-ink/40"
-                      }`}
-                    >
-                      💰{a.price} 구매
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </Card>
+        <>
+          <Card>
+            <p className="mb-3 font-display text-lg">👤 캐릭터 아이템</p>
+            <p className="mb-3 text-xs text-ink/40">한 번에 하나만 장착할 수 있어요</p>
+            <div className="grid grid-cols-2 gap-3">
+              {avatarAccessories.map((a) => {
+                const owned = student.ownedAccessories.includes(a.id);
+                const equipped = student.equippedAccessory === a.id;
+                const canAfford = student.points >= a.price;
+                return (
+                  <div key={a.id} className="flex flex-col items-center gap-2 rounded-2xl border-2 border-duo-gray p-3 text-center">
+                    <span className="text-4xl">{a.emoji}</span>
+                    <span className="text-sm font-bold">{a.name}</span>
+                    {owned ? (
+                      <button
+                        onClick={() =>
+                          run(a.id, () => updateStudent(student.id, { equippedAccessory: equipped ? null : a.id }))
+                        }
+                        disabled={busy === a.id}
+                        className={`w-full rounded-xl px-3 py-2 text-xs font-bold ${
+                          equipped ? "bg-duo-green text-white" : "bg-duo-gray/30 text-ink"
+                        }`}
+                      >
+                        {equipped ? "장착됨 ✅" : "장착하기"}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => run(a.id, () => buyAccessory(student.id, a.id, a.price))}
+                        disabled={!canAfford || busy === a.id}
+                        className={`w-full rounded-xl px-3 py-2 text-xs font-bold ${
+                          canAfford ? "bg-duo-yellow text-ink" : "bg-duo-gray/30 text-ink/40"
+                        }`}
+                      >
+                        💰{a.price} 구매
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
+          <Card>
+            <p className="mb-3 font-display text-lg">🏅 메달·보석 진열장</p>
+            <p className="mb-3 text-xs text-ink/40">여러 개를 한번에 장착해서 방 위쪽에 나란히 진열할 수 있어요</p>
+            <div className="grid grid-cols-2 gap-3">
+              {badgeAccessories.map((a) => {
+                const owned = student.ownedAccessories.includes(a.id);
+                const equipped = student.equippedBadges.includes(a.id);
+                const canAfford = student.points >= a.price;
+                return (
+                  <div key={a.id} className="flex flex-col items-center gap-2 rounded-2xl border-2 border-duo-gray p-3 text-center">
+                    <span className="text-4xl">{a.emoji}</span>
+                    <span className="text-sm font-bold">{a.name}</span>
+                    {owned ? (
+                      <button
+                        onClick={() => run(a.id, () => toggleEquippedBadge(student.id, a.id, student.equippedBadges))}
+                        disabled={busy === a.id}
+                        className={`w-full rounded-xl px-3 py-2 text-xs font-bold ${
+                          equipped ? "bg-duo-green text-white" : "bg-duo-gray/30 text-ink"
+                        }`}
+                      >
+                        {equipped ? "진열 중 ✅" : "진열하기"}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => run(a.id, () => buyAccessory(student.id, a.id, a.price))}
+                        disabled={!canAfford || busy === a.id}
+                        className={`w-full rounded-xl px-3 py-2 text-xs font-bold ${
+                          canAfford ? "bg-duo-yellow text-ink" : "bg-duo-gray/30 text-ink/40"
+                        }`}
+                      >
+                        💰{a.price} 구매
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        </>
       )}
 
       {tab === "furniture" && (

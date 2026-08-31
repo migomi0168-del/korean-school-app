@@ -59,6 +59,7 @@ function toStudent(id: string, data: Record<string, unknown>): Student {
     practiceOptionIds: (data.practiceOptionIds as string[]) ?? [],
     practiceSuccessCount: (data.practiceSuccessCount as number) ?? 0,
     equippedAccessory: (data.equippedAccessory as string) ?? null,
+    equippedBadges: (data.equippedBadges as string[]) ?? [],
     ownedAccessories: (data.ownedAccessories as string[]) ?? [],
     ownedFurniture: (data.ownedFurniture as string[]) ?? [],
     ownedRoomColors: (data.ownedRoomColors as string[]) ?? [],
@@ -98,6 +99,7 @@ export async function createStudent(params: { classId: string; nickname: string;
     practiceOptionIds: [],
     practiceSuccessCount: 0,
     equippedAccessory: null,
+    equippedBadges: [],
     ownedAccessories: [],
     ownedFurniture: [],
     ownedRoomColors: [],
@@ -167,6 +169,23 @@ export async function buyAccessory(studentId: string, accessoryId: string, price
   await updateDoc(doc(db, "students", studentId), {
     points: increment(-price),
     ownedAccessories: arrayUnion(accessoryId),
+  });
+}
+
+// Badges (medals/gems) stack instead of replacing each other, unlike
+// equippedAccessory's single slot, so equip/unequip is a toggle against the
+// array rather than a plain overwrite.
+export async function toggleEquippedBadge(studentId: string, badgeId: string, currentlyEquipped: string[]) {
+  const isEquipped = currentlyEquipped.includes(badgeId);
+  if (isDemoId(studentId)) {
+    updateDemoStudent((s) => ({
+      ...s,
+      equippedBadges: isEquipped ? s.equippedBadges.filter((id) => id !== badgeId) : [...s.equippedBadges, badgeId],
+    }));
+    return;
+  }
+  await updateDoc(doc(db, "students", studentId), {
+    equippedBadges: isEquipped ? arrayRemove(badgeId) : arrayUnion(badgeId),
   });
 }
 
